@@ -59,7 +59,7 @@ public class GUI extends Application {
 		button.setTranslateX(120);
 		
 		// Changes the size of the board based on the user entered number
-		button.setOnAction(event -> {			// TODO: add conditional to do nothing if the textbox is empty
+		button.setOnAction(event -> {	
 			int size =  Integer.parseInt(textField.getText());
 
 			if (size > 0) {
@@ -108,3 +108,4 @@ public class GUI extends Application {
 		launch(args);
 	}
 }
+
