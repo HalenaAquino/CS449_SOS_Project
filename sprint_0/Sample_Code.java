@@ -18,10 +18,11 @@ public class Sample_Code {
 	
 	public double divAB(int a, int b) {
 		if (b == 0) {
-			return 0.00;           // just return 0 if A or B are an invalid number
+			return (double) 0.00;           // just return 0 if A or B are an invalid number
 		}
 		else {
 			return a / b;
 		}
 	}
+
 }
