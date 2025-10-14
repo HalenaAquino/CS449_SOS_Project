@@ -14,7 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Font;
-
 import javafx.scene.paint.Color;
 
 
@@ -35,8 +34,6 @@ public class GUI extends Application {
 		GridPane centerPane = new GridPane();		// actual board
 		GridPane topPane = new GridPane();			// player settings (size, game, etc.)
 		GridPane bottomPane = new GridPane();		// record checkbox, player turn
-		
-		
 		
 		
 		GridPane centerLPane = new GridPane();
@@ -71,11 +68,92 @@ public class GUI extends Application {
 		topPane.add(button, 4, 5);
 		button.setTranslateX(120);
 		
+		// creates the errorMessage and gameStatus labels, adds them to the pane, and positions them correctly
 		Label errorMessage = new Label("");
+		Label gameStatus = new Label("Blue Players Turn");   // TODO: make dynamic
+		
+		bottomPane.add(gameStatus, 1, 5);
+		bottomPane.add(errorMessage, 2, 5);
+		
+		gameStatus.setTranslateX(300);
+		errorMessage.setTranslateX(100);
+		errorMessage.setTranslateY(-25);
+		
+		errorMessage.setTextFill(Color.RED);			// makes the errorMessage red and larger
+		errorMessage.setFont(new Font("Arial", 15));
+				
+		
+		
+		// creates and positions the blue label
+		Label bluePlayerLabel = new Label("Blue Player: ");
+		bluePlayerLabel.setTranslateX(-25);
+		bluePlayerLabel.setMinWidth(65);
+		bluePlayerLabel.setTranslateY(200);
+		
+		// creates the blue buttons
+		RadioButton blueSButton = new RadioButton("S");
+		RadioButton blueOButton = new RadioButton("O");
+		ToggleGroup bluePieceGroup = new ToggleGroup();
+		blueSButton.setToggleGroup(bluePieceGroup);
+		blueOButton.setToggleGroup(bluePieceGroup);
+		
+		// moves the blue buttons and labels
+		blueSButton.setTranslateX(bluePlayerLabel.getTranslateX() - 40);
+		blueSButton.setTranslateY(bluePlayerLabel.getTranslateY() + 30);
+		blueOButton.setTranslateX(blueSButton.getTranslateX() - 28);
+		blueOButton.setTranslateY(blueSButton.getTranslateY() + 25);
+		
+		// positions the board
+		centerCPane.setTranslateX(bluePlayerLabel.getMaxWidth() - 60);
+		//centerCPane.setTranslateY(50000000);
+		
+
+		// creates and positions the red label
+		Label redPlayerLabel = new Label("Red Player: ");
+		redPlayerLabel.setTranslateX(centerCPane.getMaxWidth() - 40);
+		redPlayerLabel.setMinWidth(65);
+		redPlayerLabel.setTranslateY(200);
+		
+		// creates the red buttons
+		RadioButton redSButton = new RadioButton("S");
+		RadioButton redOButton = new RadioButton("O");
+		ToggleGroup redPieceGroup = new ToggleGroup();
+		redSButton.setToggleGroup(redPieceGroup);
+		redOButton.setToggleGroup(redPieceGroup);
+		
+		// moves the red buttons and labels
+		redSButton.setTranslateX(redPlayerLabel.getTranslateX() - 40);
+		redSButton.setTranslateY(redPlayerLabel.getTranslateY() + 30);
+		redOButton.setTranslateX(redSButton.getTranslateX() - 28);
+		redOButton.setTranslateY(redSButton.getTranslateY() + 25);
+		
+		// adds blue player buttons
+		centerLPane.add(bluePlayerLabel, 1, 5);
+		centerLPane.add(blueSButton, 2, 5);
+		centerLPane.add(blueOButton, 3, 5);
+		
+		// adds red player buttons
+		centerRPane.add(redPlayerLabel, 1, 5);
+		centerRPane.add(redSButton, 2, 5);
+		centerRPane.add(redOButton, 3, 5);
+		
+		// combines all of the center panes
+		centerPane.add(centerLPane, 1, 5);
+		centerPane.add(centerCPane, 2, 5);
+		centerPane.add(centerRPane, 3, 5);
+		
+
+		
+		
+		
+		
+		// Adds each pane to the border pane
+		centerCPane.setTranslateY(30);
+		centerPane.setTranslateX(50);			// TODO: make board location dynamic (depending on its size)
 
 		
 		// Changes the size of the board based on the user entered number
-		button.setOnAction(event -> {			// TODO: add conditional to do nothing if the textbox is empty
+		button.setOnAction(event -> {			// TODO: add conditional to do nothing if the textbox is empty/is given a string
 			int size =  Integer.parseInt(textField.getText());
 
 			if (size > 0 && size < 10 && (simpleRButton.isSelected() || generalRButton.isSelected())) {
@@ -93,78 +171,13 @@ public class GUI extends Application {
 			
 		
 		
-		Label gameStatus = new Label("Blue Players Turn");   // TODO: make dynamic
-		bottomPane.add(gameStatus, 1, 5);
-		bottomPane.add(errorMessage, 2, 5);
-		gameStatus.setTranslateX(300);
-		errorMessage.setTranslateX(100);
-		errorMessage.setTranslateY(-25);
-		
-		errorMessage.setTextFill(Color.RED);
-		errorMessage.setFont(new Font("Arial", 15));
-				
-		
-		
-		
-		Label bluePlayerLabel = new Label("Blue Player: ");
-		bluePlayerLabel.setTranslateX(-25);
-		bluePlayerLabel.setMinWidth(65);
-		bluePlayerLabel.setTranslateY(200);
-		RadioButton blueSButton = new RadioButton("S");
-		RadioButton blueOButton = new RadioButton("O");
-		ToggleGroup bluePieceGroup = new ToggleGroup();
-		blueSButton.setToggleGroup(bluePieceGroup);
-		blueOButton.setToggleGroup(bluePieceGroup);
-		blueSButton.setTranslateX(bluePlayerLabel.getTranslateX() - 40);
-		blueSButton.setTranslateY(bluePlayerLabel.getTranslateY() + 30);
-		blueOButton.setTranslateX(blueSButton.getTranslateX() - 28);
-		blueOButton.setTranslateY(blueSButton.getTranslateY() + 25);
-		
-		centerCPane.setTranslateX(bluePlayerLabel.getMaxWidth() - 60);
-		//centerCPane.setTranslateY(50000000);
-		
-
-		
-		Label redPlayerLabel = new Label("Red Player: ");
-		redPlayerLabel.setTranslateX(centerCPane.getMaxWidth() - 40);
-		redPlayerLabel.setMinWidth(65);
-		redPlayerLabel.setTranslateY(200);
-		RadioButton redSButton = new RadioButton("S");
-		RadioButton redOButton = new RadioButton("O");
-		ToggleGroup redPieceGroup = new ToggleGroup();
-		redSButton.setToggleGroup(redPieceGroup);
-		redOButton.setToggleGroup(redPieceGroup);
-		redSButton.setTranslateX(redPlayerLabel.getTranslateX() - 40);
-		redSButton.setTranslateY(redPlayerLabel.getTranslateY() + 30);
-		redOButton.setTranslateX(redSButton.getTranslateX() - 28);
-		redOButton.setTranslateY(redSButton.getTranslateY() + 25);
-		
-		
-		centerLPane.add(bluePlayerLabel, 1, 5);
-		centerLPane.add(blueSButton, 2, 5);
-		centerLPane.add(blueOButton, 3, 5);
-		centerRPane.add(redPlayerLabel, 1, 5);
-		centerRPane.add(redSButton, 2, 5);
-		centerRPane.add(redOButton, 3, 5);
-		
-		centerPane.add(centerLPane, 1, 5);
-		centerPane.add(centerCPane, 2, 5);
-		centerPane.add(centerRPane, 3, 5);
-		
-
-		
-		
-		
-		
-		// Adds each pane to the border pane
-		centerCPane.setTranslateY(30);
-		centerPane.setTranslateX(50);			// TODO: make board location dynamic (depending on its size)
+		// adds all of the panes to the border pane
 		BorderPane borderPane = new BorderPane();
 		borderPane.setCenter(centerPane);
 		borderPane.setBottom(bottomPane);
 		borderPane.setTop(topPane);
 				
-		// Creates the scene with the border plane
+		// Creates the scene with the border pane
 		Scene scene = new Scene(borderPane, 700, 700);
 		primaryStage.setTitle("SOS Game");
 		primaryStage.setScene(scene);
@@ -175,7 +188,7 @@ public class GUI extends Application {
 	public class Square extends Pane {
 		public Square(int size) {
 			setStyle("-fx-border-color: black");
-			this.setPrefSize(500/size, 500/size);			// TODO: make window size dynamic
+			this.setPrefSize(500/size, 500/size);			// the max size of the board pane (500) / the number of squares
 			this.setOnMouseClicked(e -> handleMouseClick());
 		}
 
