@@ -194,14 +194,14 @@ public class GUI extends Application {
 
 			if (size > 2 && size < 10 && (simpleRButton.isSelected() || generalRButton.isSelected()) && bluePiece != ' ' && redPiece != ' ') {
 				centerCPane.getChildren().clear();
+				//if (board == null) {
+					board = new Board(size);		// make a new board each time so the pieces are erased
+				//}
 				squares = new Square[size][size];
 				for (int i = 0; i < size; i++)
 					for (int j = 0; j < size; j++)
 						centerCPane.add(squares[i][j] = new Square(size, i, j, playerPieces), j, i);
 				
-				if (board == null) {
-					board = new Board(size);
-				}
 				
 				errorMessage.setText("");
 		    }
@@ -228,14 +228,16 @@ public class GUI extends Application {
 	    for (int row = 0; row < size; row++)
 	        for (int column = 0; column < size; column++) {
 	            squares[row][column].getChildren().clear();
-	            if (board.getCell(size, row, column) == 1)
-	            	if(playerPieces.get('B') == 'S') 
+	            int cellValue = board.getCell(size, row, column);
+	            char piece = board.getPieceType(size, row, column);
+	            if (cellValue == 1)
+	            	if(piece == 'S') 
 	            		squares[row][column].drawS(Color.BLUE);
 	            	else
 	            		squares[row][column].drawO(Color.BLUE);
 	            	
-	            else if (board.getCell(size, row, column) == 2)
-	            	if(playerPieces.get('R') == 'S') 
+	            else if (cellValue == 2)
+	            	if(piece == 'S') 
 	            		squares[row][column].drawS(Color.RED);
 	            	else
 	            		squares[row][column].drawO(Color.RED);
@@ -255,16 +257,16 @@ public class GUI extends Application {
 		}
 
 		private void handleMouseClick(int size, Dictionary<Character, Character> playerPieces) {			// TODO: 
-			board.makeMove(size, row, column);
+			board.makeMove(size, row, column, playerPieces);
 			drawBoard(size, playerPieces);
 			displayGameStatus();
 		}
 		
 		public void drawS(Color c) {
-		    // TODO: The shape currently replaces the previous shape the player placed
+			// TODO: make the size of S proportional to the square it's inside of
 			Label label = new Label(String.valueOf('S'));
 		    label.setTextFill(c);
-		    label.setFont(new Font(50));
+		    label.setFont(new Font((this.getHeight()/2) + 10));
 		    label.setAlignment(Pos.CENTER);
 		    label.setPrefSize(this.getWidth(), this.getHeight());
 
@@ -279,7 +281,7 @@ public class GUI extends Application {
 			ellipse.radiusXProperty().bind(this.widthProperty().divide(2).subtract(10));
 			ellipse.radiusYProperty().bind(this.heightProperty().divide(2).subtract(10));
 			ellipse.setStroke(c);
-			ellipse.setStrokeWidth(5.0);
+			ellipse.setStrokeWidth(this.getHeight()/25);
 			ellipse.setFill(Color.TRANSPARENT);
 
 			getChildren().add(ellipse);
