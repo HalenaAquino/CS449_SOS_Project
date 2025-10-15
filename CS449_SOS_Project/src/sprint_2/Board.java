@@ -4,7 +4,7 @@ import java.util.Dictionary;
 public class Board {
 
 	private int[][] grid;
-	private char turn = 'X';
+	private char turn = 'B';
 
 	public Board(int size) {
 		grid = new int[size][size];

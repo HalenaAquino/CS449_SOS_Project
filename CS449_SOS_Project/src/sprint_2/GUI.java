@@ -16,6 +16,8 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Line;
+
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -76,13 +78,12 @@ public class GUI extends Application {
 		
 		// creates the errorMessage and gameStatus labels, adds them to the pane, and positions them correctly
 		Label errorMessage = new Label("");
-		Label gameStatus = new Label("Blue Players Turn");   // TODO: make dynamic
 		
 		bottomPane.add(gameStatus, 1, 5);
 		bottomPane.add(errorMessage, 2, 5);
 		
 		gameStatus.setTranslateX(300);
-		errorMessage.setTranslateX(100);
+		errorMessage.setTranslateX(-50);
 		errorMessage.setTranslateY(-25);
 		
 		errorMessage.setTextFill(Color.RED);			// makes the errorMessage red and larger
@@ -151,9 +152,7 @@ public class GUI extends Application {
             redPiece = 'O';
             playerPieces.put('R', redPiece);
         });
-        
-        System.out.println("Blue piece: " + bluePiece);
-        
+                
 		
 		
 		
@@ -193,7 +192,7 @@ public class GUI extends Application {
 		button.setOnAction(event -> {			// TODO: add conditional to do nothing if the textbox is empty/is given a string
 			int size =  Integer.parseInt(textField.getText());
 
-			if (size > 0 && size < 10 && (simpleRButton.isSelected() || generalRButton.isSelected())) {
+			if (size > 2 && size < 10 && (simpleRButton.isSelected() || generalRButton.isSelected()) && bluePiece != ' ' && redPiece != ' ') {
 				centerCPane.getChildren().clear();
 				squares = new Square[size][size];
 				for (int i = 0; i < size; i++)
@@ -207,7 +206,7 @@ public class GUI extends Application {
 				errorMessage.setText("");
 		    }
 			else{
-				errorMessage.setText("Please enter a valid board size and select a game mode");
+				errorMessage.setText("Please enter a valid board size, select a game mode, and choose the piece for both players");
 			}});
 			
 		
@@ -231,15 +230,15 @@ public class GUI extends Application {
 	            squares[row][column].getChildren().clear();
 	            if (board.getCell(size, row, column) == 1)
 	            	if(playerPieces.get('B') == 'S') 
-	            		System.out.println("TODO");
+	            		squares[row][column].drawS(Color.BLUE);
 	            	else
-	            		squares[row][column].drawO();
+	            		squares[row][column].drawO(Color.BLUE);
 	            	
 	            else if (board.getCell(size, row, column) == 2)
 	            	if(playerPieces.get('R') == 'S') 
-	            		System.out.println("TODO");
+	            		squares[row][column].drawS(Color.RED);
 	            	else
-	            		squares[row][column].drawO();
+	            		squares[row][column].drawO(Color.RED);
 	        }
 	}
 	
@@ -261,17 +260,27 @@ public class GUI extends Application {
 			displayGameStatus();
 		}
 		
-		public void drawO() {
+		public void drawS(Color c) {
+	        Ellipse topEllipse = new Ellipse(100, 50, 50, 25);
+	        topEllipse.setFill(c);
+	        topEllipse.setRotate(45);
+
+	        Ellipse bottomEllipse = new Ellipse(150, 100, 50, 25);
+	        bottomEllipse.setFill(c);
+	        bottomEllipse.setRotate(-45);
+
+		    getChildren().add(topEllipse);
+		    getChildren().add(bottomEllipse);
+		}
+		
+		public void drawO(Color c) {
 			Ellipse ellipse = new Ellipse(this.getWidth() / 2, this.getHeight() / 2, this.getWidth() / 2 - 10,
 					this.getHeight() / 2 - 10);
 			ellipse.centerXProperty().bind(this.widthProperty().divide(2));
 			ellipse.centerYProperty().bind(this.heightProperty().divide(2));
 			ellipse.radiusXProperty().bind(this.widthProperty().divide(2).subtract(10));
 			ellipse.radiusYProperty().bind(this.heightProperty().divide(2).subtract(10));
-			if(board.getTurn() == 'B')
-				ellipse.setStroke(Color.BLUE);
-			else if(board.getTurn() == 'R')
-				ellipse.setStroke(Color.RED);
+			ellipse.setStroke(c);
 			ellipse.setStrokeWidth(5.0);
 			ellipse.setFill(Color.TRANSPARENT);
 
