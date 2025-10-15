@@ -16,10 +16,10 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
+import javafx.geometry.Pos;
 
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.Hashtable;
 
 
@@ -261,16 +261,14 @@ public class GUI extends Application {
 		}
 		
 		public void drawS(Color c) {
-	        Ellipse topEllipse = new Ellipse(100, 50, 50, 25);
-	        topEllipse.setFill(c);
-	        topEllipse.setRotate(45);
+		    // TODO: The shape currently replaces the previous shape the player placed
+			Label label = new Label(String.valueOf('S'));
+		    label.setTextFill(c);
+		    label.setFont(new Font(50));
+		    label.setAlignment(Pos.CENTER);
+		    label.setPrefSize(this.getWidth(), this.getHeight());
 
-	        Ellipse bottomEllipse = new Ellipse(150, 100, 50, 25);
-	        bottomEllipse.setFill(c);
-	        bottomEllipse.setRotate(-45);
-
-		    getChildren().add(topEllipse);
-		    getChildren().add(bottomEllipse);
+		    this.getChildren().add(label);
 		}
 		
 		public void drawO(Color c) {
