@@ -15,6 +15,10 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Ellipse;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 
 
@@ -25,12 +29,14 @@ public class GUI extends Application {
 	private Square[][] squares;
 
 	static private Board board;
+	
+	private Label gameStatus = new Label("Blue Players Turn");
+	
+	private char bluePiece = ' ';
+	private char redPiece = ' ';
 
 	@Override
 	public void start(Stage primaryStage) {
-		if (board == null) {
-			board = new Board();
-		}
 		GridPane centerPane = new GridPane();		// actual board
 		GridPane topPane = new GridPane();			// player settings (size, game, etc.)
 		GridPane bottomPane = new GridPane();		// record checkbox, player turn
@@ -96,6 +102,20 @@ public class GUI extends Application {
 		ToggleGroup bluePieceGroup = new ToggleGroup();
 		blueSButton.setToggleGroup(bluePieceGroup);
 		blueOButton.setToggleGroup(bluePieceGroup);
+
+		
+		Dictionary<Character, Character> playerPieces = new Hashtable<>();
+		
+		blueSButton.setOnAction(e -> {
+            bluePiece = 'S';
+            playerPieces.put('B', bluePiece);
+            
+        });
+
+        blueOButton.setOnAction(e -> {
+            bluePiece = 'O';
+            playerPieces.put('B', bluePiece);
+        });
 		
 		// moves the blue buttons and labels
 		blueSButton.setTranslateX(bluePlayerLabel.getTranslateX() - 40);
@@ -120,6 +140,23 @@ public class GUI extends Application {
 		ToggleGroup redPieceGroup = new ToggleGroup();
 		redSButton.setToggleGroup(redPieceGroup);
 		redOButton.setToggleGroup(redPieceGroup);
+		
+		
+		redSButton.setOnAction(e -> {
+            redPiece = 'S';
+            playerPieces.put('R', redPiece);
+        });
+
+        redOButton.setOnAction(e -> {
+            redPiece = 'O';
+            playerPieces.put('R', redPiece);
+        });
+        
+        System.out.println("Blue piece: " + bluePiece);
+        
+		
+		
+		
 		
 		// moves the red buttons and labels
 		redSButton.setTranslateX(redPlayerLabel.getTranslateX() - 40);
@@ -161,7 +198,11 @@ public class GUI extends Application {
 				squares = new Square[size][size];
 				for (int i = 0; i < size; i++)
 					for (int j = 0; j < size; j++)
-						centerCPane.add(squares[i][j] = new Square(size), j, i);
+						centerCPane.add(squares[i][j] = new Square(size, i, j, playerPieces), j, i);
+				
+				if (board == null) {
+					board = new Board(size);
+				}
 				
 				errorMessage.setText("");
 		    }
@@ -169,7 +210,6 @@ public class GUI extends Application {
 				errorMessage.setText("Please enter a valid board size and select a game mode");
 			}});
 			
-		
 		
 		// adds all of the panes to the border pane
 		BorderPane borderPane = new BorderPane();
@@ -185,14 +225,65 @@ public class GUI extends Application {
 	}
 
 
+	public void drawBoard(int size, Dictionary<Character, Character> playerPieces) {
+	    for (int row = 0; row < size; row++)
+	        for (int column = 0; column < size; column++) {
+	            squares[row][column].getChildren().clear();
+	            if (board.getCell(size, row, column) == 1)
+	            	if(playerPieces.get('B') == 'S') 
+	            		System.out.println("TODO");
+	            	else
+	            		squares[row][column].drawO();
+	            	
+	            else if (board.getCell(size, row, column) == 2)
+	            	if(playerPieces.get('R') == 'S') 
+	            		System.out.println("TODO");
+	            	else
+	            		squares[row][column].drawO();
+	        }
+	}
+	
 	public class Square extends Pane {
-		public Square(int size) {
+		
+		private int row, column;
+		
+		public Square(int size, int row, int column, Dictionary<Character, Character> playerPieces) {
+			this.row = row;
+			this.column = column;
 			setStyle("-fx-border-color: black");
 			this.setPrefSize(500/size, 500/size);			// the max size of the board pane (500) / the number of squares
-			this.setOnMouseClicked(e -> handleMouseClick());
+			this.setOnMouseClicked(e -> handleMouseClick(size, playerPieces));
 		}
 
-		private void handleMouseClick() {			// TODO: 
+		private void handleMouseClick(int size, Dictionary<Character, Character> playerPieces) {			// TODO: 
+			board.makeMove(size, row, column);
+			drawBoard(size, playerPieces);
+			displayGameStatus();
+		}
+		
+		public void drawO() {
+			Ellipse ellipse = new Ellipse(this.getWidth() / 2, this.getHeight() / 2, this.getWidth() / 2 - 10,
+					this.getHeight() / 2 - 10);
+			ellipse.centerXProperty().bind(this.widthProperty().divide(2));
+			ellipse.centerYProperty().bind(this.heightProperty().divide(2));
+			ellipse.radiusXProperty().bind(this.widthProperty().divide(2).subtract(10));
+			ellipse.radiusYProperty().bind(this.heightProperty().divide(2).subtract(10));
+			if(board.getTurn() == 'B')
+				ellipse.setStroke(Color.BLUE);
+			else if(board.getTurn() == 'R')
+				ellipse.setStroke(Color.RED);
+			ellipse.setStrokeWidth(5.0);
+			ellipse.setFill(Color.TRANSPARENT);
+
+			getChildren().add(ellipse);
+		}
+		
+		private void displayGameStatus() {
+			if (board.getTurn() == 'B') {
+				gameStatus.setText("Blue Players Turn");
+			} else {
+				gameStatus.setText("Red Players Turn");
+			}
 		}
 
 	}
