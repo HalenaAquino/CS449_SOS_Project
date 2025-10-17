@@ -27,14 +27,14 @@ public class TestEmptyBoard {
     }
 
     // AC 1.2 Invalid size: too small
-    @Test//(expected = NegativeArraySizeException.class)
+    @Test
     public void testInvalidBoardTooSmall() {
         board = new Board(2); // < 3 should not be allowed in GUI; backend throws if forced
         assertEquals(' ', board.getTurn());
     }
 
     // AC 1.2 Invalid size: too large
-    @Test//(expected = NegativeArraySizeException.class)
+    @Test
     public void testInvalidBoardTooLarge() {
         board = new Board(11); // > 10 should not be allowed in GUI
         assertEquals(' ', board.getTurn());
