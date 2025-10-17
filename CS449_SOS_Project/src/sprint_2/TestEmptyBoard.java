@@ -49,6 +49,19 @@ public class TestEmptyBoard {
             for (int c = 0; c < size; c++)
                 assertEquals(0, board.getCell(size, r, c));
     }
+    
+    // AC 3.2: Cannot start game without selecting settings
+    @Test
+    public void testCannotStartGameWithoutSettings() {
+    	board = new Board(0);
+        // Game mode is not set
+        assertEquals("", board.getGamemode());
+
+        // Attempting a move should not succeed (size is invalid)
+        board.makeMove(0, 0, 0, playerPieces); // invalid board size
+        assertEquals(-1, board.getCell(0, 0, 0)); // should be invalid
+        assertEquals(' ', board.getTurn());      // turn should empty
+    }
 
     // AC 3.3 Game reset: new board clears old
     @Test

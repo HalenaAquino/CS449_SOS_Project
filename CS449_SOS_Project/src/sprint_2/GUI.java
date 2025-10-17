@@ -16,7 +16,6 @@ import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.geometry.Pos;
-
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -24,10 +23,8 @@ import java.util.Hashtable;
 
 public class GUI extends Application {
 	
-	//Scanner obj = new Scanner(System.in);
-
+	// general variable declarations
 	private Square[][] squares;
-
 	static private Board board;
 	
 	private Label gameStatus = new Label("Blue Players Turn");
@@ -48,19 +45,16 @@ public class GUI extends Application {
 		GridPane topPane = new GridPane();			// player settings (size, game, etc.)
 		GridPane bottomPane = new GridPane();		// record checkbox, player turn
 		
-		
-		
+		// Creates the pane's for the stage
 		createTopPane(topPane);
 		createBottomPane(bottomPane);
 		createCenterPane(centerPane);
-
 		
 		// Changes the size of the board based on the user entered number
 		applyButton.setOnAction(event -> {	
-			
+			// throws an exception if the user enters an invalid size/type or doesn't select a gamemode/piece
 			try {
 				int size =  Integer.parseInt(boardSizeField.getText());
-				
 				board = new Board(size);
 				
 				if(simpleRButton.isSelected()) 
@@ -75,7 +69,6 @@ public class GUI extends Application {
 					for (int i = 0; i < size; i++)
 						for (int j = 0; j < size; j++)
 							boardPane.add(squares[i][j] = new Square(size, i, j, playerSelectedPieces), j, i);
-					
 					
 					errorMessage.setText("");
 			    }
@@ -107,17 +100,14 @@ public class GUI extends Application {
 	            squares[row][column].getChildren().clear();
 	            int cellValue = board.getCell(size, row, column);
 	            char piece = board.getPieceType(size, row, column);
+	            
 	            if (cellValue == 1)
-	            	if(piece == 'S') 
-	            		squares[row][column].drawS(Color.BLUE);
-	            	else
-	            		squares[row][column].drawO(Color.BLUE);
+	            	if(piece == 'S') squares[row][column].drawS(Color.BLUE);
+	            	else squares[row][column].drawO(Color.BLUE);
 	            	
 	            else if (cellValue == 2)
-	            	if(piece == 'S') 
-	            		squares[row][column].drawS(Color.RED);
-	            	else
-	            		squares[row][column].drawO(Color.RED);
+	            	if(piece == 'S') squares[row][column].drawS(Color.RED);
+	            	else squares[row][column].drawO(Color.RED);
 	        }
 	}
 	
@@ -230,10 +220,6 @@ public class GUI extends Application {
 			playerSelectedPieces.put('R', redPiece);
 			});
 		                
-				
-				
-				
-				
 		// moves the red buttons and labels
 		redSButton.setTranslateX(redPlayerLabel.getTranslateX() - 40);
 		redSButton.setTranslateY(redPlayerLabel.getTranslateY() + 30);
@@ -255,14 +241,9 @@ public class GUI extends Application {
 		centerPane.add(boardPane, 2, 5);
 		centerPane.add(redControlPane, 3, 5);
 				
-
-				
-				
-				
-				
 		// Adds each pane to the border pane
 		boardPane.setTranslateY(30);
-		centerPane.setTranslateX(50);			// TODO: make board location dynamic (depending on its size)
+		centerPane.setTranslateX(50);
 	}
 	
 	public class Square extends Pane {
@@ -284,7 +265,6 @@ public class GUI extends Application {
 		}
 		
 		public void drawS(Color c) {
-			// TODO: make the size of S proportional to the square it's inside of
 			Label label = new Label(String.valueOf('S'));
 		    label.setTextFill(c);
 		    label.setFont(new Font((this.getHeight()/2) + 10));
@@ -294,6 +274,7 @@ public class GUI extends Application {
 		    this.getChildren().add(label);
 		}
 		
+		// Taken and altered from the drawNaught method in the TicTacToe example
 		public void drawO(Color c) {
 			Ellipse ellipse = new Ellipse(this.getWidth() / 2, this.getHeight() / 2, this.getWidth() / 2 - 10,
 					this.getHeight() / 2 - 10);
@@ -309,11 +290,8 @@ public class GUI extends Application {
 		}
 		
 		private void displayGameStatus() {
-			if (board.getTurn() == 'B') {
-				gameStatus.setText("Blue Players Turn");
-			} else {
-				gameStatus.setText("Red Players Turn");
-			}
+			if (board.getTurn() == 'B') gameStatus.setText("Blue Players Turn");
+			else gameStatus.setText("Red Players Turn");
 		}
 
 	}
