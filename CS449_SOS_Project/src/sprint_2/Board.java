@@ -9,8 +9,12 @@ public class Board {
 	private char[][] pieceType; 
 
 	public Board(int size) {
-		grid = new int[size][size];
-		pieceType = new char[size][size];
+		if(size < 3 || size > 9)
+			turn = ' ';
+		else {
+			grid = new int[size][size];
+			pieceType = new char[size][size];
+		}
 	}
 
 	public int getCell(int size, int row, int column) {

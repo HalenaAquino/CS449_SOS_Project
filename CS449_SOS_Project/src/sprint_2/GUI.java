@@ -191,11 +191,13 @@ public class GUI extends Application {
 		// Changes the size of the board based on the user entered number
 		button.setOnAction(event -> {			// TODO: add conditional to do nothing if the textbox is empty/is given a string
 			int size =  Integer.parseInt(textField.getText());
+			
+			board = new Board(size);
 
-			if (size > 2 && size < 10 && (simpleRButton.isSelected() || generalRButton.isSelected()) && bluePiece != ' ' && redPiece != ' ') {
+			if (board.getTurn() != ' ' && (simpleRButton.isSelected() || generalRButton.isSelected()) && bluePiece != ' ' && redPiece != ' ') {
 				centerCPane.getChildren().clear();
 				//if (board == null) {
-					board = new Board(size);		// make a new board each time so the pieces are erased
+					//board = new Board(size);		// make a new board each time so the pieces are erased
 				//}
 				squares = new Square[size][size];
 				for (int i = 0; i < size; i++)
