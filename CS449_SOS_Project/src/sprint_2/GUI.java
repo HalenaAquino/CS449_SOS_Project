@@ -16,7 +16,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
-import javafx.scene.text.Text;
 import javafx.geometry.Pos;
 
 import java.util.Dictionary;
@@ -26,7 +25,7 @@ import java.util.Hashtable;
 
 public class GUI extends Application {
 	
-	Scanner obj = new Scanner(System.in);
+	//Scanner obj = new Scanner(System.in);
 
 	private Square[][] squares;
 
@@ -44,11 +43,10 @@ public class GUI extends Application {
 		GridPane bottomPane = new GridPane();		// record checkbox, player turn
 		
 		
-		GridPane centerLPane = new GridPane();
-		GridPane centerCPane = new GridPane();
-		//centerCPane.setPrefHeight(500);
-		centerCPane.setPrefWidth(500);
-		GridPane centerRPane = new GridPane();
+		GridPane blueControlPane = new GridPane();
+		GridPane boardPane = new GridPane();
+		boardPane.setPrefWidth(500);
+		GridPane redControlPane = new GridPane();
 		
 		
 		// Creates the game choice radio buttons and adds them to the top plane
@@ -64,18 +62,18 @@ public class GUI extends Application {
 		
 		// Creates a textbox for the board size and adds it to the top plane
 		Label boardSize = new Label("Board Size:");
-		TextField textField = new TextField ();
+		TextField boardSizeField = new TextField ();
 		HBox hb = new HBox();
-		hb.getChildren().addAll(boardSize, textField);
+		hb.getChildren().addAll(boardSize, boardSizeField);
 		hb.setSpacing(5);
 		hb.setTranslateX(120);
 		topPane.add(hb,  3,  5);
 		
 		// Apply button for the textbox and adds it to pane
-		Button button = new Button("Apply");
+		Button applyButton = new Button("Apply");
 		
-		topPane.add(button, 4, 5);
-		button.setTranslateX(120);
+		topPane.add(applyButton, 4, 5);
+		applyButton.setTranslateX(120);
 		
 		// creates the errorMessage and gameStatus labels, adds them to the pane, and positions them correctly
 		Label errorMessage = new Label("");
@@ -106,17 +104,17 @@ public class GUI extends Application {
 		blueOButton.setToggleGroup(bluePieceGroup);
 
 		
-		Dictionary<Character, Character> playerPieces = new Hashtable<>();
+		Dictionary<Character, Character> playerSelectedPieces = new Hashtable<>();
 		
 		blueSButton.setOnAction(e -> {
             bluePiece = 'S';
-            playerPieces.put('B', bluePiece);
+            playerSelectedPieces.put('B', bluePiece);
             
         });
 
         blueOButton.setOnAction(e -> {
             bluePiece = 'O';
-            playerPieces.put('B', bluePiece);
+            playerSelectedPieces.put('B', bluePiece);
         });
 		
 		// moves the blue buttons and labels
@@ -126,13 +124,12 @@ public class GUI extends Application {
 		blueOButton.setTranslateY(blueSButton.getTranslateY() + 25);
 		
 		// positions the board
-		centerCPane.setTranslateX(bluePlayerLabel.getMaxWidth() - 60);
-		//centerCPane.setTranslateY(50000000);
+		boardPane.setTranslateX(bluePlayerLabel.getMaxWidth() - 60);
 		
 
 		// creates and positions the red label
 		Label redPlayerLabel = new Label("Red Player: ");
-		redPlayerLabel.setTranslateX(centerCPane.getMaxWidth() - 40);
+		redPlayerLabel.setTranslateX(boardPane.getMaxWidth() - 40);
 		redPlayerLabel.setMinWidth(65);
 		redPlayerLabel.setTranslateY(200);
 		
@@ -146,12 +143,12 @@ public class GUI extends Application {
 		
 		redSButton.setOnAction(e -> {
             redPiece = 'S';
-            playerPieces.put('R', redPiece);
+            playerSelectedPieces.put('R', redPiece);
         });
 
         redOButton.setOnAction(e -> {
             redPiece = 'O';
-            playerPieces.put('R', redPiece);
+            playerSelectedPieces.put('R', redPiece);
         });
                 
 		
@@ -165,19 +162,19 @@ public class GUI extends Application {
 		redOButton.setTranslateY(redSButton.getTranslateY() + 25);
 		
 		// adds blue player buttons
-		centerLPane.add(bluePlayerLabel, 1, 5);
-		centerLPane.add(blueSButton, 2, 5);
-		centerLPane.add(blueOButton, 3, 5);
+		blueControlPane.add(bluePlayerLabel, 1, 5);
+		blueControlPane.add(blueSButton, 2, 5);
+		blueControlPane.add(blueOButton, 3, 5);
 		
 		// adds red player buttons
-		centerRPane.add(redPlayerLabel, 1, 5);
-		centerRPane.add(redSButton, 2, 5);
-		centerRPane.add(redOButton, 3, 5);
+		redControlPane.add(redPlayerLabel, 1, 5);
+		redControlPane.add(redSButton, 2, 5);
+		redControlPane.add(redOButton, 3, 5);
 		
 		// combines all of the center panes
-		centerPane.add(centerLPane, 1, 5);
-		centerPane.add(centerCPane, 2, 5);
-		centerPane.add(centerRPane, 3, 5);
+		centerPane.add(blueControlPane, 1, 5);
+		centerPane.add(boardPane, 2, 5);
+		centerPane.add(redControlPane, 3, 5);
 		
 
 		
@@ -185,13 +182,13 @@ public class GUI extends Application {
 		
 		
 		// Adds each pane to the border pane
-		centerCPane.setTranslateY(30);
+		boardPane.setTranslateY(30);
 		centerPane.setTranslateX(50);			// TODO: make board location dynamic (depending on its size)
 
 		
 		// Changes the size of the board based on the user entered number
-		button.setOnAction(event -> {			// TODO: add conditional to do nothing if the textbox is empty/is given a string
-			int size =  Integer.parseInt(textField.getText());
+		applyButton.setOnAction(event -> {			// TODO: add conditional to do nothing if the textbox is empty/is given a string
+			int size =  Integer.parseInt(boardSizeField.getText());
 			
 			board = new Board(size);
 			
@@ -202,14 +199,11 @@ public class GUI extends Application {
 			
 
 			if (board.getTurn() != ' ' && board.getGamemode() != "" && bluePiece != ' ' && redPiece != ' ') {
-				centerCPane.getChildren().clear();
-				//if (board == null) {
-					//board = new Board(size);		// make a new board each time so the pieces are erased
-				//}
+				boardPane.getChildren().clear();
 				squares = new Square[size][size];
 				for (int i = 0; i < size; i++)
 					for (int j = 0; j < size; j++)
-						centerCPane.add(squares[i][j] = new Square(size, i, j, playerPieces), j, i);
+						boardPane.add(squares[i][j] = new Square(size, i, j, playerSelectedPieces), j, i);
 				
 				
 				errorMessage.setText("");
@@ -233,7 +227,7 @@ public class GUI extends Application {
 	}
 
 
-	public void drawBoard(int size, Dictionary<Character, Character> playerPieces) {
+	public void drawBoard(int size, Dictionary<Character, Character> playerSelectedPieces) {
 	    for (int row = 0; row < size; row++)
 	        for (int column = 0; column < size; column++) {
 	            squares[row][column].getChildren().clear();
@@ -257,17 +251,17 @@ public class GUI extends Application {
 		
 		private int row, column;
 		
-		public Square(int size, int row, int column, Dictionary<Character, Character> playerPieces) {
+		public Square(int size, int row, int column, Dictionary<Character, Character> playerSelectedPieces) {
 			this.row = row;
 			this.column = column;
 			setStyle("-fx-border-color: black");
 			this.setPrefSize(500/size, 500/size);			// the max size of the board pane (500) / the number of squares
-			this.setOnMouseClicked(e -> handleMouseClick(size, playerPieces));
+			this.setOnMouseClicked(e -> handleMouseClick(size, playerSelectedPieces));
 		}
 
-		private void handleMouseClick(int size, Dictionary<Character, Character> playerPieces) {			// TODO: 
-			board.makeMove(size, row, column, playerPieces);
-			drawBoard(size, playerPieces);
+		private void handleMouseClick(int size, Dictionary<Character, Character> playerSelectedPieces) {
+			board.makeMove(size, row, column, playerSelectedPieces);
+			drawBoard(size, playerSelectedPieces);
 			displayGameStatus();
 		}
 		
