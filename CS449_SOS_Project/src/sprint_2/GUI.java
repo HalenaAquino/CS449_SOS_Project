@@ -7,7 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import java.util.Scanner;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Button;
@@ -32,6 +31,13 @@ public class GUI extends Application {
 	static private Board board;
 	
 	private Label gameStatus = new Label("Blue Players Turn");
+	private Button applyButton;
+	private Label errorMessage;
+	private RadioButton simpleRButton;
+	private RadioButton generalRButton;
+	private TextField boardSizeField;
+	private GridPane boardPane;
+	private Dictionary<Character, Character> playerSelectedPieces;
 	
 	private char bluePiece = ' ';
 	private char redPiece = ' ';
@@ -43,147 +49,10 @@ public class GUI extends Application {
 		GridPane bottomPane = new GridPane();		// record checkbox, player turn
 		
 		
-		GridPane blueControlPane = new GridPane();
-		GridPane boardPane = new GridPane();
-		boardPane.setPrefWidth(500);
-		GridPane redControlPane = new GridPane();
 		
-		
-		// Creates the game choice radio buttons and adds them to the top plane
-		RadioButton simpleRButton = new RadioButton("Simple Game");
-		RadioButton generalRButton = new RadioButton("General Game");
-		ToggleGroup gameButtonGroup = new ToggleGroup();
-		simpleRButton.setToggleGroup(gameButtonGroup);
-		generalRButton.setToggleGroup(gameButtonGroup);
-		generalRButton.setTranslateX(30);
-		topPane.add(simpleRButton, 1, 5);
-		topPane.add(generalRButton, 2, 5);
-		
-		
-		// Creates a textbox for the board size and adds it to the top plane
-		Label boardSize = new Label("Board Size:");
-		TextField boardSizeField = new TextField ();
-		HBox hb = new HBox();
-		hb.getChildren().addAll(boardSize, boardSizeField);
-		hb.setSpacing(5);
-		hb.setTranslateX(120);
-		topPane.add(hb,  3,  5);
-		
-		// Apply button for the textbox and adds it to pane
-		Button applyButton = new Button("Apply");
-		
-		topPane.add(applyButton, 4, 5);
-		applyButton.setTranslateX(120);
-		
-		// creates the errorMessage and gameStatus labels, adds them to the pane, and positions them correctly
-		Label errorMessage = new Label("");
-		
-		bottomPane.add(gameStatus, 1, 5);
-		bottomPane.add(errorMessage, 2, 5);
-		
-		gameStatus.setTranslateX(300);
-		errorMessage.setTranslateX(-50);
-		errorMessage.setTranslateY(-25);
-		
-		errorMessage.setTextFill(Color.RED);			// makes the errorMessage red and larger
-		errorMessage.setFont(new Font("Arial", 15));
-				
-		
-		
-		// creates and positions the blue label
-		Label bluePlayerLabel = new Label("Blue Player: ");
-		bluePlayerLabel.setTranslateX(-25);
-		bluePlayerLabel.setMinWidth(65);
-		bluePlayerLabel.setTranslateY(200);
-		
-		// creates the blue buttons
-		RadioButton blueSButton = new RadioButton("S");
-		RadioButton blueOButton = new RadioButton("O");
-		ToggleGroup bluePieceGroup = new ToggleGroup();
-		blueSButton.setToggleGroup(bluePieceGroup);
-		blueOButton.setToggleGroup(bluePieceGroup);
-
-		
-		Dictionary<Character, Character> playerSelectedPieces = new Hashtable<>();
-		
-		blueSButton.setOnAction(e -> {
-            bluePiece = 'S';
-            playerSelectedPieces.put('B', bluePiece);
-            
-        });
-
-        blueOButton.setOnAction(e -> {
-            bluePiece = 'O';
-            playerSelectedPieces.put('B', bluePiece);
-        });
-		
-		// moves the blue buttons and labels
-		blueSButton.setTranslateX(bluePlayerLabel.getTranslateX() - 40);
-		blueSButton.setTranslateY(bluePlayerLabel.getTranslateY() + 30);
-		blueOButton.setTranslateX(blueSButton.getTranslateX() - 28);
-		blueOButton.setTranslateY(blueSButton.getTranslateY() + 25);
-		
-		// positions the board
-		boardPane.setTranslateX(bluePlayerLabel.getMaxWidth() - 60);
-		
-
-		// creates and positions the red label
-		Label redPlayerLabel = new Label("Red Player: ");
-		redPlayerLabel.setTranslateX(boardPane.getMaxWidth() - 40);
-		redPlayerLabel.setMinWidth(65);
-		redPlayerLabel.setTranslateY(200);
-		
-		// creates the red buttons
-		RadioButton redSButton = new RadioButton("S");
-		RadioButton redOButton = new RadioButton("O");
-		ToggleGroup redPieceGroup = new ToggleGroup();
-		redSButton.setToggleGroup(redPieceGroup);
-		redOButton.setToggleGroup(redPieceGroup);
-		
-		
-		redSButton.setOnAction(e -> {
-            redPiece = 'S';
-            playerSelectedPieces.put('R', redPiece);
-        });
-
-        redOButton.setOnAction(e -> {
-            redPiece = 'O';
-            playerSelectedPieces.put('R', redPiece);
-        });
-                
-		
-		
-		
-		
-		// moves the red buttons and labels
-		redSButton.setTranslateX(redPlayerLabel.getTranslateX() - 40);
-		redSButton.setTranslateY(redPlayerLabel.getTranslateY() + 30);
-		redOButton.setTranslateX(redSButton.getTranslateX() - 28);
-		redOButton.setTranslateY(redSButton.getTranslateY() + 25);
-		
-		// adds blue player buttons
-		blueControlPane.add(bluePlayerLabel, 1, 5);
-		blueControlPane.add(blueSButton, 2, 5);
-		blueControlPane.add(blueOButton, 3, 5);
-		
-		// adds red player buttons
-		redControlPane.add(redPlayerLabel, 1, 5);
-		redControlPane.add(redSButton, 2, 5);
-		redControlPane.add(redOButton, 3, 5);
-		
-		// combines all of the center panes
-		centerPane.add(blueControlPane, 1, 5);
-		centerPane.add(boardPane, 2, 5);
-		centerPane.add(redControlPane, 3, 5);
-		
-
-		
-		
-		
-		
-		// Adds each pane to the border pane
-		boardPane.setTranslateY(30);
-		centerPane.setTranslateX(50);			// TODO: make board location dynamic (depending on its size)
+		createTopPane(topPane);
+		createBottomPane(bottomPane);
+		createCenterPane(centerPane);
 
 		
 		// Changes the size of the board based on the user entered number
@@ -245,6 +114,150 @@ public class GUI extends Application {
 	            	else
 	            		squares[row][column].drawO(Color.RED);
 	        }
+	}
+	
+	private void createTopPane(GridPane topPane) {
+		// Creates the game choice radio buttons and adds them to the top plane
+		simpleRButton = new RadioButton("Simple Game");
+		generalRButton = new RadioButton("General Game");
+		ToggleGroup gameButtonGroup = new ToggleGroup();
+		simpleRButton.setToggleGroup(gameButtonGroup);
+		generalRButton.setToggleGroup(gameButtonGroup);
+		generalRButton.setTranslateX(30);
+		topPane.add(simpleRButton, 1, 5);
+		topPane.add(generalRButton, 2, 5);
+				
+				
+		// Creates a textbox for the board size and adds it to the top plane
+		Label boardSize = new Label("Board Size:");
+		boardSizeField = new TextField ();
+		HBox hb = new HBox();
+		hb.getChildren().addAll(boardSize, boardSizeField);
+		hb.setSpacing(5);
+		hb.setTranslateX(120);
+		topPane.add(hb,  3,  5);
+				
+		// Apply button for the textbox and adds it to pane
+		applyButton = new Button("Apply");
+				
+		topPane.add(applyButton, 4, 5);
+		applyButton.setTranslateX(120);
+	}
+	
+	private void createBottomPane(GridPane bottomPane) {
+		// creates the errorMessage and gameStatus labels, adds them to the pane, and positions them correctly
+		errorMessage = new Label("");
+				
+		bottomPane.add(gameStatus, 1, 5);
+		bottomPane.add(errorMessage, 2, 5);
+				
+		gameStatus.setTranslateX(300);
+		errorMessage.setTranslateX(-50);
+		errorMessage.setTranslateY(-25);
+				
+		errorMessage.setTextFill(Color.RED);			// makes the errorMessage red and larger
+		errorMessage.setFont(new Font("Arial", 15));
+	}
+	
+	private void createCenterPane(GridPane centerPane) {
+		GridPane blueControlPane = new GridPane();
+		boardPane = new GridPane();
+		boardPane.setPrefWidth(500);
+		GridPane redControlPane = new GridPane();
+		
+		// creates and positions the blue label
+		Label bluePlayerLabel = new Label("Blue Player: ");
+		bluePlayerLabel.setTranslateX(-25);
+		bluePlayerLabel.setMinWidth(65);
+		bluePlayerLabel.setTranslateY(200);
+				
+		// creates the blue buttons
+		RadioButton blueSButton = new RadioButton("S");
+		RadioButton blueOButton = new RadioButton("O");
+		ToggleGroup bluePieceGroup = new ToggleGroup();
+		blueSButton.setToggleGroup(bluePieceGroup);
+		blueOButton.setToggleGroup(bluePieceGroup);
+
+				
+		playerSelectedPieces = new Hashtable<>();
+				
+		blueSButton.setOnAction(e -> {
+			bluePiece = 'S';
+			playerSelectedPieces.put('B', bluePiece);
+			});
+		
+		blueOButton.setOnAction(e -> {
+			bluePiece = 'O';
+			playerSelectedPieces.put('B', bluePiece);
+			});
+				
+		// moves the blue buttons and labels
+		blueSButton.setTranslateX(bluePlayerLabel.getTranslateX() - 40);
+		blueSButton.setTranslateY(bluePlayerLabel.getTranslateY() + 30);
+		blueOButton.setTranslateX(blueSButton.getTranslateX() - 28);
+		blueOButton.setTranslateY(blueSButton.getTranslateY() + 25);
+				
+		// positions the board
+		boardPane.setTranslateX(bluePlayerLabel.getMaxWidth() - 60);
+				
+
+		// creates and positions the red label
+		Label redPlayerLabel = new Label("Red Player: ");
+		redPlayerLabel.setTranslateX(boardPane.getMaxWidth() - 40);
+		redPlayerLabel.setMinWidth(65);
+		redPlayerLabel.setTranslateY(200);
+				
+		// creates the red buttons
+		RadioButton redSButton = new RadioButton("S");
+		RadioButton redOButton = new RadioButton("O");
+		ToggleGroup redPieceGroup = new ToggleGroup();
+		redSButton.setToggleGroup(redPieceGroup);
+		redOButton.setToggleGroup(redPieceGroup);
+				
+				
+		redSButton.setOnAction(e -> {
+			redPiece = 'S';
+			playerSelectedPieces.put('R', redPiece);
+			});
+
+		redOButton.setOnAction(e -> {
+			redPiece = 'O';
+			playerSelectedPieces.put('R', redPiece);
+			});
+		                
+				
+				
+				
+				
+		// moves the red buttons and labels
+		redSButton.setTranslateX(redPlayerLabel.getTranslateX() - 40);
+		redSButton.setTranslateY(redPlayerLabel.getTranslateY() + 30);
+		redOButton.setTranslateX(redSButton.getTranslateX() - 28);
+		redOButton.setTranslateY(redSButton.getTranslateY() + 25);
+				
+		// adds blue player buttons
+		blueControlPane.add(bluePlayerLabel, 1, 5);
+		blueControlPane.add(blueSButton, 2, 5);
+		blueControlPane.add(blueOButton, 3, 5);
+				
+		// adds red player buttons
+		redControlPane.add(redPlayerLabel, 1, 5);
+		redControlPane.add(redSButton, 2, 5);
+		redControlPane.add(redOButton, 3, 5);
+				
+		// combines all of the center panes
+		centerPane.add(blueControlPane, 1, 5);
+		centerPane.add(boardPane, 2, 5);
+		centerPane.add(redControlPane, 3, 5);
+				
+
+				
+				
+				
+				
+		// Adds each pane to the border pane
+		boardPane.setTranslateY(30);
+		centerPane.setTranslateX(50);			// TODO: make board location dynamic (depending on its size)
 	}
 	
 	public class Square extends Pane {
