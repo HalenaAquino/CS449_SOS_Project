@@ -7,6 +7,7 @@ public class Board {
 	private int[][] grid;
 	private char turn = 'B';
 	private char[][] pieceType; 
+	private String gameMode = "";
 
 	public Board(int size) {
 		if(size < 3 || size > 9)
@@ -26,6 +27,14 @@ public class Board {
 
 	public char getTurn() {
 		return turn;
+	}
+	
+	public void setGamemode(String mode) {
+		gameMode = mode;
+	}
+	
+	public String getGamemode() {
+		return gameMode;
 	}
 	
 	public char getPieceType(int size, int row, int column) {

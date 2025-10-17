@@ -61,6 +61,7 @@ public class GUI extends Application {
 		topPane.add(simpleRButton, 1, 5);
 		topPane.add(generalRButton, 2, 5);
 		
+		
 		// Creates a textbox for the board size and adds it to the top plane
 		Label boardSize = new Label("Board Size:");
 		TextField textField = new TextField ();
@@ -193,8 +194,14 @@ public class GUI extends Application {
 			int size =  Integer.parseInt(textField.getText());
 			
 			board = new Board(size);
+			
+			if(simpleRButton.isSelected()) 
+				board.setGamemode("Simple");
+			else if (generalRButton.isSelected())
+				board.setGamemode("General");
+			
 
-			if (board.getTurn() != ' ' && (simpleRButton.isSelected() || generalRButton.isSelected()) && bluePiece != ' ' && redPiece != ' ') {
+			if (board.getTurn() != ' ' && board.getGamemode() != "" && bluePiece != ' ' && redPiece != ' ') {
 				centerCPane.getChildren().clear();
 				//if (board == null) {
 					//board = new Board(size);		// make a new board each time so the pieces are erased
