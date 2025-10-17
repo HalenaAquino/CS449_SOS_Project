@@ -56,28 +56,33 @@ public class GUI extends Application {
 
 		
 		// Changes the size of the board based on the user entered number
-		applyButton.setOnAction(event -> {			// TODO: add conditional to do nothing if the textbox is empty/is given a string
-			int size =  Integer.parseInt(boardSizeField.getText());
+		applyButton.setOnAction(event -> {	
 			
-			board = new Board(size);
-			
-			if(simpleRButton.isSelected()) 
-				board.setGamemode("Simple");
-			else if (generalRButton.isSelected())
-				board.setGamemode("General");
-			
-
-			if (board.getTurn() != ' ' && board.getGamemode() != "" && bluePiece != ' ' && redPiece != ' ') {
-				boardPane.getChildren().clear();
-				squares = new Square[size][size];
-				for (int i = 0; i < size; i++)
-					for (int j = 0; j < size; j++)
-						boardPane.add(squares[i][j] = new Square(size, i, j, playerSelectedPieces), j, i);
+			try {
+				int size =  Integer.parseInt(boardSizeField.getText());
 				
+				board = new Board(size);
 				
-				errorMessage.setText("");
-		    }
-			else{
+				if(simpleRButton.isSelected()) 
+					board.setGamemode("Simple");
+				else if (generalRButton.isSelected())
+					board.setGamemode("General");
+				
+	
+				if (board.getTurn() != ' ' && board.getGamemode() != "" && bluePiece != ' ' && redPiece != ' ') {
+					boardPane.getChildren().clear();
+					squares = new Square[size][size];
+					for (int i = 0; i < size; i++)
+						for (int j = 0; j < size; j++)
+							boardPane.add(squares[i][j] = new Square(size, i, j, playerSelectedPieces), j, i);
+					
+					
+					errorMessage.setText("");
+			    }
+				else
+					throw new NumberFormatException();
+			}
+			catch (NumberFormatException e){
 				errorMessage.setText("Please enter a valid board size, select a game mode, and choose the piece for both players");
 			}});
 			
