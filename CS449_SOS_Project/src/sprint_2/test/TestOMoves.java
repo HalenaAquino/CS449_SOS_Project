@@ -1,10 +1,12 @@
-package sprint_2;
+package sprint_2.test;
 
 import static org.junit.Assert.*;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import org.junit.Before;
 import org.junit.Test;
+
+import sprint_2.production.Board;
 
 public class TestOMoves {
 

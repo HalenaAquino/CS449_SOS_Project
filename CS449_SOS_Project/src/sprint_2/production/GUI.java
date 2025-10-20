@@ -1,4 +1,4 @@
-package sprint_2;
+package sprint_2.production;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -274,7 +274,7 @@ public class GUI extends Application {
 		public void drawS(Color c) {
 			Label label = new Label(String.valueOf('S'));
 		    label.setTextFill(c);
-		    label.setFont(new Font((this.getHeight()/2) + 10));
+		    label.setFont(new Font((this.getHeight()/1.5)));
 		    label.setAlignment(Pos.CENTER);
 		    label.setPrefSize(this.getWidth(), this.getHeight());
 
@@ -283,12 +283,12 @@ public class GUI extends Application {
 		
 		// Taken and altered from the drawNaught method in the TicTacToe example; draws the O piece
 		public void drawO(Color c) {
-			Ellipse ellipse = new Ellipse(this.getWidth() / 2, this.getHeight() / 2, this.getWidth() / 2 - 10,
-					this.getHeight() / 2 - 10);
+			Ellipse ellipse = new Ellipse(this.getWidth() / 1.5, this.getHeight() / 1.5, this.getWidth() / 1.5,
+					this.getHeight() / 1.5);
 			ellipse.centerXProperty().bind(this.widthProperty().divide(2));
 			ellipse.centerYProperty().bind(this.heightProperty().divide(2));
-			ellipse.radiusXProperty().bind(this.widthProperty().divide(2).subtract(10));
-			ellipse.radiusYProperty().bind(this.heightProperty().divide(2).subtract(10));
+			ellipse.radiusXProperty().bind(this.widthProperty().divide(2.5).subtract(10));
+			ellipse.radiusYProperty().bind(this.heightProperty().divide(2.5).subtract(10));
 			ellipse.setStroke(c);
 			ellipse.setStrokeWidth(this.getHeight()/25);
 			ellipse.setFill(Color.TRANSPARENT);

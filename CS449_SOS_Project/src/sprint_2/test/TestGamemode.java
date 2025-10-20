@@ -1,8 +1,10 @@
-package sprint_2;
+package sprint_2.test;
 
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+
+import sprint_2.production.Board;
 
 public class TestGamemode {
 
