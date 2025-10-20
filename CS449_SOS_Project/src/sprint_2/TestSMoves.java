@@ -99,4 +99,3 @@ public class TestSMoves {
         assertEquals('R', board.getTurn());               // turn stays Red
     }
 }
-

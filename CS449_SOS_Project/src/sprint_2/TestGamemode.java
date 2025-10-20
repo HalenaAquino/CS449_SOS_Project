@@ -33,4 +33,3 @@ public class TestGamemode {
     	assertEquals("", board.getGamemode());
     }
 }
-

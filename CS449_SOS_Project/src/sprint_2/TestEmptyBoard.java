@@ -74,4 +74,3 @@ public class TestEmptyBoard {
         assertEquals('B', board.getTurn());
     }
 }
-
