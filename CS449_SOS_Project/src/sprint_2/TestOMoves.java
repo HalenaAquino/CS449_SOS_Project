@@ -36,9 +36,9 @@ public class TestOMoves {
         board.makeMove(3, 0, 0, playerPieces);
 
         // Turn 3: Blue tries to move on occupied cell (1,1)
-        board.makeMove(3, 1, 1, playerPieces);
+        board.makeMove(3, 0, 0, playerPieces);
 
-        assertEquals(1, board.getCell(3, 1, 1));          // cell unchanged
+        assertEquals(2, board.getCell(3, 0, 0));          // cell unchanged
         assertEquals('O', board.getPieceType(3, 1, 1));   // piece unchanged
         assertEquals('B', board.getTurn());               // turn stays Blue
     }

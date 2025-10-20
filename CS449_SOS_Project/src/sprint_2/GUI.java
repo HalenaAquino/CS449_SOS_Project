@@ -41,6 +41,7 @@ public class GUI extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
+		// Pane declaration
 		GridPane centerPane = new GridPane();		// actual board
 		GridPane topPane = new GridPane();			// player settings (size, game, etc.)
 		GridPane bottomPane = new GridPane();		// record checkbox, player turn
@@ -57,6 +58,7 @@ public class GUI extends Application {
 				int size =  Integer.parseInt(boardSizeField.getText());
 				board = new Board(size);
 				
+				// Sets the gamemode depending on which button was chosen
 				if(simpleRButton.isSelected()) 
 					board.setGamemode("Simple");
 				else if (generalRButton.isSelected())
@@ -70,10 +72,10 @@ public class GUI extends Application {
 						for (int j = 0; j < size; j++)
 							boardPane.add(squares[i][j] = new Square(size, i, j, playerSelectedPieces), j, i);
 					
-					errorMessage.setText("");
+					errorMessage.setText("");		// Sets the error message to empty if there's no error
 			    }
 				else
-					throw new NumberFormatException();
+					throw new NumberFormatException();		// Throws an error if any of the setup condiitons aren't met
 			}
 			catch (NumberFormatException e){
 				errorMessage.setText("Please enter a valid board size, select a game mode, and choose the piece for both players");
@@ -97,10 +99,11 @@ public class GUI extends Application {
 	public void drawBoard(int size, Dictionary<Character, Character> playerSelectedPieces) {
 	    for (int row = 0; row < size; row++)
 	        for (int column = 0; column < size; column++) {
-	            squares[row][column].getChildren().clear();
+	            squares[row][column].getChildren().clear();		// Clears anything pre-existing in the squares
 	            int cellValue = board.getCell(size, row, column);
 	            char piece = board.getPieceType(size, row, column);
 	            
+	            // Places the piece of the current player
 	            if (cellValue == 1)
 	            	if(piece == 'S') squares[row][column].drawS(Color.BLUE);
 	            	else squares[row][column].drawO(Color.BLUE);
@@ -134,7 +137,6 @@ public class GUI extends Application {
 				
 		// Apply button for the textbox and adds it to pane
 		applyButton = new Button("Apply");
-				
 		topPane.add(applyButton, 4, 5);
 		applyButton.setTranslateX(120);
 	}
@@ -155,6 +157,7 @@ public class GUI extends Application {
 	}
 	
 	private void createCenterPane(GridPane centerPane) {
+		// Creates panes for the red and blue player buttons
 		GridPane blueControlPane = new GridPane();
 		boardPane = new GridPane();
 		boardPane.setPrefWidth(500);
@@ -175,7 +178,8 @@ public class GUI extends Application {
 
 				
 		playerSelectedPieces = new Hashtable<>();
-				
+		
+		// Sets the blue piece to the the shape they chose (S/O)
 		blueSButton.setOnAction(e -> {
 			bluePiece = 'S';
 			playerSelectedPieces.put('B', bluePiece);
@@ -209,7 +213,7 @@ public class GUI extends Application {
 		redSButton.setToggleGroup(redPieceGroup);
 		redOButton.setToggleGroup(redPieceGroup);
 				
-				
+		// Sets the red piece to the the shape they chose (S/O)
 		redSButton.setOnAction(e -> {
 			redPiece = 'S';
 			playerSelectedPieces.put('R', redPiece);
@@ -250,6 +254,7 @@ public class GUI extends Application {
 		
 		private int row, column;
 		
+		// Creates each square and handles piece placement (moves being made)
 		public Square(int size, int row, int column, Dictionary<Character, Character> playerSelectedPieces) {
 			this.row = row;
 			this.column = column;
@@ -258,12 +263,14 @@ public class GUI extends Application {
 			this.setOnMouseClicked(e -> handleMouseClick(size, playerSelectedPieces));
 		}
 
+		// Makes the actual move and updates the board
 		private void handleMouseClick(int size, Dictionary<Character, Character> playerSelectedPieces) {
 			board.makeMove(size, row, column, playerSelectedPieces);
 			drawBoard(size, playerSelectedPieces);
 			displayGameStatus();
 		}
 		
+		// Draws the S piece
 		public void drawS(Color c) {
 			Label label = new Label(String.valueOf('S'));
 		    label.setTextFill(c);
@@ -274,7 +281,7 @@ public class GUI extends Application {
 		    this.getChildren().add(label);
 		}
 		
-		// Taken and altered from the drawNaught method in the TicTacToe example
+		// Taken and altered from the drawNaught method in the TicTacToe example; draws the O piece
 		public void drawO(Color c) {
 			Ellipse ellipse = new Ellipse(this.getWidth() / 2, this.getHeight() / 2, this.getWidth() / 2 - 10,
 					this.getHeight() / 2 - 10);
@@ -289,6 +296,7 @@ public class GUI extends Application {
 			getChildren().add(ellipse);
 		}
 		
+		// Taken from the TicTacToe example; changes the current turn
 		private void displayGameStatus() {
 			if (board.getTurn() == 'B') gameStatus.setText("Blue Players Turn");
 			else gameStatus.setText("Red Players Turn");

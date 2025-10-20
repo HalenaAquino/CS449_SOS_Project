@@ -42,11 +42,11 @@ public class TestSMoves {
         assertEquals('S', board.getPieceType(3, 0, 0));
 
         // Turn 3: Blue tries to move again to (1,1) — illegal move
-        board.makeMove(3, 1, 1, playerPieces);
+        board.makeMove(3, 0, 0, playerPieces);
 
-        // Assertions: cell unchanged, turn remains Blue
-        assertEquals(1, board.getCell(3, 1, 1));      // still Blue
-        assertEquals('S', board.getPieceType(3, 1, 1));
+        // Assertions: cell unchanged, turn remains Red
+        assertEquals(2, board.getCell(3, 0, 0));      // still Red
+        assertEquals('S', board.getPieceType(3, 0, 0));
         assertEquals('B', board.getTurn());          // turn should not switch
     }
 
