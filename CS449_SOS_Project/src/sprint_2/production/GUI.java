@@ -129,6 +129,7 @@ public class GUI extends Application {
 		// Creates a textbox for the board size and adds it to the top plane
 		Label boardSize = new Label("Board Size:");
 		boardSizeField = new TextField ();
+		boardSizeField.setPromptText("2 < size < 10");
 		HBox hb = new HBox();
 		hb.getChildren().addAll(boardSize, boardSizeField);
 		hb.setSpacing(5);
