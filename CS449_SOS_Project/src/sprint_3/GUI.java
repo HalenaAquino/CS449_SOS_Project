@@ -18,6 +18,7 @@ import javafx.scene.shape.Ellipse;
 import javafx.geometry.Pos;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import sprint_3.Board.GameState;
 
 
 
@@ -100,15 +101,15 @@ public class GUI extends Application {
 	    for (int row = 0; row < size; row++)
 	        for (int column = 0; column < size; column++) {
 	            squares[row][column].getChildren().clear();		// Clears anything pre-existing in the squares
-	            int cellValue = board.getCell(size, row, column);
-	            char piece = board.getPieceType(size, row, column);
+	            //Cell cellValue = board.getCell(row, column);
+	            char piece = board.getPieceType(row, column);
 	            
 	            // Places the piece of the current player
-	            if (cellValue == 1)
+	            if (board.getCell(row, column) == Board.Cell.BLUE)
 	            	if(piece == 'S') squares[row][column].drawS(Color.BLUE);
 	            	else squares[row][column].drawO(Color.BLUE);
 	            	
-	            else if (cellValue == 2)
+	            else if (board.getCell(row, column) == Board.Cell.RED)
 	            	if(piece == 'S') squares[row][column].drawS(Color.RED);
 	            	else squares[row][column].drawO(Color.RED);
 	        }
@@ -266,7 +267,10 @@ public class GUI extends Application {
 
 		// Makes the actual move and updates the board
 		private void handleMouseClick(int size, Dictionary<Character, Character> playerSelectedPieces) {
-			board.makeMove(size, row, column, playerSelectedPieces);
+			if (board.getGameState() == GameState.PLAYING)
+				board.makeMove(row, column, playerSelectedPieces);
+			else
+				board.resetGame();
 			drawBoard(size, playerSelectedPieces);
 			displayGameStatus();
 		}
@@ -299,8 +303,20 @@ public class GUI extends Application {
 		
 		// Taken from the TicTacToe example; changes the current turn
 		private void displayGameStatus() {
-			if (board.getTurn() == 'B') gameStatus.setText("Blue Players Turn");
-			else gameStatus.setText("Red Players Turn");
+			if (board.getGameState() == GameState.PLAYING) {
+				if (board.getTurn() == 'B')
+					gameStatus.setText("Blue Players Turn");
+				else
+					gameStatus.setText("Red Players Turn");
+			} else if (board.getGameState() == GameState.DRAW) {
+				gameStatus.setText("It's a Draw! Click to play again.");
+			} else if (board.getGameState() == GameState.BLUE_WON) {
+				gameStatus.setText("Blue Won! Click to play again.");
+			} else if (board.getGameState() == GameState.RED_WON) {
+				gameStatus.setText("Red Won! Click to play again.");
+			}
+			//if (board.getTurn() == 'B') gameStatus.setText("Blue Players Turn");
+			//else gameStatus.setText("Red Players Turn");
 		}
 
 	}
