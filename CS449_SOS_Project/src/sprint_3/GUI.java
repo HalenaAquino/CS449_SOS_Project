@@ -30,12 +30,15 @@ public class GUI extends Application {
 	
 	private Label gameStatus = new Label("Blue Players Turn");
 	private Button applyButton;
+	private Button newGameButton;
 	private Label errorMessage;
 	private RadioButton simpleRButton;
 	private RadioButton generalRButton;
 	private TextField boardSizeField;
 	private GridPane boardPane;
 	private Dictionary<Character, Character> playerSelectedPieces;
+	private Label redSOSCountLabel = new Label("Red Player SOS's: " + 0);
+	private Label blueSOSCountLabel = new Label("Blue Player SOS's: " + 0);
 	
 	private char bluePiece = ' ';
 	private char redPiece = ' ';
@@ -58,11 +61,12 @@ public class GUI extends Application {
 			try {
 				int size =  Integer.parseInt(boardSizeField.getText());
 				board = new Board(size);
+				board.resetGame();
 				
 				// Sets the gamemode depending on which button was chosen
 				if(simpleRButton.isSelected()) 
 					board.setGamemode("Simple");
-				else if (generalRButton.isSelected())
+				else if (generalRButton.isSelected()) 
 					board.setGamemode("General");
 				
 	
@@ -81,6 +85,12 @@ public class GUI extends Application {
 			catch (NumberFormatException e){
 				errorMessage.setText("Please enter a valid board size, select a game mode, and choose the piece for both players");
 			}});
+		
+		newGameButton.setOnAction(event -> {
+			boardPane.getChildren().clear();
+			board.resetGame();
+		}
+			);
 			
 		
 		// adds all of the panes to the border pane
@@ -144,11 +154,18 @@ public class GUI extends Application {
 	}
 	
 	private void createBottomPane(GridPane bottomPane) {
-		// creates the errorMessage and gameStatus labels, adds them to the pane, and positions them correctly
+		// creates the errorMessage label, adds it to the pane, and positions it correctly
 		errorMessage = new Label("");
+		
+		newGameButton = new Button("New Game");
+		bottomPane.add(newGameButton,  4,  5);
+		newGameButton.setTranslateX(450);
+		newGameButton.setTranslateY(-50);
+		
 				
 		bottomPane.add(gameStatus, 1, 5);
 		bottomPane.add(errorMessage, 2, 5);
+		
 				
 		gameStatus.setTranslateX(300);
 		errorMessage.setTranslateX(-50);
