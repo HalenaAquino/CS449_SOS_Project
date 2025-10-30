@@ -29,16 +29,115 @@ abstract class Game {
     public abstract boolean isDraw();
 }*/
 
-class SimpleGame extends SOSGame{
+class SimpleSOSGame extends SOSGame{
+	//SOSGame game;
+	//int size;;
+	
+	public SimpleSOSGame(int s) {
+		super(s);
+		//game = g;
+		//size = s;
+	}
+
 	// TODO
 	
-	public SimpleGame(SOSGame game, int size) {
-		super(game, size);
-	}
 	
-	public boolean hasWon() {
+	public boolean hasWon(char player, int row, int column) {
+		char[][] pieces = getPieceTypeArray();
+	    char placed = pieces[row][column];
+
+	    // Case 1: when O is placed in the center
+	    if (placed == 'O') {
+	        // Horizontal
+	        if (column > 0 && column < SIZE - 1 &&
+	            pieces[row][column - 1] == 'S' &&
+	            pieces[row][column + 1] == 'S')
+	            return true;
+
+	        // Vertical
+	        if (row > 0 && row < SIZE - 1 &&
+	            pieces[row - 1][column] == 'S' &&
+	            pieces[row + 1][column] == 'S')
+	            return true;
+
+	        // Diagonal (\)
+	        if (row > 0 && row < SIZE - 1 && column > 0 && column < SIZE - 1 &&
+	            pieces[row - 1][column - 1] == 'S' &&
+	            pieces[row + 1][column + 1] == 'S')
+	            return true;
+
+	        // Other diagonal (/)
+	        if (row > 0 && row < SIZE - 1 && column > 0 && column < SIZE - 1 &&
+	            pieces[row - 1][column + 1] == 'S' &&
+	            pieces[row + 1][column - 1] == 'S')
+	            return true;
+	    }
+
+	    // Case 2: when S is placed completing SOS on the right (S O S)
+	    if (placed == 'S') {
+	        // Horizontal: S placed after SO
+	        if (column >= 2 &&
+	            pieces[row][column - 1] == 'O' &&
+	            pieces[row][column - 2] == 'S')
+	            return true;
+
+	        // Horizontal: S placed before OS
+	        if (column <= SIZE - 3 &&
+	            pieces[row][column + 1] == 'O' &&
+	            pieces[row][column + 2] == 'S')
+	            return true;
+
+	        // Vertical: S placed after SO
+	        if (row >= 2 &&
+	            pieces[row - 1][column] == 'O' &&
+	            pieces[row - 2][column] == 'S')
+	            return true;
+
+	        // Vertical: S placed before OS
+	        if (row <= SIZE - 3 &&
+	            pieces[row + 1][column] == 'O' &&
+	            pieces[row + 2][column] == 'S')
+	            return true;
+
+	        // Diagonal (\): S placed after SO
+	        if (row >= 2 && column >= 2 &&
+	            pieces[row - 1][column - 1] == 'O' &&
+	            pieces[row - 2][column - 2] == 'S')
+	            return true;
+
+	        // Diagonal (\): S placed before OS
+	        if (row <= SIZE - 3 && column <= SIZE - 3 &&
+	            pieces[row + 1][column + 1] == 'O' &&
+	            pieces[row + 2][column + 2] == 'S')
+	            return true;
+
+	        // Other diagonal (/): S placed after SO
+	        if (row >= 2 && column <= SIZE - 3 &&
+	            pieces[row - 1][column + 1] == 'O' &&
+	            pieces[row - 2][column + 2] == 'S')
+	            return true;
+
+	        // Other diagonal (/): S placed before OS
+	        if (row <= SIZE - 3 && column >= 2 &&
+	            pieces[row + 1][column - 1] == 'O' &&
+	            pieces[row + 2][column - 2] == 'S')
+	            return true;
+	    }
+		
 		
 		return false;
+		
+	}
+
+	public boolean isDraw() {
+		for (int row = 0; row < SIZE; ++row) {
+			for (int col = 0; col < SIZE; ++col) {
+				if (game[row][col] == SOSGame.Cell.EMPTY) {
+					return false; // an empty cell found, not draw
+				}
+			}
+		}
+		return true;
 	}
 	
 	
@@ -89,13 +188,16 @@ class SimpleGame extends SOSGame{
 	
 }
 
-class GeneralGame extends SOSGame{
+/*class GeneralSOSGame extends SOSGame{
 	// TODO
+	public GeneralSOSGame(int size) {
+		super(size);
+	}
 	public boolean hasWon() {
 		
 		return false;
 	}
-}
+}*/
 
 abstract class SOSGame {
 
@@ -103,26 +205,26 @@ abstract class SOSGame {
 	private char turn;
 	private char[][] pieceType; 
 	private String gameMode = "";
-	private static int SIZE;
+	protected static int SIZE;
+	private GameState currentGameState;
+	protected Cell[][] game;
+
+
 
 	public enum Cell {
 		EMPTY, BLUE, RED
 	}
 	
-	private Cell[][] board;
-
 	public enum GameState {
 		PLAYING, DRAW, BLUE_WON, RED_WON
 	}
-	
-	private GameState currentGameState;
-	
+		
 	// creates the board
 	public SOSGame(int size) {
 		if(size < 3 || size > 9)
 			turn = ' ';
 		else {
-			board = new Cell[size][size];
+			game = new Cell[size][size];
 			pieceType = new char[size][size];
 			SIZE = size;
 		}
@@ -131,7 +233,8 @@ abstract class SOSGame {
 	private void initGame() {
 		for (int row = 0; row < SIZE; ++row) {
 			for (int col = 0; col < SIZE; ++col) {
-				board[row][col] = Cell.EMPTY;
+				game[row][col] = Cell.EMPTY;
+				pieceType[row][col] = ' ';
 			}
 		}
 		currentGameState = GameState.PLAYING;
@@ -149,7 +252,7 @@ abstract class SOSGame {
 	// returns the player that's currently occupying a cell (1 for blue, 2 for red, 0 for empty); returns -1 if the cell doesn't exist
 	public Cell getCell(int row, int column) {
 		if (row >= 0 && row < SIZE && column >= 0 && column < SIZE)
-			return board[row][column];
+			return game[row][column];
 		else
 			return null;
 	}
@@ -184,23 +287,24 @@ abstract class SOSGame {
 	// places the current player's current piece on the given cell and updates the turn
 	public void makeMove(int row, int column, Dictionary<Character, Character> playerPieces) {
 		if (row >= 0 && row < SIZE && column >= 0 && column < SIZE
-				&& board[row][column] == Cell.EMPTY) {
-			board[row][column] = (turn == 'B')? Cell.BLUE : Cell.RED; 
+				&& game[row][column] == Cell.EMPTY) {
+			game[row][column] = (turn == 'B')? Cell.BLUE : Cell.RED; 
 			pieceType[row][column] = playerPieces.get(getTurn());
-			//updateGameState(turn, row, column);
+			updateGameState(turn, row, column);
 			turn = (turn == 'B')? 'R' : 'B';
 		}
 	}
 	
-	abstract boolean hasWon();
+	public abstract boolean hasWon(char player, int row, int column);
+	public abstract boolean isDraw();
 	
-	/*private void updateGameState(char turn, int row, int column) {
+	private void updateGameState(char turn, int row, int column) {
 		if (hasWon(turn, row, column)) { // check for win
 			currentGameState = (turn == 'B') ? GameState.BLUE_WON : GameState.RED_WON;
 		} else if (isDraw()) {
 			currentGameState = GameState.DRAW;
 		}
-	}*/
+	}
 	
 
 	/*private boolean hasWon(char turn, int row, int column) {

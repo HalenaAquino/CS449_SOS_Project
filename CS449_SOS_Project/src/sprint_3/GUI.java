@@ -26,7 +26,6 @@ public class GUI extends Application {
 	
 	// general variable declarations
 	private Square[][] squares;
-	static private SOSGame game;
 	
 	private Label gameStatus = new Label("Blue Players Turn");
 	private Button applyButton;
@@ -37,6 +36,7 @@ public class GUI extends Application {
 	private TextField boardSizeField;
 	private GridPane boardPane;
 	private Dictionary<Character, Character> playerSelectedPieces;
+	private SOSGame game;
 	
 	private char bluePiece = ' ';
 	private char redPiece = ' ';
@@ -58,14 +58,19 @@ public class GUI extends Application {
 			// throws an exception if the user enters an invalid size/type or doesn't select a gamemode/piece
 			try {
 				int size =  Integer.parseInt(boardSizeField.getText());
-				game = new SOSGame(size);
-				game.resetGame();
+
 				
 				// Sets the gamemode depending on which button was chosen
-				if(simpleRButton.isSelected()) 
+				if(simpleRButton.isSelected()) {
+					game = new SimpleSOSGame(size);
 					game.setGamemode("Simple");
-				else if (generalRButton.isSelected()) 
+				}
+				else if (generalRButton.isSelected()) {
+					//game = new GeneralSOSGame(game, size);
 					game.setGamemode("General");
+				}
+				
+				game.resetGame();
 				
 	
 				if (game.getTurn() != ' ' && game.getGamemode() != "" && bluePiece != ' ' && redPiece != ' ') {
