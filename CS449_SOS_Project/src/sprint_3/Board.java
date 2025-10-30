@@ -17,8 +17,52 @@ abstract class Game {
     public abstract boolean isDraw();
 }
 
-class SimpleGame {
+abstract class SimpleGame extends Game{
 	// TODO
+	public SimpleGame(Board board, int size) {
+		super(board, size);
+	}
+	
+	public boolean hasWon(char player, int row, int column) {
+		char[][] pieces = board.getPieceTypeArray();
+		char token = player;
+		
+		// Horizontal SOS
+		if (column > 0 && column < size - 1 && pieces[row][column - 1] == 'S' && 
+				pieces[row][column] == 'O' && pieces[row][column + 1] == 'S')
+			return true;
+		
+		// Vertical SOS
+		if (row > 0 && row < size - 1 && pieces[row - 1][column] == 'S' && 
+				pieces[row][column] == 'O' && pieces[row + 1][column] == 'S')
+			return true;
+			
+		// Diagonal SOS (\)
+		
+			
+		// Other diagonal SOS (/)
+		
+		
+		
+		
+		
+		
+		return false;
+		
+	}
+	
+	/*public boolean isDraw() {
+		for (int row = 0; row < size; ++row) {
+			for (int col = 0; col < size; ++col) {
+				if (board[row][col] == Board.Cell.EMPTY) {
+					return false; // an empty cell found, not draw
+				}
+			}
+		}
+		return true;
+	}*/
+	
+	
 }
 
 class GeneralGame {
@@ -37,7 +81,7 @@ public class Board {
 		EMPTY, BLUE, RED
 	}
 	
-	private Cell[][] grid;
+	private Cell[][] board;
 
 	public enum GameState {
 		PLAYING, DRAW, BLUE_WON, RED_WON
@@ -50,7 +94,7 @@ public class Board {
 		if(size < 3 || size > 9)
 			turn = ' ';
 		else {
-			grid = new Cell[size][size];
+			board = new Cell[size][size];
 			pieceType = new char[size][size];
 			SIZE = size;
 		}
@@ -59,7 +103,7 @@ public class Board {
 	private void initGame() {
 		for (int row = 0; row < SIZE; ++row) {
 			for (int col = 0; col < SIZE; ++col) {
-				grid[row][col] = Cell.EMPTY;
+				board[row][col] = Cell.EMPTY;
 			}
 		}
 		currentGameState = GameState.PLAYING;
@@ -77,7 +121,7 @@ public class Board {
 	// returns the player that's currently occupying a cell (1 for blue, 2 for red, 0 for empty); returns -1 if the cell doesn't exist
 	public Cell getCell(int row, int column) {
 		if (row >= 0 && row < SIZE && column >= 0 && column < SIZE)
-			return grid[row][column];
+			return board[row][column];
 		else
 			return null;
 	}
@@ -105,37 +149,31 @@ public class Board {
 			return ' ';
 	}
 	
+	public char[][] getPieceTypeArray(){
+		return pieceType;
+	}
+	
 	// places the current player's current piece on the given cell and updates the turn
 	public void makeMove(int row, int column, Dictionary<Character, Character> playerPieces) {
 		if (row >= 0 && row < SIZE && column >= 0 && column < SIZE
-				&& grid[row][column] == Cell.EMPTY) {
-			grid[row][column] = (turn == 'B')? Cell.BLUE : Cell.RED; 
+				&& board[row][column] == Cell.EMPTY) {
+			board[row][column] = (turn == 'B')? Cell.BLUE : Cell.RED; 
 			pieceType[row][column] = playerPieces.get(getTurn());
-			updateGameState(turn, row, column);
+			//updateGameState(turn, row, column);
 			turn = (turn == 'B')? 'R' : 'B';
 		}
 	}
 	
-	private void updateGameState(char turn, int row, int column) {
+	/*private void updateGameState(char turn, int row, int column) {
 		if (hasWon(turn, row, column)) { // check for win
 			currentGameState = (turn == 'B') ? GameState.BLUE_WON : GameState.RED_WON;
 		} else if (isDraw()) {
 			currentGameState = GameState.DRAW;
 		}
-	}
+	}*/
 	
-	private boolean isDraw() {
-		for (int row = 0; row < SIZE; ++row) {
-			for (int col = 0; col < SIZE; ++col) {
-				if (grid[row][col] == Cell.EMPTY) {
-					return false; // an empty cell found, not draw
-				}
-			}
-		}
-		return true;
-	}
 
-	private boolean hasWon(char turn, int row, int column) {
+	/*private boolean hasWon(char turn, int row, int column) {
 		Cell token = (turn == 'B') ? Cell.BLUE : Cell.RED;
 		return (grid[row][0] == token // 3-in-the-row
 				&& grid[row][1] == token && grid[row][2] == token
@@ -145,5 +183,5 @@ public class Board {
 						&& grid[0][0] == token && grid[1][1] == token && grid[2][2] == token
 				|| row + column == 2 // 3-in-the-opposite-diagonal
 						&& grid[0][2] == token && grid[1][1] == token && grid[2][0] == token);
-	}
+	}*/
 }
