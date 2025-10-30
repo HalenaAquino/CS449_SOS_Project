@@ -2,7 +2,28 @@ package sprint_3;
 
 import java.util.Dictionary;
 
+// Parent class
+abstract class Game {
+	protected int size;
+    protected Board board;
 
+    public Game(Board board, int size) {
+        this.board = board;
+        this.size = size;
+    }
+
+    public abstract boolean hasWon(char player, int row, int column);
+
+    public abstract boolean isDraw();
+}
+
+class SimpleGame {
+	// TODO
+}
+
+class GeneralGame {
+	// TODO
+}
 
 public class Board {
 
