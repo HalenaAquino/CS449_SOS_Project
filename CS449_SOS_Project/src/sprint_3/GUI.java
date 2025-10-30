@@ -18,7 +18,7 @@ import javafx.scene.shape.Ellipse;
 import javafx.geometry.Pos;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import sprint_3.Board.GameState;
+import sprint_3.SOSGame.GameState;
 
 
 
@@ -26,7 +26,7 @@ public class GUI extends Application {
 	
 	// general variable declarations
 	private Square[][] squares;
-	static private Board board;
+	static private SOSGame game;
 	
 	private Label gameStatus = new Label("Blue Players Turn");
 	private Button applyButton;
@@ -37,8 +37,6 @@ public class GUI extends Application {
 	private TextField boardSizeField;
 	private GridPane boardPane;
 	private Dictionary<Character, Character> playerSelectedPieces;
-	private Label redSOSCountLabel = new Label("Red Player SOS's: " + 0);
-	private Label blueSOSCountLabel = new Label("Blue Player SOS's: " + 0);
 	
 	private char bluePiece = ' ';
 	private char redPiece = ' ';
@@ -60,17 +58,17 @@ public class GUI extends Application {
 			// throws an exception if the user enters an invalid size/type or doesn't select a gamemode/piece
 			try {
 				int size =  Integer.parseInt(boardSizeField.getText());
-				board = new Board(size);
-				board.resetGame();
+				game = new SOSGame(size);
+				game.resetGame();
 				
 				// Sets the gamemode depending on which button was chosen
 				if(simpleRButton.isSelected()) 
-					board.setGamemode("Simple");
+					game.setGamemode("Simple");
 				else if (generalRButton.isSelected()) 
-					board.setGamemode("General");
+					game.setGamemode("General");
 				
 	
-				if (board.getTurn() != ' ' && board.getGamemode() != "" && bluePiece != ' ' && redPiece != ' ') {
+				if (game.getTurn() != ' ' && game.getGamemode() != "" && bluePiece != ' ' && redPiece != ' ') {
 					boardPane.getChildren().clear();
 					squares = new Square[size][size];
 					for (int i = 0; i < size; i++)
@@ -88,7 +86,7 @@ public class GUI extends Application {
 		
 		newGameButton.setOnAction(event -> {
 			boardPane.getChildren().clear();
-			board.resetGame();
+			game.resetGame();
 		}
 			);
 			
@@ -112,14 +110,14 @@ public class GUI extends Application {
 	        for (int column = 0; column < size; column++) {
 	            squares[row][column].getChildren().clear();		// Clears anything pre-existing in the squares
 	            //Cell cellValue = board.getCell(row, column);
-	            char piece = board.getPieceType(row, column);
+	            char piece = game.getPieceType(row, column);
 	            
 	            // Places the piece of the current player
-	            if (board.getCell(row, column) == Board.Cell.BLUE)
+	            if (game.getCell(row, column) == SOSGame.Cell.BLUE)
 	            	if(piece == 'S') squares[row][column].drawS(Color.BLUE);
 	            	else squares[row][column].drawO(Color.BLUE);
 	            	
-	            else if (board.getCell(row, column) == Board.Cell.RED)
+	            else if (game.getCell(row, column) == SOSGame.Cell.RED)
 	            	if(piece == 'S') squares[row][column].drawS(Color.RED);
 	            	else squares[row][column].drawO(Color.RED);
 	        }
@@ -284,10 +282,10 @@ public class GUI extends Application {
 
 		// Makes the actual move and updates the board
 		private void handleMouseClick(int size, Dictionary<Character, Character> playerSelectedPieces) {
-			if (board.getGameState() == GameState.PLAYING)
-				board.makeMove(row, column, playerSelectedPieces);
+			if (game.getGameState() == GameState.PLAYING)
+				game.makeMove(row, column, playerSelectedPieces);
 			else
-				board.resetGame();
+				game.resetGame();
 			drawBoard(size, playerSelectedPieces);
 			displayGameStatus();
 		}
@@ -320,16 +318,16 @@ public class GUI extends Application {
 		
 		// Taken from the TicTacToe example; changes the current turn
 		private void displayGameStatus() {
-			if (board.getGameState() == GameState.PLAYING) {
-				if (board.getTurn() == 'B')
+			if (game.getGameState() == GameState.PLAYING) {
+				if (game.getTurn() == 'B')
 					gameStatus.setText("Blue Players Turn");
 				else
 					gameStatus.setText("Red Players Turn");
-			} else if (board.getGameState() == GameState.DRAW) {
+			} else if (game.getGameState() == GameState.DRAW) {
 				gameStatus.setText("It's a Draw! Click to play again.");
-			} else if (board.getGameState() == GameState.BLUE_WON) {
+			} else if (game.getGameState() == GameState.BLUE_WON) {
 				gameStatus.setText("Blue Won! Click to play again.");
-			} else if (board.getGameState() == GameState.RED_WON) {
+			} else if (game.getGameState() == GameState.RED_WON) {
 				gameStatus.setText("Red Won! Click to play again.");
 			}
 			//if (board.getTurn() == 'B') gameStatus.setText("Blue Players Turn");

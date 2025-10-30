@@ -2,7 +2,19 @@ package sprint_3;
 
 import java.util.Dictionary;
 
-// Parent class
+
+
+//TODO: Turn Board into SOSGame class and have GeneralSOSGame and SimpleSOSGame classes inherit from it
+// 				hasWon should be the only unique function in the children classes
+
+// DEPENDENCY INVERSION WILL BE CONSIDERED FOR EXTRA CREDIT
+
+
+
+
+
+
+/*// Parent class
 abstract class Game {
 	protected int size;
     protected Board board;
@@ -15,17 +27,29 @@ abstract class Game {
     public abstract boolean hasWon(char player, int row, int column);
 
     public abstract boolean isDraw();
-}
+}*/
 
-abstract class SimpleGame extends Game{
+class SimpleGame extends SOSGame{
 	// TODO
-	public SimpleGame(Board board, int size) {
+	
+	public SimpleGame(SOSGame game, int size) {
+		super(game, size);
+	}
+	
+	public boolean hasWon() {
+		
+		return false;
+	}
+	
+	
+	
+	
+	/*public SimpleGame(SOSGame board, int size) {
 		super(board, size);
 	}
 	
 	public boolean hasWon(char player, int row, int column) {
 		char[][] pieces = board.getPieceTypeArray();
-		char token = player;
 		
 		// Horizontal SOS
 		if (column > 0 && column < size - 1 && pieces[row][column - 1] == 'S' && 
@@ -49,7 +73,7 @@ abstract class SimpleGame extends Game{
 		
 		return false;
 		
-	}
+	}*/
 	
 	/*public boolean isDraw() {
 		for (int row = 0; row < size; ++row) {
@@ -65,11 +89,15 @@ abstract class SimpleGame extends Game{
 	
 }
 
-class GeneralGame {
+class GeneralGame extends SOSGame{
 	// TODO
+	public boolean hasWon() {
+		
+		return false;
+	}
 }
 
-public class Board {
+abstract class SOSGame {
 
 	// general variable declarations
 	private char turn;
@@ -90,7 +118,7 @@ public class Board {
 	private GameState currentGameState;
 	
 	// creates the board
-	public Board(int size) {
+	public SOSGame(int size) {
 		if(size < 3 || size > 9)
 			turn = ' ';
 		else {
@@ -163,6 +191,8 @@ public class Board {
 			turn = (turn == 'B')? 'R' : 'B';
 		}
 	}
+	
+	abstract boolean hasWon();
 	
 	/*private void updateGameState(char turn, int row, int column) {
 		if (hasWon(turn, row, column)) { // check for win
