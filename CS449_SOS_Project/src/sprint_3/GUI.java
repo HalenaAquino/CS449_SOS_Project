@@ -69,12 +69,15 @@ public class GUI extends Application {
 					game = new GeneralSOSGame(size);
 					game.setGamemode("General");
 				}
+				else
+					throw new NumberFormatException();
 				
-				game.resetGame();
-				gameStatus.setText("Blue player's turn");
+				
 				
 	
 				if (game.getTurn() != ' ' && game.getGamemode() != "" && bluePiece != ' ' && redPiece != ' ') {
+					game.resetGame();
+					gameStatus.setText("Blue player's turn");
 					boardPane.getChildren().clear();
 					squares = new Square[size][size];
 					for (int i = 0; i < size; i++)
@@ -162,18 +165,20 @@ public class GUI extends Application {
 		errorMessage = new Label("");
 		
 		newGameButton = new Button("New Game");
-		bottomPane.add(newGameButton,  4,  5);
-		newGameButton.setTranslateX(450);
-		newGameButton.setTranslateY(-50);
+		bottomPane.add(newGameButton,  1,  5);
+		newGameButton.setTranslateX(600);
+		newGameButton.setTranslateY(-75);
 		
 				
-		bottomPane.add(gameStatus, 1, 5);
-		bottomPane.add(errorMessage, 2, 5);
+		bottomPane.add(gameStatus, 2, 5);
+		bottomPane.add(errorMessage, 3, 5);
 		
 				
-		gameStatus.setTranslateX(300);
-		errorMessage.setTranslateX(-50);
-		errorMessage.setTranslateY(-25);
+		gameStatus.setTranslateX(230);
+		errorMessage.setTranslateX(-130);
+		errorMessage.setTranslateY(-30);
+		bottomPane.setMinWidth(800);
+		bottomPane.setMaxHeight(200);
 				
 		errorMessage.setTextFill(Color.RED);			// makes the errorMessage red and larger
 		errorMessage.setFont(new Font("Arial", 15));
@@ -183,7 +188,7 @@ public class GUI extends Application {
 		// Creates panes for the red and blue player buttons
 		GridPane blueControlPane = new GridPane();
 		boardPane = new GridPane();
-		boardPane.setPrefWidth(500);
+		boardPane.setPrefWidth(470);
 		GridPane redControlPane = new GridPane();
 		
 		// creates and positions the blue label

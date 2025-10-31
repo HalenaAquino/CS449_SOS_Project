@@ -7,36 +7,20 @@ import java.util.Dictionary;
 //TODO: Turn Board into SOSGame class and have GeneralSOSGame and SimpleSOSGame classes inherit from it
 // 				hasWon should be the only unique function in the children classes
 
+
+
+
+
+
 // DEPENDENCY INVERSION WILL BE CONSIDERED FOR EXTRA CREDIT
 
 
 
 
-
-
-/*// Parent class
-abstract class Game {
-	protected int size;
-    protected Board board;
-
-    public Game(Board board, int size) {
-        this.board = board;
-        this.size = size;
-    }
-
-    public abstract boolean hasWon(char player, int row, int column);
-
-    public abstract boolean isDraw();
-}*/
-
 class SimpleSOSGame extends SOSGame{
-	//SOSGame game;
-	//int size;;
 	
 	public SimpleSOSGame(int s) {
 		super(s);
-		//game = g;
-		//size = s;
 	}	
 	
 	public boolean hasWon(char player, int row, int column) {
@@ -130,23 +114,9 @@ class SimpleSOSGame extends SOSGame{
 		return boardFull();
 	}
 	
-	
-	/*public boolean isDraw() {
-		for (int row = 0; row < size; ++row) {
-			for (int col = 0; col < size; ++col) {
-				if (board[row][col] == Board.Cell.EMPTY) {
-					return false; // an empty cell found, not draw
-				}
-			}
-		}
-		return true;
-	}*/
-	
-	
 }
 
 class GeneralSOSGame extends SOSGame{
-	// TODO
 	public GeneralSOSGame(int size) {
 		super(size);
 	}
@@ -200,23 +170,21 @@ class GeneralSOSGame extends SOSGame{
 
 	    if (points > 0) {
 	        if (player == 'B') blueScore += points;
-	        else                redScore  += points;
+	        else               redScore  += points;
 	    }
 	}
 	
 	
 	public boolean hasWon(char player, int row, int col) {
-	    
+	    countSOS(player, row, col);
 
 	    System.out.print("Blue score: " + blueScore);		// debugging
 	    System.out.print("\nRed score: " + redScore + "\n");  // debugging
-	    
-	    countSOS(player, row, col);
-	    
+	    	    
 	    if(boardFull() && player == 'B' && blueScore > redScore) {
 	    	return true;
 	    }
-	    else if (boardFull() && player == 'R' && blueScore < redScore) {
+	    else if (boardFull() && player == 'R' && redScore > blueScore) {
 	    	return true;
 	    }
 	    
