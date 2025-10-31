@@ -15,6 +15,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Line;
 import javafx.geometry.Pos;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -115,7 +116,7 @@ public class GUI extends Application {
 
 
 	public void drawBoard(int size, Dictionary<Character, Character> playerSelectedPieces) {
-	    for (int row = 0; row < size; row++)
+	    for (int row = 0; row < size; row++) {
 	        for (int column = 0; column < size; column++) {
 	            squares[row][column].getChildren().clear();		// Clears anything pre-existing in the squares
 	            //Cell cellValue = board.getCell(row, column);
@@ -130,6 +131,7 @@ public class GUI extends Application {
 	            	if(piece == 'S') squares[row][column].drawS(Color.RED);
 	            	else squares[row][column].drawO(Color.RED);
 	        }
+	    }
 	}
 	
 	private void createTopPane(GridPane topPane) {
@@ -298,8 +300,53 @@ public class GUI extends Application {
 			else
 				game.resetGame();
 			drawBoard(size, playerSelectedPieces);
+			highlightCompletedSOS();
 			displayGameStatus();
 		}
+		
+		
+		private void highlightCompletedSOS() {
+		    char[][] pieces = game.getPieceTypeArray();
+		    int size = SOSGame.SIZE;
+
+		    for (int r = 0; r < size; r++) {
+		        for (int c = 0; c < size; c++) {
+		        	
+		        	Color color = (game.getTurn() == 'B') ? Color.RED : Color.BLUE;
+
+		            // Horizontal
+		            if (c <= size - 3 && pieces[r][c] == 'S' && pieces[r][c+1] == 'O' && pieces[r][c+2] == 'S') {
+		                squares[r][c].drawSlash("H", color);
+		                squares[r][c+1].drawSlash("H", color);
+		                squares[r][c+2].drawSlash("H", color);
+		            }
+
+		            // Vertical
+		            if (r <= size - 3 && pieces[r][c] == 'S' && pieces[r+1][c] == 'O' && pieces[r+2][c] == 'S') {
+		                squares[r][c].drawSlash("V", color);
+		                squares[r+1][c].drawSlash("V", color);
+		                squares[r+2][c].drawSlash("V", color);
+		            }
+
+		            // Left diagonal \
+		            if (r <= size - 3 && c <= size - 3 && pieces[r][c] == 'S' && pieces[r+1][c+1] == 'O' && pieces[r+2][c+2] == 'S') {
+		                squares[r][c].drawSlash("LD", color);
+		                squares[r+1][c+1].drawSlash("LD", color);
+		                squares[r+2][c+2].drawSlash("LD", color);
+		            }
+
+		            // Right diagonal /
+		            if (r <= size - 3 && c >= 2 && pieces[r][c] == 'S' && pieces[r+1][c-1] == 'O' && pieces[r+2][c-2] == 'S') {
+		                squares[r][c].drawSlash("RD", color);
+		                squares[r+1][c-1].drawSlash("RD", color);
+		                squares[r+2][c-2].drawSlash("RD", color);
+		            }
+		        }
+		    }
+		}
+
+
+
 		
 		// Draws the S piece
 		public void drawS(Color c) {
@@ -326,6 +373,47 @@ public class GUI extends Application {
 
 			getChildren().add(ellipse);
 		}
+		
+		public void drawSlash(String direction, Color color) {
+		    Line line = new Line();
+
+		    switch(direction) {
+			    case "LD": // left diagonal (\)
+			        line.startXProperty().bind(widthProperty().multiply(-0.05));
+			        line.startYProperty().bind(heightProperty().multiply(-0.05));
+			        line.endXProperty().bind(widthProperty().multiply(1.05));
+			        line.endYProperty().bind(heightProperty().multiply(1.05));
+			        break;
+	
+			    case "RD": // right diagonal (/)
+			        line.startXProperty().bind(widthProperty().multiply(-0.05));
+			        line.startYProperty().bind(heightProperty().multiply(1.05));
+			        line.endXProperty().bind(widthProperty().multiply(1.05));
+			        line.endYProperty().bind(heightProperty().multiply(-0.05));
+			        break;
+
+		        case "H": // Horizontal
+		            line.startXProperty().bind(widthProperty().multiply(-0.05));
+		            line.startYProperty().bind(heightProperty().divide(2));
+		            line.endXProperty().bind(widthProperty().multiply(1.05));
+		            line.endYProperty().bind(heightProperty().divide(2));
+		            break;
+
+		        case "V": // Vertical
+		            line.startXProperty().bind(widthProperty().divide(2));
+		            line.startYProperty().bind(heightProperty().multiply(-0.05)); 
+		            line.endXProperty().bind(widthProperty().divide(2));
+		            line.endYProperty().bind(heightProperty().multiply(1.05));
+		            break;
+		    }
+
+		    line.setStroke(color);
+		    line.setStrokeWidth(getHeight() / 25);
+		    getChildren().add(line);
+		}
+
+
+
 		
 		// Taken from the TicTacToe example; changes the current turn
 		private void displayGameStatus() {
