@@ -66,11 +66,12 @@ public class GUI extends Application {
 					game.setGamemode("Simple");
 				}
 				else if (generalRButton.isSelected()) {
-					//game = new GeneralSOSGame(game, size);
+					game = new GeneralSOSGame(size);
 					game.setGamemode("General");
 				}
 				
 				game.resetGame();
+				gameStatus.setText("Blue player's turn");
 				
 	
 				if (game.getTurn() != ' ' && game.getGamemode() != "" && bluePiece != ' ' && redPiece != ' ') {

@@ -37,10 +37,7 @@ class SimpleSOSGame extends SOSGame{
 		super(s);
 		//game = g;
 		//size = s;
-	}
-
-	// TODO
-	
+	}	
 	
 	public boolean hasWon(char player, int row, int column) {
 		char[][] pieces = getPieceTypeArray();
@@ -130,49 +127,9 @@ class SimpleSOSGame extends SOSGame{
 	}
 
 	public boolean isDraw() {
-		for (int row = 0; row < SIZE; ++row) {
-			for (int col = 0; col < SIZE; ++col) {
-				if (game[row][col] == SOSGame.Cell.EMPTY) {
-					return false; // an empty cell found, not draw
-				}
-			}
-		}
-		return true;
+		return boardFull();
 	}
 	
-	
-	
-	
-	/*public SimpleGame(SOSGame board, int size) {
-		super(board, size);
-	}
-	
-	public boolean hasWon(char player, int row, int column) {
-		char[][] pieces = board.getPieceTypeArray();
-		
-		// Horizontal SOS
-		if (column > 0 && column < size - 1 && pieces[row][column - 1] == 'S' && 
-				pieces[row][column] == 'O' && pieces[row][column + 1] == 'S')
-			return true;
-		
-		// Vertical SOS
-		if (row > 0 && row < size - 1 && pieces[row - 1][column] == 'S' && 
-				pieces[row][column] == 'O' && pieces[row + 1][column] == 'S')
-			return true;
-			
-		// Diagonal SOS (\)
-		
-			
-		// Other diagonal SOS (/)
-		
-		
-		
-		
-		
-		
-		return false;
-		
-	}*/
 	
 	/*public boolean isDraw() {
 		for (int row = 0; row < size; ++row) {
@@ -188,26 +145,105 @@ class SimpleSOSGame extends SOSGame{
 	
 }
 
-/*class GeneralSOSGame extends SOSGame{
+class GeneralSOSGame extends SOSGame{
 	// TODO
 	public GeneralSOSGame(int size) {
 		super(size);
 	}
-	public boolean hasWon() {
-		
-		return false;
+	
+	
+	@Override
+	public boolean hasWon(char player, int row, int col) {
+	    // Count SOS patterns that include the last placed piece at (row, col)
+	    char[][] pieces = getPieceTypeArray();
+	    int points = 0;
+	    char placed = pieces[row][col];
+
+
+	    if (placed == 'O') {
+	        // Horizontal
+	        if (col - 1 >= 0 && col + 1 < SIZE &&
+	            pieces[row][col - 1] == 'S' && pieces[row][col + 1] == 'S') points++;
+
+	        // Vertical
+	        if (row - 1 >= 0 && row + 1 < SIZE &&
+	            pieces[row - 1][col] == 'S' && pieces[row + 1][col] == 'S') points++;
+
+	        // Diagonal \ 
+	        if (row - 1 >= 0 && col - 1 >= 0 && row + 1 < SIZE && col + 1 < SIZE &&
+	            pieces[row - 1][col - 1] == 'S' && pieces[row + 1][col + 1] == 'S') points++;
+
+	        // Diagonal /
+	        if (row - 1 >= 0 && col + 1 < SIZE && row + 1 < SIZE && col - 1 >= 0 &&
+	            pieces[row - 1][col + 1] == 'S' && pieces[row + 1][col - 1] == 'S') points++;
+	    }
+
+	    if (placed == 'S') {
+	        if (col + 2 < SIZE &&
+	            pieces[row][col + 1] == 'O' && pieces[row][col + 2] == 'S') points++;
+	        if (col - 2 >= 0 &&
+	            pieces[row][col - 1] == 'O' && pieces[row][col - 2] == 'S') points++;
+
+	        if (row + 2 < SIZE &&
+	            pieces[row + 1][col] == 'O' && pieces[row + 2][col] == 'S') points++;
+	        if (row - 2 >= 0 &&
+	            pieces[row - 1][col] == 'O' && pieces[row - 2][col] == 'S') points++;
+
+	        if (row + 2 < SIZE && col + 2 < SIZE &&
+	            pieces[row + 1][col + 1] == 'O' && pieces[row + 2][col + 2] == 'S') points++;
+	        if (row - 2 >= 0 && col - 2 >= 0 &&
+	            pieces[row - 1][col - 1] == 'O' && pieces[row - 2][col - 2] == 'S') points++;
+
+	        if (row - 2 >= 0 && col + 2 < SIZE &&
+	            pieces[row - 1][col + 1] == 'O' && pieces[row - 2][col + 2] == 'S') points++;
+	        if (row + 2 < SIZE && col - 2 >= 0 &&
+	            pieces[row + 1][col - 1] == 'O' && pieces[row + 2][col - 2] == 'S') points++;
+	    }
+
+	    if (points > 0) {
+	        if (player == 'B') blueScore += points;
+	        else                redScore  += points;
+	    }
+
+	    // Return false so the game does NOT immediately end in General mode.
+	    System.out.print("Blue score: " + blueScore);		// debugging
+	    System.out.print("\nRed score: " + redScore + "\n");  // debugging
+	    
+	    if(player == 'B' && blueScore > redScore) {
+	    	currentGameState = GameState.BLUE_WON;
+	    	return true;
+	    }
+	    else if (player == 'R' && blueScore < redScore) {
+	    	currentGameState = GameState.RED_WON;
+	    	return true;
+	    }
+	    return false;
 	}
-}*/
+
+	
+	
+	
+	
+	public boolean isDraw() {
+		return boardFull() && (blueScore == redScore);
+	}
+}
 
 abstract class SOSGame {
 
 	// general variable declarations
 	private char turn;
-	private char[][] pieceType; 
+	protected char[][] pieceType; 
 	private String gameMode = "";
 	protected static int SIZE;
-	private GameState currentGameState;
+	protected GameState currentGameState;
 	protected Cell[][] game;
+
+	protected int blueScore = 0;
+	protected int redScore  = 0;
+
+	public int getBlueScore() { return blueScore; }
+	public int getRedScore() { return redScore; }
 
 
 
@@ -293,6 +329,15 @@ abstract class SOSGame {
 			updateGameState(turn, row, column);
 			turn = (turn == 'B')? 'R' : 'B';
 		}
+	}
+	
+	protected boolean boardFull() {
+		// returns false is there are any unoccupied cells
+	    for (int r = 0; r < SIZE; r++)
+	        for (int c = 0; c < SIZE; c++)
+	            if (game[r][c] == Cell.EMPTY) return false;
+	    
+	    return true;
 	}
 	
 	public abstract boolean hasWon(char player, int row, int column);
