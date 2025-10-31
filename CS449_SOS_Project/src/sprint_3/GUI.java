@@ -39,6 +39,11 @@ public class GUI extends Application {
 	private Dictionary<Character, Character> playerSelectedPieces;
 	private SOSGame game;
 	
+	RadioButton blueSButton = new RadioButton("S");
+	RadioButton blueOButton = new RadioButton("O");
+	RadioButton redSButton = new RadioButton("S");
+	RadioButton redOButton = new RadioButton("O");
+	
 	
 	
 	
@@ -115,6 +120,13 @@ public class GUI extends Application {
 						for (int j = 0; j < size; j++)
 							boardPane.add(squares[i][j] = new Square(size, i, j, playerSelectedPieces), j, i);
 					
+					
+					// Disables the setup during an active game
+					simpleRButton.setDisable(true);
+					generalRButton.setDisable(true);
+					boardSizeField.setDisable(true);
+					applyButton.setDisable(true);
+					
 					errorMessage.setText("");		// Sets the error message to empty if there's no error
 			    }
 				else
@@ -131,6 +143,19 @@ public class GUI extends Application {
 			recordedSOS.clear();
 			lastBlueScore = 0;
 			lastRedScore = 0;
+			simpleRButton.setDisable(false);
+			generalRButton.setDisable(false);
+			boardSizeField.setDisable(false);
+			applyButton.setDisable(false);
+			
+			generalRButton.setSelected(false);
+			simpleRButton.setSelected(false);
+			boardSizeField.clear();
+		    blueSButton.setSelected(false);
+		    blueOButton.setSelected(false);
+		    redSButton.setSelected(false);
+		    redOButton.setSelected(false);
+			
 		}
 			);
 			
@@ -234,8 +259,6 @@ public class GUI extends Application {
 		bluePlayerLabel.setTranslateY(200);
 				
 		// creates the blue buttons
-		RadioButton blueSButton = new RadioButton("S");
-		RadioButton blueOButton = new RadioButton("O");
 		ToggleGroup bluePieceGroup = new ToggleGroup();
 		blueSButton.setToggleGroup(bluePieceGroup);
 		blueOButton.setToggleGroup(bluePieceGroup);
@@ -271,8 +294,6 @@ public class GUI extends Application {
 		redPlayerLabel.setTranslateY(200);
 				
 		// creates the red buttons
-		RadioButton redSButton = new RadioButton("S");
-		RadioButton redOButton = new RadioButton("O");
 		ToggleGroup redPieceGroup = new ToggleGroup();
 		redSButton.setToggleGroup(redPieceGroup);
 		redOButton.setToggleGroup(redPieceGroup);
