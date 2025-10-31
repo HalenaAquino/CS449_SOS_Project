@@ -39,8 +39,35 @@ public class GUI extends Application {
 	private Dictionary<Character, Character> playerSelectedPieces;
 	private SOSGame game;
 	
+	
+	
+	
+	
+	private int lastBlueScore = 0;
+	private int lastRedScore = 0;
+	private java.util.List<SOSLine> completedSOS = new java.util.ArrayList<>();
+	private java.util.Set<String> recordedSOS = new java.util.HashSet<>();
+
+	
+	
+	
+	
 	private char bluePiece = ' ';
 	private char redPiece = ' ';
+	
+	
+	private class SOSLine {
+		int row, col;
+		String direction;
+		Color color;
+		
+		SOSLine(int row, int col, String direction, Color color) {
+			this.row = row;
+			this.col = col;
+			this.direction = direction;
+			this.color = color;
+			}
+		}
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -73,13 +100,16 @@ public class GUI extends Application {
 				else
 					throw new NumberFormatException();
 				
-				
-				
-	
 				if (game.getTurn() != ' ' && game.getGamemode() != "" && bluePiece != ' ' && redPiece != ' ') {
+					// resets everything
 					game.resetGame();
 					gameStatus.setText("Blue player's turn");
 					boardPane.getChildren().clear();
+					completedSOS.clear();
+					recordedSOS.clear();
+					lastBlueScore = 0;
+					lastRedScore = 0;
+					
 					squares = new Square[size][size];
 					for (int i = 0; i < size; i++)
 						for (int j = 0; j < size; j++)
@@ -97,6 +127,10 @@ public class GUI extends Application {
 		newGameButton.setOnAction(event -> {
 			boardPane.getChildren().clear();
 			game.resetGame();
+			completedSOS.clear();
+			recordedSOS.clear();
+			lastBlueScore = 0;
+			lastRedScore = 0;
 		}
 			);
 			
@@ -306,46 +340,132 @@ public class GUI extends Application {
 		
 		
 		private void highlightCompletedSOS() {
-		    char[][] pieces = game.getPieceTypeArray();
-		    int size = SOSGame.SIZE;
+		    int currentBlueScore = game.getBlueScore();
+		    int currentRedScore = game.getRedScore();
+		    
+		    // If a new SOS was just completed, finds and stores it
+		    if (currentBlueScore > lastBlueScore || currentRedScore > lastRedScore) {
+		        char[][] pieces = game.getPieceTypeArray();
+		        int size = SOSGame.SIZE;
+		        
+		        // Determine which player just scored
+		        Color color = (game.getTurn() == 'B') ? Color.RED : Color.BLUE;
 
-		    for (int r = 0; r < size; r++) {
-		        for (int c = 0; c < size; c++) {
-		        	
-		        	Color color = (game.getTurn() == 'B') ? Color.RED : Color.BLUE;
+		        for (int r = 0; r < size; r++) {
+		            for (int c = 0; c < size; c++) {
+		     
+		                // Horizontal
+		                if (c <= size - 3 && pieces[r][c] == 'S' && pieces[r][c+1] == 'O' && pieces[r][c+2] == 'S') {
+		                    String key = r + "," + c + ",H";
+		                    if (!recordedSOS.contains(key)) {
+		                        completedSOS.add(new SOSLine(r, c, "H", color));
+		                        recordedSOS.add(key);
+		                    }
+		                }
 
-		            // Horizontal
-		            if (c <= size - 3 && pieces[r][c] == 'S' && pieces[r][c+1] == 'O' && pieces[r][c+2] == 'S') {
-		                squares[r][c].drawSlash("H", color);
-		                squares[r][c+1].drawSlash("H", color);
-		                squares[r][c+2].drawSlash("H", color);
-		            }
+		                // Vertical
+		                if (r <= size - 3 && pieces[r][c] == 'S' && pieces[r+1][c] == 'O' && pieces[r+2][c] == 'S') {
+		                    String key = r + "," + c + ",V";
+		                    if (!recordedSOS.contains(key)) {
+		                        completedSOS.add(new SOSLine(r, c, "V", color));
+		                        recordedSOS.add(key);
+		                    }
+		                }
 
-		            // Vertical
-		            if (r <= size - 3 && pieces[r][c] == 'S' && pieces[r+1][c] == 'O' && pieces[r+2][c] == 'S') {
-		                squares[r][c].drawSlash("V", color);
-		                squares[r+1][c].drawSlash("V", color);
-		                squares[r+2][c].drawSlash("V", color);
-		            }
+		                // Left diagonal \
+		                if (r <= size - 3 && c <= size - 3 && pieces[r][c] == 'S' && pieces[r+1][c+1] == 'O' && pieces[r+2][c+2] == 'S') {
+		                    String key = r + "," + c + ",LD";
+		                    if (!recordedSOS.contains(key)) {
+		                        completedSOS.add(new SOSLine(r, c, "LD", color));
+		                        recordedSOS.add(key);
+		                    }
+		                }
 
-		            // Left diagonal \
-		            if (r <= size - 3 && c <= size - 3 && pieces[r][c] == 'S' && pieces[r+1][c+1] == 'O' && pieces[r+2][c+2] == 'S') {
-		                squares[r][c].drawSlash("LD", color);
-		                squares[r+1][c+1].drawSlash("LD", color);
-		                squares[r+2][c+2].drawSlash("LD", color);
-		            }
-
-		            // Right diagonal /
-		            if (r <= size - 3 && c >= 2 && pieces[r][c] == 'S' && pieces[r+1][c-1] == 'O' && pieces[r+2][c-2] == 'S') {
-		                squares[r][c].drawSlash("RD", color);
-		                squares[r+1][c-1].drawSlash("RD", color);
-		                squares[r+2][c-2].drawSlash("RD", color);
+		                // Right diagonal /
+		                if (r <= size - 3 && c >= 2 && pieces[r][c] == 'S' && pieces[r+1][c-1] == 'O' && pieces[r+2][c-2] == 'S') {
+		                    String key = r + "," + c + ",RD";
+		                    if (!recordedSOS.contains(key)) {
+		                        completedSOS.add(new SOSLine(r, c, "RD", color));
+		                        recordedSOS.add(key);
+		                    }
+		                }
 		            }
 		        }
+		        
+		        // Update the stored scores
+		        lastBlueScore = currentBlueScore;
+		        lastRedScore = currentRedScore;
+		    }
+		    
+		    // Always redraw ALL completed SOS lines
+		    for (SOSLine sos : completedSOS) {
+		        drawSOSLine(sos);
 		    }
 		}
 
+		private void drawSOSLine(SOSLine sos) {
+		    switch(sos.direction) {
+		        case "H": // Horizontal
+		            squares[sos.row][sos.col].drawSlash("H", sos.color);
+		            squares[sos.row][sos.col+1].drawSlash("H", sos.color);
+		            squares[sos.row][sos.col+2].drawSlash("H", sos.color);
+		            break;
+		        case "V": // Vertical
+		            squares[sos.row][sos.col].drawSlash("V", sos.color);
+		            squares[sos.row+1][sos.col].drawSlash("V", sos.color);
+		            squares[sos.row+2][sos.col].drawSlash("V", sos.color);
+		            break;
+		        case "LD": // Left diagonal
+		            squares[sos.row][sos.col].drawSlash("LD", sos.color);
+		            squares[sos.row+1][sos.col+1].drawSlash("LD", sos.color);
+		            squares[sos.row+2][sos.col+2].drawSlash("LD", sos.color);
+		            break;
+		        case "RD": // Right diagonal
+		            squares[sos.row][sos.col].drawSlash("RD", sos.color);
+		            squares[sos.row+1][sos.col-1].drawSlash("RD", sos.color);
+		            squares[sos.row+2][sos.col-2].drawSlash("RD", sos.color);
+		            break;
+		    }
+		}
+		
+		public void drawSlash(String direction, Color color) {
+		    Line line = new Line();
 
+		    switch(direction) {
+		        case "LD": // left diagonal (\)
+		            line.startXProperty().bind(widthProperty().multiply(0.02));
+		            line.startYProperty().bind(heightProperty().multiply(0.02));
+		            line.endXProperty().bind(widthProperty().multiply(0.98));
+		            line.endYProperty().bind(heightProperty().multiply(0.98));
+		            break;
+
+		        case "RD": // right diagonal (/)
+		            line.startXProperty().bind(widthProperty().multiply(0.02));
+		            line.startYProperty().bind(heightProperty().multiply(0.98));
+		            line.endXProperty().bind(widthProperty().multiply(0.98));
+		            line.endYProperty().bind(heightProperty().multiply(0.02));
+		            break;
+
+		        case "H": // Horizontal
+		            line.startXProperty().bind(widthProperty().multiply(0.02));
+		            line.startYProperty().bind(heightProperty().divide(2));
+		            line.endXProperty().bind(widthProperty().multiply(0.98));
+		            line.endYProperty().bind(heightProperty().divide(2));
+		            break;
+
+		        case "V": // Vertical
+		            line.startXProperty().bind(widthProperty().divide(2));
+		            line.startYProperty().bind(heightProperty().multiply(0.02)); 
+		            line.endXProperty().bind(widthProperty().divide(2));
+		            line.endYProperty().bind(heightProperty().multiply(0.98));
+		            break;
+		    }
+
+		    line.setStroke(color);
+		    line.setStrokeWidth(getHeight() / 25);
+		    getChildren().add(line);
+		}
+		
 
 		
 		// Draws the S piece
@@ -374,43 +494,6 @@ public class GUI extends Application {
 			getChildren().add(ellipse);
 		}
 		
-		public void drawSlash(String direction, Color color) {
-		    Line line = new Line();
-
-		    switch(direction) {
-			    case "LD": // left diagonal (\)
-			        line.startXProperty().bind(widthProperty().multiply(-0.05));
-			        line.startYProperty().bind(heightProperty().multiply(-0.05));
-			        line.endXProperty().bind(widthProperty().multiply(1.05));
-			        line.endYProperty().bind(heightProperty().multiply(1.05));
-			        break;
-	
-			    case "RD": // right diagonal (/)
-			        line.startXProperty().bind(widthProperty().multiply(-0.05));
-			        line.startYProperty().bind(heightProperty().multiply(1.05));
-			        line.endXProperty().bind(widthProperty().multiply(1.05));
-			        line.endYProperty().bind(heightProperty().multiply(-0.05));
-			        break;
-
-		        case "H": // Horizontal
-		            line.startXProperty().bind(widthProperty().multiply(-0.05));
-		            line.startYProperty().bind(heightProperty().divide(2));
-		            line.endXProperty().bind(widthProperty().multiply(1.05));
-		            line.endYProperty().bind(heightProperty().divide(2));
-		            break;
-
-		        case "V": // Vertical
-		            line.startXProperty().bind(widthProperty().divide(2));
-		            line.startYProperty().bind(heightProperty().multiply(-0.05)); 
-		            line.endXProperty().bind(widthProperty().divide(2));
-		            line.endYProperty().bind(heightProperty().multiply(1.05));
-		            break;
-		    }
-
-		    line.setStroke(color);
-		    line.setStrokeWidth(getHeight() / 25);
-		    getChildren().add(line);
-		}
 
 
 
