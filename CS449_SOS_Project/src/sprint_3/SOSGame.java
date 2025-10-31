@@ -174,21 +174,32 @@ class GeneralSOSGame extends SOSGame{
 	    }
 	}
 	
-	
-	public boolean hasWon(char player, int row, int col) {
-	    countSOS(player, row, col);
-
+	@Override
+	protected void updateGameState(char turn, int row, int column) {
+	    // Count points first
+	    countSOS(turn, row, column);
 	    System.out.print("Blue score: " + blueScore);		// debugging
 	    System.out.print("\nRed score: " + redScore + "\n");  // debugging
-	    	    
-	    if(boardFull() && player == 'B' && blueScore > redScore) {
-	    	return true;
+
+	    // If board isn't full, continues playing
+	    if (!boardFull()) {
+	        currentGameState = GameState.PLAYING;
+	        return;
 	    }
-	    else if (boardFull() && player == 'R' && redScore > blueScore) {
-	    	return true;
+
+	    // Board is full, determines the winner
+	    if (blueScore > redScore) {
+	        currentGameState = GameState.BLUE_WON;
+	    } else if (redScore > blueScore) {
+	        currentGameState = GameState.RED_WON;
+	    } else {
+	        currentGameState = GameState.DRAW;
 	    }
-	    
-	    // Return false so the game does NOT immediately end in General mode.
+	}
+	
+	
+	@Override
+	public boolean hasWon(char player, int row, int col) {
 	    return false;
 	}
 
@@ -247,6 +258,8 @@ abstract class SOSGame {
 		}
 		currentGameState = GameState.PLAYING;
 		turn = 'B';
+		blueScore = 0;
+		redScore = 0;
 	}
 	
 	public void resetGame() {
@@ -257,7 +270,7 @@ abstract class SOSGame {
 		return currentGameState;
 	}
 
-	// returns the player that's currently occupying a cell (1 for blue, 2 for red, 0 for empty); returns -1 if the cell doesn't exist
+	// returns the player that's currently occupying a cell (1 for blue, 2 for red, 0 for empty) or returns -1 if the cell doesn't exist
 	public Cell getCell(int row, int column) {
 		if (row >= 0 && row < SIZE && column >= 0 && column < SIZE)
 			return game[row][column];
@@ -315,7 +328,7 @@ abstract class SOSGame {
 	public abstract boolean hasWon(char player, int row, int column);
 	public abstract boolean isDraw();
 	
-	private void updateGameState(char turn, int row, int column) {
+	protected void updateGameState(char turn, int row, int column) {
 		if (hasWon(turn, row, column)) { // check for win
 			currentGameState = (turn == 'B') ? GameState.BLUE_WON : GameState.RED_WON;
 		} else if (isDraw()) {
