@@ -21,46 +21,45 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import sprint_3.SOSGame.GameState;
 
-
-
-public class GUI extends Application {
+public class SOSGameGUI extends Application {
 	
-	// general variable declarations
+	//   --------------------------------------------  VARIABLE DECLARATIONS  ---------------------------------------------------
+	
 	private Square[][] squares;
 	
-	private Label gameStatus = new Label("Blue Players Turn");
+	// buttons
 	private Button applyButton;
 	private Button newGameButton;
-	private Label errorMessage;
 	private RadioButton simpleRButton;
 	private RadioButton generalRButton;
+	private RadioButton blueSButton;
+	private RadioButton blueOButton;
+	private RadioButton redSButton;
+	private RadioButton redOButton;
+	
+	// labels
+	private Label gameStatus;
+	private Label errorMessage;
 	private TextField boardSizeField;
 	private GridPane boardPane;
 	private Dictionary<Character, Character> playerSelectedPieces;
 	private SOSGame game;
 	
-	RadioButton blueSButton = new RadioButton("S");
-	RadioButton blueOButton = new RadioButton("O");
-	RadioButton redSButton = new RadioButton("S");
-	RadioButton redOButton = new RadioButton("O");
-	
-	
-	
-	
-	
+	// integers
 	private int lastBlueScore = 0;
 	private int lastRedScore = 0;
+	
+	// characters
+	private char bluePiece = ' ';
+	private char redPiece = ' ';
+	
+	// data structures
 	private java.util.List<SOSLine> completedSOS = new java.util.ArrayList<>();
 	private java.util.Set<String> recordedSOS = new java.util.HashSet<>();
 
 	
-	
-	
-	
-	private char bluePiece = ' ';
-	private char redPiece = ' ';
-	
-	
+	// -----------------------------------------------------  GUI LOGIC  ----------------------------------------------------
+	// helper class used to draw the line through SOS's
 	private class SOSLine {
 		int row, col;
 		String direction;
@@ -77,7 +76,7 @@ public class GUI extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		// Pane declaration
-		GridPane centerPane = new GridPane();		// actual board
+		GridPane centerPane = new GridPane();		// actual board and player pieces
 		GridPane topPane = new GridPane();			// player settings (size, game, etc.)
 		GridPane bottomPane = new GridPane();		// record checkbox, player turn
 		
@@ -91,9 +90,8 @@ public class GUI extends Application {
 			// throws an exception if the user enters an invalid size/type or doesn't select a gamemode/piece
 			try {
 				int size =  Integer.parseInt(boardSizeField.getText());
-
 				
-				// Sets the gamemode depending on which button was chosen
+				// Sets the gamemode depending on which button was chosen, throws error if none chosen
 				if(simpleRButton.isSelected()) {
 					game = new SimpleSOSGame(size);
 					game.setGamemode("Simple");
@@ -105,8 +103,9 @@ public class GUI extends Application {
 				else
 					throw new NumberFormatException();
 				
+				// 
 				if (game.getTurn() != ' ' && game.getGamemode() != "" && bluePiece != ' ' && redPiece != ' ') {
-					// resets everything
+					// resets game settings
 					game.resetGame();
 					gameStatus.setText("Blue player's turn");
 					boardPane.getChildren().clear();
@@ -115,6 +114,7 @@ public class GUI extends Application {
 					lastBlueScore = 0;
 					lastRedScore = 0;
 					
+					// creates the squares in the board
 					squares = new Square[size][size];
 					for (int i = 0; i < size; i++)
 						for (int j = 0; j < size; j++)
@@ -136,29 +136,31 @@ public class GUI extends Application {
 				errorMessage.setText("Please enter a valid board size, select a game mode, and choose the piece for both players");
 			}});
 		
+		// resets the entire interface when the user starts a new game
 		newGameButton.setOnAction(event -> {
-			boardPane.getChildren().clear();
-			game.resetGame();
-			completedSOS.clear();
-			recordedSOS.clear();
-			lastBlueScore = 0;
-			lastRedScore = 0;
+			// settings that're exclusive for an active game won't try to reset if there's no ongoing game
+			if (game != null) {
+		        boardPane.getChildren().clear();
+		        game.resetGame();
+		        completedSOS.clear();
+		        recordedSOS.clear();
+		        lastBlueScore = 0;
+		        lastRedScore = 0;
+		    }
+			
+			// deselects the buttons
 			simpleRButton.setDisable(false);
 			generalRButton.setDisable(false);
 			boardSizeField.setDisable(false);
 			applyButton.setDisable(false);
-			
 			generalRButton.setSelected(false);
 			simpleRButton.setSelected(false);
-			boardSizeField.clear();
 		    blueSButton.setSelected(false);
 		    blueOButton.setSelected(false);
 		    redSButton.setSelected(false);
 		    redOButton.setSelected(false);
 			
-		}
-			);
-			
+		});	
 		
 		// adds all of the panes to the border pane
 		BorderPane borderPane = new BorderPane();
@@ -173,12 +175,11 @@ public class GUI extends Application {
 		primaryStage.show();
 	}
 
-
+	// draws the actual board
 	public void drawBoard(int size, Dictionary<Character, Character> playerSelectedPieces) {
 	    for (int row = 0; row < size; row++) {
 	        for (int column = 0; column < size; column++) {
 	            squares[row][column].getChildren().clear();		// Clears anything pre-existing in the squares
-	            //Cell cellValue = board.getCell(row, column);
 	            char piece = game.getPieceType(row, column);
 	            
 	            // Places the piece of the current player
@@ -193,6 +194,7 @@ public class GUI extends Application {
 	    }
 	}
 	
+	// creates all of the objects on the top pane
 	private void createTopPane(GridPane topPane) {
 		// Creates the game choice radio buttons and adds them to the top plane
 		simpleRButton = new RadioButton("Simple Game");
@@ -221,30 +223,34 @@ public class GUI extends Application {
 		applyButton.setTranslateX(120);
 	}
 	
+	// creates all of the objects on the bottom pane
 	private void createBottomPane(GridPane bottomPane) {
-		// creates the errorMessage label, adds it to the pane, and positions it correctly
-		errorMessage = new Label("");
-		
+		// new game button
 		newGameButton = new Button("New Game");
 		bottomPane.add(newGameButton,  1,  5);
 		newGameButton.setTranslateX(600);
 		newGameButton.setTranslateY(-75);
 		
-				
+		// game status label
+		gameStatus= new Label("Blue Players Turn");
 		bottomPane.add(gameStatus, 2, 5);
-		bottomPane.add(errorMessage, 3, 5);
-		
-				
 		gameStatus.setTranslateX(230);
+		
+		// error message label
+		errorMessage = new Label("");
+		bottomPane.add(errorMessage, 3, 5);
 		errorMessage.setTranslateX(-130);
 		errorMessage.setTranslateY(-30);
+		errorMessage.setTextFill(Color.RED);			// makes the errorMessage red and larger
+		errorMessage.setFont(new Font("Arial", 15));
+
+		// general pane settings
 		bottomPane.setMinWidth(800);
 		bottomPane.setMaxHeight(200);
 				
-		errorMessage.setTextFill(Color.RED);			// makes the errorMessage red and larger
-		errorMessage.setFont(new Font("Arial", 15));
 	}
 	
+	// creates all of the objects in the center pane
 	private void createCenterPane(GridPane centerPane) {
 		// Creates panes for the red and blue player buttons
 		GridPane blueControlPane = new GridPane();
@@ -259,6 +265,8 @@ public class GUI extends Application {
 		bluePlayerLabel.setTranslateY(200);
 				
 		// creates the blue buttons
+		blueSButton = new RadioButton("S");
+		blueOButton = new RadioButton("O");
 		ToggleGroup bluePieceGroup = new ToggleGroup();
 		blueSButton.setToggleGroup(bluePieceGroup);
 		blueOButton.setToggleGroup(bluePieceGroup);
@@ -285,7 +293,6 @@ public class GUI extends Application {
 				
 		// positions the board
 		boardPane.setTranslateX(bluePlayerLabel.getMaxWidth() - 60);
-				
 
 		// creates and positions the red label
 		Label redPlayerLabel = new Label("Red Player: ");
@@ -294,6 +301,8 @@ public class GUI extends Application {
 		redPlayerLabel.setTranslateY(200);
 				
 		// creates the red buttons
+		redSButton = new RadioButton("S");
+		redOButton = new RadioButton("O");
 		ToggleGroup redPieceGroup = new ToggleGroup();
 		redSButton.setToggleGroup(redPieceGroup);
 		redOButton.setToggleGroup(redPieceGroup);
@@ -359,7 +368,7 @@ public class GUI extends Application {
 			displayGameStatus();
 		}
 		
-		
+		// responsible for determining if an SOS was made THIS turn and updating the set and list
 		private void highlightCompletedSOS() {
 		    int currentBlueScore = game.getBlueScore();
 		    int currentRedScore = game.getRedScore();
@@ -383,7 +392,7 @@ public class GUI extends Application {
 		                        recordedSOS.add(key);
 		                    }
 		                }
-
+		                
 		                // Vertical
 		                if (r <= size - 3 && pieces[r][c] == 'S' && pieces[r+1][c] == 'O' && pieces[r+2][c] == 'S') {
 		                    String key = r + "," + c + ",V";
@@ -392,7 +401,7 @@ public class GUI extends Application {
 		                        recordedSOS.add(key);
 		                    }
 		                }
-
+		                
 		                // Left diagonal \
 		                if (r <= size - 3 && c <= size - 3 && pieces[r][c] == 'S' && pieces[r+1][c+1] == 'O' && pieces[r+2][c+2] == 'S') {
 		                    String key = r + "," + c + ",LD";
@@ -424,7 +433,9 @@ public class GUI extends Application {
 		    }
 		}
 
+		// draws the full SOS line
 		private void drawSOSLine(SOSLine sos) {
+			// determines which direction the SOS is (which direction the line needs to be drawn) and calls the function to draw each line
 		    switch(sos.direction) {
 		        case "H": // Horizontal
 		            squares[sos.row][sos.col].drawSlash("H", sos.color);
@@ -449,9 +460,11 @@ public class GUI extends Application {
 		    }
 		}
 		
+		// draws the actual slash that goes through each box the SOS is contained by
 		public void drawSlash(String direction, Color color) {
 		    Line line = new Line();
 
+		    // draws the same slash for any SOS line going each direction
 		    switch(direction) {
 		        case "LD": // left diagonal (\)
 		            line.startXProperty().bind(widthProperty().multiply(0.02));
@@ -487,8 +500,6 @@ public class GUI extends Application {
 		    getChildren().add(line);
 		}
 		
-
-		
 		// Draws the S piece
 		public void drawS(Color c) {
 			Label label = new Label(String.valueOf('S'));
@@ -515,10 +526,6 @@ public class GUI extends Application {
 			getChildren().add(ellipse);
 		}
 		
-
-
-
-		
 		// Taken from the TicTacToe example; changes the current turn
 		private void displayGameStatus() {
 			if (game.getGameState() == GameState.PLAYING) {
@@ -533,10 +540,7 @@ public class GUI extends Application {
 			} else if (game.getGameState() == GameState.RED_WON) {
 				gameStatus.setText("Red Won! Click to play again.");
 			}
-			//if (board.getTurn() == 'B') gameStatus.setText("Blue Players Turn");
-			//else gameStatus.setText("Red Players Turn");
 		}
-
 	}
 
 	public static void main(String[] args) {

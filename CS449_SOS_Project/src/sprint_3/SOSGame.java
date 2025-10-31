@@ -2,27 +2,17 @@ package sprint_3;
 
 import java.util.Dictionary;
 
-
-
-//TODO: Turn Board into SOSGame class and have GeneralSOSGame and SimpleSOSGame classes inherit from it
-// 				hasWon should be the only unique function in the children classes
-
-
-
-
-
-
 // DEPENDENCY INVERSION WILL BE CONSIDERED FOR EXTRA CREDIT
 
-
-
-
+// subclass for simple game rules
 class SimpleSOSGame extends SOSGame{
 	
+	// constructor
 	public SimpleSOSGame(int s) {
 		super(s);
 	}	
 	
+	// determines if an SOS was made for the given player
 	public boolean hasWon(char player, int row, int column) {
 		char[][] pieces = getPieceTypeArray();
 	    char placed = pieces[row][column];
@@ -105,29 +95,39 @@ class SimpleSOSGame extends SOSGame{
 	            return true;
 	    }
 		
-		
-		return false;
-		
+		return false;		// otherwise false
+	}
+	
+	// simple game has its own unique update function
+	public void updateGameState(char turn, int row, int column) {
+		if (hasWon(turn, row, column)) // check for win
+			currentGameState = (turn == 'B') ? GameState.BLUE_WON : GameState.RED_WON;
+		else if (isDraw())
+			currentGameState = GameState.DRAW;
 	}
 
+	// can only be a draw (in a simple game) if the board is full
 	public boolean isDraw() {
 		return boardFull();
 	}
 	
 }
 
+// subclass for general game rules
 class GeneralSOSGame extends SOSGame{
-	public GeneralSOSGame(int size) {
-		super(size);
+	// constructor
+	public GeneralSOSGame(int s) {
+		super(s);
 	}
 	
+	// counts all of the SOS's completed in the current turn
 	public void countSOS(char player, int row, int col) {
 		// Count SOS patterns that include the last placed piece at (row, col)
 	    char[][] pieces = getPieceTypeArray();
 	    int points = 0;
 	    char placed = pieces[row][col];
 
-
+	    // finds and counts SOS's when an O was placed
 	    if (placed == 'O') {
 	        // Horizontal
 	        if (col - 1 >= 0 && col + 1 < SIZE &&
@@ -146,6 +146,7 @@ class GeneralSOSGame extends SOSGame{
 	            pieces[row - 1][col + 1] == 'S' && pieces[row + 1][col - 1] == 'S') points++;
 	    }
 
+	    // finds and counts SOS's when an O was placed
 	    if (placed == 'S') {
 	        if (col + 2 < SIZE &&
 	            pieces[row][col + 1] == 'O' && pieces[row][col + 2] == 'S') points++;
@@ -168,18 +169,18 @@ class GeneralSOSGame extends SOSGame{
 	            pieces[row + 1][col - 1] == 'O' && pieces[row + 2][col - 2] == 'S') points++;
 	    }
 
+	    // updates the appropriate player score
 	    if (points > 0) {
 	        if (player == 'B') blueScore += points;
 	        else               redScore  += points;
 	    }
 	}
 	
+	// general game needs a specialized update function for determining when to continue and who won
 	@Override
 	protected void updateGameState(char turn, int row, int column) {
 	    // Count points first
 	    countSOS(turn, row, column);
-	    System.out.print("Blue score: " + blueScore);		// debugging
-	    System.out.print("\nRed score: " + redScore + "\n");  // debugging
 
 	    // If board isn't full, continues playing
 	    if (!boardFull()) {
@@ -187,7 +188,7 @@ class GeneralSOSGame extends SOSGame{
 	        return;
 	    }
 
-	    // Board is full, determines the winner
+	    // If board is full, determines the winner
 	    if (blueScore > redScore) {
 	        currentGameState = GameState.BLUE_WON;
 	    } else if (redScore > blueScore) {
@@ -197,47 +198,64 @@ class GeneralSOSGame extends SOSGame{
 	    }
 	}
 	
-	
-	@Override
-	public boolean hasWon(char player, int row, int col) {
-	    return false;
-	}
-
-	
-	
-	
-	
+	// a general can only be a draw if the board is full and the player points are equal
 	public boolean isDraw() {
 		return boardFull() && (blueScore == redScore);
 	}
 }
 
+// parent class, contains all of the general rules between simple and general game
 abstract class SOSGame {
 
-	// general variable declarations
+	// --------------------------------   VARIABLE DECLARATIONS  -------------------------------------
+	
+	// public (used in GUI)
+	public enum Cell { EMPTY, BLUE, RED }
+	public enum GameState { PLAYING, DRAW, BLUE_WON, RED_WON }
+	
+	// private (only used in this class)
 	private char turn;
-	protected char[][] pieceType; 
 	private String gameMode = "";
+	
+	// protected (used in children classes)
+	protected char[][] pieceType; 
 	protected static int SIZE;
+	protected int blueScore = 0;
+	protected int redScore  = 0;
 	protected GameState currentGameState;
 	protected Cell[][] game;
 
-	protected int blueScore = 0;
-	protected int redScore  = 0;
-
+	
+	// --------------------------------   GETTERS  -------------------------------------
 	public int getBlueScore() { return blueScore; }
 	public int getRedScore() { return redScore; }
+	public char getTurn() {return turn; }
+	public String getGamemode() { return gameMode; }
+	public char[][] getPieceTypeArray(){ return pieceType; }
+	public GameState getGameState() { return currentGameState; }
+		
+	// returns the current piece in the cell (S/O)
+	public char getPieceType(int row, int column) {
+		if(row >= 0 && row < SIZE && column >= 0 && column < SIZE) 
+			return pieceType[row][column];
+		else
+			return ' ';
+	}
 
-
-
-	public enum Cell {
-		EMPTY, BLUE, RED
+	// returns the player that's currently occupying a cell (1 for blue, 2 for red, 0 for empty) or returns -1 if the cell doesn't exist
+	public Cell getCell(int row, int column) {
+		if (row >= 0 && row < SIZE && column >= 0 && column < SIZE)
+			return game[row][column];
+		else
+			return null;
 	}
 	
-	public enum GameState {
-		PLAYING, DRAW, BLUE_WON, RED_WON
-	}
-		
+	// -------------------------------   GAME LOGIC ------------------------------------------	
+	
+	// abstract classes (defined in subclasses)
+	protected abstract boolean isDraw();
+	protected abstract void updateGameState(char turn, int row, int column);
+	
 	// creates the board
 	public SOSGame(int size) {
 		if(size < 3 || size > 9)
@@ -249,6 +267,7 @@ abstract class SOSGame {
 		}
 	}
 	
+	// initializes the game, resets all of the variables and board
 	private void initGame() {
 		for (int row = 0; row < SIZE; ++row) {
 			for (int col = 0; col < SIZE; ++col) {
@@ -262,47 +281,14 @@ abstract class SOSGame {
 		redScore = 0;
 	}
 	
+	// re-initializes game, will reset a leaderboard done in later sprints
 	public void resetGame() {
 		initGame();
 	}
-	
-	public GameState getGameState() {
-		return currentGameState;
-	}
 
-	// returns the player that's currently occupying a cell (1 for blue, 2 for red, 0 for empty) or returns -1 if the cell doesn't exist
-	public Cell getCell(int row, int column) {
-		if (row >= 0 && row < SIZE && column >= 0 && column < SIZE)
-			return game[row][column];
-		else
-			return null;
-	}
-
-	// returns the current turn
-	public char getTurn() {
-		return turn;
-	}
-	
 	// updates the current gamemode
 	public void setGamemode(String mode) {
 		gameMode = mode;
-	}
-	
-	// returns the current gamemode
-	public String getGamemode() {
-		return gameMode;
-	}
-	
-	// returns the current piece in the cell (S/O)
-	public char getPieceType(int row, int column) {
-		if(row >= 0 && row < SIZE && column >= 0 && column < SIZE) 
-			return pieceType[row][column];
-		else
-			return ' ';
-	}
-	
-	public char[][] getPieceTypeArray(){
-		return pieceType;
 	}
 	
 	// places the current player's current piece on the given cell and updates the turn
@@ -316,6 +302,7 @@ abstract class SOSGame {
 		}
 	}
 	
+	// determines if the board has any empty cells
 	protected boolean boardFull() {
 		// returns false is there are any unoccupied cells
 	    for (int r = 0; r < SIZE; r++)
@@ -324,28 +311,4 @@ abstract class SOSGame {
 	    
 	    return true;
 	}
-	
-	public abstract boolean hasWon(char player, int row, int column);
-	public abstract boolean isDraw();
-	
-	protected void updateGameState(char turn, int row, int column) {
-		if (hasWon(turn, row, column)) { // check for win
-			currentGameState = (turn == 'B') ? GameState.BLUE_WON : GameState.RED_WON;
-		} else if (isDraw()) {
-			currentGameState = GameState.DRAW;
-		}
-	}
-	
-
-	/*private boolean hasWon(char turn, int row, int column) {
-		Cell token = (turn == 'B') ? Cell.BLUE : Cell.RED;
-		return (grid[row][0] == token // 3-in-the-row
-				&& grid[row][1] == token && grid[row][2] == token
-				|| grid[0][column] == token // 3-in-the-column
-						&& grid[1][column] == token && grid[2][column] == token
-				|| row == column // 3-in-the-diagonal
-						&& grid[0][0] == token && grid[1][1] == token && grid[2][2] == token
-				|| row + column == 2 // 3-in-the-opposite-diagonal
-						&& grid[0][2] == token && grid[1][1] == token && grid[2][0] == token);
-	}*/
 }
