@@ -151,10 +151,8 @@ class GeneralSOSGame extends SOSGame{
 		super(size);
 	}
 	
-	
-	@Override
-	public boolean hasWon(char player, int row, int col) {
-	    // Count SOS patterns that include the last placed piece at (row, col)
+	public void countSOS(char player, int row, int col) {
+		// Count SOS patterns that include the last placed piece at (row, col)
 	    char[][] pieces = getPieceTypeArray();
 	    int points = 0;
 	    char placed = pieces[row][col];
@@ -204,19 +202,25 @@ class GeneralSOSGame extends SOSGame{
 	        if (player == 'B') blueScore += points;
 	        else                redScore  += points;
 	    }
+	}
+	
+	
+	public boolean hasWon(char player, int row, int col) {
+	    
 
-	    // Return false so the game does NOT immediately end in General mode.
 	    System.out.print("Blue score: " + blueScore);		// debugging
 	    System.out.print("\nRed score: " + redScore + "\n");  // debugging
 	    
-	    if(player == 'B' && blueScore > redScore) {
-	    	currentGameState = GameState.BLUE_WON;
+	    countSOS(player, row, col);
+	    
+	    if(boardFull() && player == 'B' && blueScore > redScore) {
 	    	return true;
 	    }
-	    else if (player == 'R' && blueScore < redScore) {
-	    	currentGameState = GameState.RED_WON;
+	    else if (boardFull() && player == 'R' && blueScore < redScore) {
 	    	return true;
 	    }
+	    
+	    // Return false so the game does NOT immediately end in General mode.
 	    return false;
 	}
 
