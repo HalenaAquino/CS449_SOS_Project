@@ -361,8 +361,13 @@ public class SOSGameGUI extends Application {
 		private void handleMouseClick(int size, Dictionary<Character, Character> playerSelectedPieces) {
 			if (game.getGameState() == GameState.PLAYING)
 				game.makeMove(row, column, playerSelectedPieces);
-			else
+			else {
 				game.resetGame();
+				lastBlueScore = 0;
+		        lastRedScore = 0;
+				completedSOS.clear();
+				recordedSOS.clear();
+			}
 			drawBoard(size, playerSelectedPieces);
 			highlightCompletedSOS();
 			displayGameStatus();
