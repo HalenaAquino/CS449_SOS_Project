@@ -2,6 +2,7 @@ package sprint_3;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import sprint_3.SOSGame.GameState;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -19,7 +20,6 @@ import javafx.scene.shape.Line;
 import javafx.geometry.Pos;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import sprint_3.SOSGame.GameState;
 
 public class SOSGameGUI extends Application {
 	

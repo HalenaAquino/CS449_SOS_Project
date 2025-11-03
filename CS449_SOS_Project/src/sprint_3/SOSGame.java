@@ -205,7 +205,7 @@ class GeneralSOSGame extends SOSGame{
 }
 
 // parent class, contains all of the general rules between simple and general game
-abstract class SOSGame {
+public abstract class SOSGame {
 
 	// --------------------------------   VARIABLE DECLARATIONS  -------------------------------------
 	
@@ -214,7 +214,7 @@ abstract class SOSGame {
 	public enum GameState { PLAYING, DRAW, BLUE_WON, RED_WON }
 	
 	// private (only used in this class)
-	private char turn;
+	private char turn = 'B';
 	private String gameMode = "";
 	
 	// protected (used in children classes)
@@ -229,7 +229,7 @@ abstract class SOSGame {
 	// --------------------------------   GETTERS  -------------------------------------
 	public int getBlueScore() { return blueScore; }
 	public int getRedScore() { return redScore; }
-	public char getTurn() {return turn; }
+	public char getTurn() { return turn; }
 	public String getGamemode() { return gameMode; }
 	public char[][] getPieceTypeArray(){ return pieceType; }
 	public GameState getGameState() { return currentGameState; }
@@ -242,8 +242,9 @@ abstract class SOSGame {
 			return ' ';
 	}
 
-	// returns the player that's currently occupying a cell (1 for blue, 2 for red, 0 for empty) or returns -1 if the cell doesn't exist
+	// returns the player that's currently occupying a cell (1 for blue, 2 for red, 0 for empty) or returns null if the cell doesn't exist
 	public Cell getCell(int row, int column) {
+		if (game == null) return null;  // exits the function if there isn't a current game
 		if (row >= 0 && row < SIZE && column >= 0 && column < SIZE)
 			return game[row][column];
 		else
@@ -264,6 +265,7 @@ abstract class SOSGame {
 			game = new Cell[size][size];
 			pieceType = new char[size][size];
 			SIZE = size;
+			initGame();
 		}
 	}
 	
@@ -293,6 +295,7 @@ abstract class SOSGame {
 	
 	// places the current player's current piece on the given cell and updates the turn
 	public void makeMove(int row, int column, Dictionary<Character, Character> playerPieces) {
+		if (game == null) return;  // exits the function if there's not an ongoing game
 		if (row >= 0 && row < SIZE && column >= 0 && column < SIZE
 				&& game[row][column] == Cell.EMPTY) {
 			game[row][column] = (turn == 'B')? Cell.BLUE : Cell.RED; 
