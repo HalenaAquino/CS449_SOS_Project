@@ -20,80 +20,22 @@ class SimpleSOSGame extends SOSGame{
 
 	    // Case 1: when O is placed in the center
 	    if (placed == 'O') {
-	        // Horizontal
-	        if (column > 0 && column < SIZE - 1 &&
-	            pieces[row][column - 1] == 'S' &&
-	            pieces[row][column + 1] == 'S')
-	            return true;
-
-	        // Vertical
-	        if (row > 0 && row < SIZE - 1 &&
-	            pieces[row - 1][column] == 'S' &&
-	            pieces[row + 1][column] == 'S')
-	            return true;
-
-	        // Diagonal (\)
-	        if (row > 0 && row < SIZE - 1 && column > 0 && column < SIZE - 1 &&
-	            pieces[row - 1][column - 1] == 'S' &&
-	            pieces[row + 1][column + 1] == 'S')
-	            return true;
-
-	        // Other diagonal (/)
-	        if (row > 0 && row < SIZE - 1 && column > 0 && column < SIZE - 1 &&
-	            pieces[row - 1][column + 1] == 'S' &&
-	            pieces[row + 1][column - 1] == 'S')
-	            return true;
+	    	if (checkSOSWithO(row, column, 0, 1)) return true;   // Horizontal
+            if (checkSOSWithO(row, column, 1, 0)) return true;   // Vertical
+            if (checkSOSWithO(row, column, 1, 1)) return true;   // Diagonal \
+            if (checkSOSWithO(row, column, 1, -1)) return true;  // Other diagonal /
 	    }
 
 	    // Case 2: when S is placed completing SOS on the right (S O S)
 	    if (placed == 'S') {
-	        // Horizontal: S placed after SO
-	        if (column >= 2 &&
-	            pieces[row][column - 1] == 'O' &&
-	            pieces[row][column - 2] == 'S')
-	            return true;
-
-	        // Horizontal: S placed before OS
-	        if (column <= SIZE - 3 &&
-	            pieces[row][column + 1] == 'O' &&
-	            pieces[row][column + 2] == 'S')
-	            return true;
-
-	        // Vertical: S placed after SO
-	        if (row >= 2 &&
-	            pieces[row - 1][column] == 'O' &&
-	            pieces[row - 2][column] == 'S')
-	            return true;
-
-	        // Vertical: S placed before OS
-	        if (row <= SIZE - 3 &&
-	            pieces[row + 1][column] == 'O' &&
-	            pieces[row + 2][column] == 'S')
-	            return true;
-
-	        // Diagonal (\): S placed after SO
-	        if (row >= 2 && column >= 2 &&
-	            pieces[row - 1][column - 1] == 'O' &&
-	            pieces[row - 2][column - 2] == 'S')
-	            return true;
-
-	        // Diagonal (\): S placed before OS
-	        if (row <= SIZE - 3 && column <= SIZE - 3 &&
-	            pieces[row + 1][column + 1] == 'O' &&
-	            pieces[row + 2][column + 2] == 'S')
-	            return true;
-
-	        // Other diagonal (/): S placed after SO
-	        if (row >= 2 && column <= SIZE - 3 &&
-	            pieces[row - 1][column + 1] == 'O' &&
-	            pieces[row - 2][column + 2] == 'S')
-	            return true;
-
-	        // Other diagonal (/): S placed before OS
-	        if (row <= SIZE - 3 && column >= 2 &&
-	            pieces[row + 1][column - 1] == 'O' &&
-	            pieces[row + 2][column - 2] == 'S')
-	            return true;
+	    	if (checkSOSWithS(row, column, 0, 1, -1)) return true;   // Horizontal to the left
+            if (checkSOSWithS(row, column, 0, 1, 1)) return true;    // Horizontal to the right
+            if (checkSOSWithS(row, column, 1, 0, -1)) return true;   // Vertical upwards
+            if (checkSOSWithS(row, column, 1, 0, 1)) return true;    // Vertical downwards
+            if (checkSOSWithS(row, column, 1, 1, -1)) return true;   // Diagonal upwards and left
+            if (checkSOSWithS(row, column, 1, 1, 1)) return true;    // Diagonal downwards and right
+            if (checkSOSWithS(row, column, 1, -1, -1)) return true;  // Diagonal upwards and right
+            if (checkSOSWithS(row, column, 1, -1, 1)) return true;   // Diagonal downwards and left
 	    }
 		
 		return false;		// otherwise false
@@ -131,44 +73,22 @@ class GeneralSOSGame extends SOSGame{
 
 	    // finds and counts SOS's when an O was placed
 	    if (placed == 'O') {
-	        // Horizontal
-	        if (col - 1 >= 0 && col + 1 < SIZE &&
-	            pieces[row][col - 1] == 'S' && pieces[row][col + 1] == 'S') points++;
-
-	        // Vertical
-	        if (row - 1 >= 0 && row + 1 < SIZE &&
-	            pieces[row - 1][col] == 'S' && pieces[row + 1][col] == 'S') points++;
-
-	        // Diagonal \ 
-	        if (row - 1 >= 0 && col - 1 >= 0 && row + 1 < SIZE && col + 1 < SIZE &&
-	            pieces[row - 1][col - 1] == 'S' && pieces[row + 1][col + 1] == 'S') points++;
-
-	        // Diagonal /
-	        if (row - 1 >= 0 && col + 1 < SIZE && row + 1 < SIZE && col - 1 >= 0 &&
-	            pieces[row - 1][col + 1] == 'S' && pieces[row + 1][col - 1] == 'S') points++;
+	    	if (checkSOSWithO(row, col, 0, 1)) points++;   // Horizontal
+            if (checkSOSWithO(row, col, 1, 0)) points++;   // Vertical
+            if (checkSOSWithO(row, col, 1, 1)) points++;   // Diagonal \
+            if (checkSOSWithO(row, col, 1, -1)) points++;  // Other diagonal /
 	    }
 
 	    // finds and counts SOS's when an S was placed
 	    if (placed == 'S') {
-	        if (col + 2 < SIZE &&
-	            pieces[row][col + 1] == 'O' && pieces[row][col + 2] == 'S') points++;
-	        if (col - 2 >= 0 &&
-	            pieces[row][col - 1] == 'O' && pieces[row][col - 2] == 'S') points++;
-
-	        if (row + 2 < SIZE &&
-	            pieces[row + 1][col] == 'O' && pieces[row + 2][col] == 'S') points++;
-	        if (row - 2 >= 0 &&
-	            pieces[row - 1][col] == 'O' && pieces[row - 2][col] == 'S') points++;
-
-	        if (row + 2 < SIZE && col + 2 < SIZE &&
-	            pieces[row + 1][col + 1] == 'O' && pieces[row + 2][col + 2] == 'S') points++;
-	        if (row - 2 >= 0 && col - 2 >= 0 &&
-	            pieces[row - 1][col - 1] == 'O' && pieces[row - 2][col - 2] == 'S') points++;
-
-	        if (row - 2 >= 0 && col + 2 < SIZE &&
-	            pieces[row - 1][col + 1] == 'O' && pieces[row - 2][col + 2] == 'S') points++;
-	        if (row + 2 < SIZE && col - 2 >= 0 &&
-	            pieces[row + 1][col - 1] == 'O' && pieces[row + 2][col - 2] == 'S') points++;
+	    	if (checkSOSWithS(row, col, 0, 1, -1)) points++;
+            if (checkSOSWithS(row, col, 0, 1, 1)) points++;
+            if (checkSOSWithS(row, col, 1, 0, -1)) points++;
+            if (checkSOSWithS(row, col, 1, 0, 1)) points++;
+            if (checkSOSWithS(row, col, 1, 1, -1)) points++;
+            if (checkSOSWithS(row, col, 1, 1, 1)) points++;
+            if (checkSOSWithS(row, col, 1, -1, -1)) points++;
+            if (checkSOSWithS(row, col, 1, -1, 1)) points++;
 	    }
 
 	    // updates the appropriate player score
@@ -259,7 +179,7 @@ public abstract class SOSGame {
 		int prevRow = row - dRow;
 		int prevCol = col - dCol;
 		int nextRow = row + dRow;
-		int nextCol = col + dRow;
+		int nextCol = col + dCol;
 		
 		// ensures that the cells are within board bounds
 		if (prevRow < 0 || prevRow >= SIZE || prevCol < 0 || prevCol >= SIZE)	return false;
