@@ -16,6 +16,7 @@ class SimpleSOSGame extends SOSGame{
 	public boolean hasWon(char player, int row, int column) {
 		char[][] pieces = getPieceTypeArray();
 	    char placed = pieces[row][column];
+	    int SIZE = getSize();
 
 	    // Case 1: when O is placed in the center
 	    if (placed == 'O') {
@@ -126,6 +127,7 @@ class GeneralSOSGame extends SOSGame{
 	    char[][] pieces = getPieceTypeArray();
 	    int points = 0;
 	    char placed = pieces[row][col];
+	    int SIZE = getSize();
 
 	    // finds and counts SOS's when an O was placed
 	    if (placed == 'O') {
@@ -146,7 +148,7 @@ class GeneralSOSGame extends SOSGame{
 	            pieces[row - 1][col + 1] == 'S' && pieces[row + 1][col - 1] == 'S') points++;
 	    }
 
-	    // finds and counts SOS's when an O was placed
+	    // finds and counts SOS's when an S was placed
 	    if (placed == 'S') {
 	        if (col + 2 < SIZE &&
 	            pieces[row][col + 1] == 'O' && pieces[row][col + 2] == 'S') points++;
@@ -219,7 +221,7 @@ public abstract class SOSGame {
 	
 	// protected (used in children classes)
 	protected char[][] pieceType; 
-	protected static int SIZE;
+	private static int SIZE;
 	protected int blueScore = 0;
 	protected int redScore  = 0;
 	protected GameState currentGameState;
@@ -230,6 +232,7 @@ public abstract class SOSGame {
 	public int getBlueScore() { return blueScore; }
 	public int getRedScore() { return redScore; }
 	public char getTurn() { return turn; }
+	public static int getSize() { return SIZE; }
 	public String getGamemode() { return gameMode; }
 	public char[][] getPieceTypeArray(){ return pieceType; }
 	public GameState getGameState() { return currentGameState; }
@@ -250,6 +253,34 @@ public abstract class SOSGame {
 		else
 			return null;
 	}
+	
+	// ------------------------- SOS DETECTION HELPER FUNCTIONS -----------------------------
+	protected boolean checkSOSWithO(int row, int col, int dRow, int dCol) {
+		int prevRow = row - dRow;
+		int prevCol = col - dCol;
+		int nextRow = row + dRow;
+		int nextCol = col + dRow;
+		
+		// ensures that the cells are within board bounds
+		if (prevRow < 0 || prevRow >= SIZE || prevCol < 0 || prevCol >= SIZE)	return false;
+		if (nextRow < 0 || nextRow >= SIZE || nextCol < 0 || nextCol >= SIZE)	return false;
+		
+		return pieceType[prevRow][prevCol] == 'S' && pieceType[nextRow][nextCol] == 'S';
+	}
+	
+	protected boolean checkSOSWithS (int row, int col, int dRow, int dCol, int distance) {
+		int oRow = row + dRow * distance;
+		int oCol = col + dCol * distance;
+		int sRow = row + dRow * distance * 2;
+		int sCol = col + dCol * distance * 2;
+		
+		// ensures the cell is within bounds
+		if (oRow < 0 || oRow >= SIZE || oCol < 0 || oCol >= SIZE) return false;
+		if (sRow < 0 || sRow >= SIZE || sCol < 0 || sCol >= SIZE) return false;
+		
+		return pieceType[oRow][oCol] == 'O' && pieceType[sRow][sCol] == 'S';
+	}
+	
 	
 	// -------------------------------   GAME LOGIC ------------------------------------------	
 	

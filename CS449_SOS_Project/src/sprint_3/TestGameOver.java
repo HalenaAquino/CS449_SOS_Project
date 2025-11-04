@@ -92,6 +92,7 @@ public class TestGameOver {
 		gameG.makeMove(0, 0, playerPieces);
 		gameG.makeMove(1, 1, playerPieces);
 		gameG.makeMove(2, 2, playerPieces);		// makes SOS
+		assertEquals(1, gameG.getBlueScore());
 		assertEquals(SOSGame.GameState.PLAYING, gameG.getGameState());		// determines if the game is still active after SOS made
 	}
 	
@@ -104,6 +105,7 @@ public class TestGameOver {
 		gameG.makeMove(0, 1, playerPieces);
 		gameG.makeMove(2, 0, playerPieces);
 		gameG.makeMove(1, 0, playerPieces);
+		assertEquals(SOSGame.GameState.PLAYING, gameG.getGameState());
 		assertEquals(gameG.getBlueScore(), gameG.getRedScore());		// tests if the SOS scores are even mid-game
 	}
 	

@@ -381,7 +381,7 @@ public class SOSGameGUI extends Application {
 		    // If a new SOS was just completed, finds and stores it
 		    if (currentBlueScore > lastBlueScore || currentRedScore > lastRedScore) {
 		        char[][] pieces = game.getPieceTypeArray();
-		        int size = SOSGame.SIZE;
+		        int size = SOSGame.getSize();
 		        
 		        // Determine which player just scored
 		        Color color = (game.getTurn() == 'B') ? Color.RED : Color.BLUE;
