@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
@@ -107,7 +108,7 @@ public class SOSGameGUI extends Application {
 				if (game.getTurn() != ' ' && game.getGamemode() != "" && bluePiece != ' ' && redPiece != ' ') {
 					// resets game settings
 					game.resetGame();
-					gameStatus.setText("Blue player's turn");
+					gameStatus.setText("Blue Players turn");
 					boardPane.getChildren().clear();
 					completedSOS.clear();
 					recordedSOS.clear();
@@ -146,6 +147,8 @@ public class SOSGameGUI extends Application {
 		        recordedSOS.clear();
 		        lastBlueScore = 0;
 		        lastRedScore = 0;
+		        boardSizeField.setText("");
+		        gameStatus.setText("Blue Players turn");
 		    }
 			
 			// deselects the buttons
@@ -234,7 +237,8 @@ public class SOSGameGUI extends Application {
 		// game status label
 		gameStatus= new Label("Blue Players Turn");
 		bottomPane.add(gameStatus, 2, 5);
-		gameStatus.setTranslateX(230);
+		gameStatus.setTranslateX(210);
+		gameStatus.setFont(new Font("Arial", 15));
 		
 		// error message label
 		errorMessage = new Label("");
@@ -242,7 +246,7 @@ public class SOSGameGUI extends Application {
 		errorMessage.setTranslateX(-130);
 		errorMessage.setTranslateY(-30);
 		errorMessage.setTextFill(Color.RED);			// makes the errorMessage red and larger
-		errorMessage.setFont(new Font("Arial", 15));
+		errorMessage.setFont(Font.font("Arial", FontWeight.BOLD, 14));		// makes game status bold and bigger
 
 		// general pane settings
 		bottomPane.setMinWidth(800);

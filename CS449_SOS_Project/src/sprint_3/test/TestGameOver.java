@@ -111,7 +111,4 @@ public class TestGameOver {
 		assertEquals(SOSGame.GameState.PLAYING, gameG.getGameState());
 		assertEquals(gameG.getBlueScore(), gameG.getRedScore());		// tests if the SOS scores are even mid-game
 	}
-	
-	
-
 }
