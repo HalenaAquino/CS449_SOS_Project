@@ -1,9 +1,12 @@
-package sprint_3;
+package sprint_3.test;
 
 import static org.junit.Assert.*;
 import java.util.Map;import java.util.Hashtable;
 import org.junit.Before;
 import org.junit.Test;
+
+import sprint_3.production.GeneralSOSGame;
+import sprint_3.production.SOSGame;
 
 public class TestSMoves {
 

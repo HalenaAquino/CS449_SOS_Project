@@ -1,8 +1,8 @@
-package sprint_3;
+package sprint_3.production;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import sprint_3.SOSGame.GameState;
+import sprint_3.production.SOSGame.GameState;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
