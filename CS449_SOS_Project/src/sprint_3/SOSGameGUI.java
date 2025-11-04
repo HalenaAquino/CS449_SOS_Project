@@ -18,8 +18,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.geometry.Pos;
-import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Map;
 
 public class SOSGameGUI extends Application {
 	
@@ -42,7 +42,7 @@ public class SOSGameGUI extends Application {
 	private Label errorMessage;
 	private TextField boardSizeField;
 	private GridPane boardPane;
-	private Dictionary<Character, Character> playerSelectedPieces;
+	private Map<Character, Character> playerSelectedPieces;
 	private SOSGame game;
 	
 	// integers
@@ -176,7 +176,7 @@ public class SOSGameGUI extends Application {
 	}
 
 	// draws the actual board
-	public void drawBoard(int size, Dictionary<Character, Character> playerSelectedPieces) {
+	public void drawBoard(int size, Map<Character, Character> playerSelectedPieces) {
 	    for (int row = 0; row < size; row++) {
 	        for (int column = 0; column < size; column++) {
 	            squares[row][column].getChildren().clear();		// Clears anything pre-existing in the squares
@@ -349,7 +349,7 @@ public class SOSGameGUI extends Application {
 		private int row, column;
 		
 		// Creates each square and handles piece placement (moves being made)
-		public Square(int size, int row, int column, Dictionary<Character, Character> playerSelectedPieces) {
+		public Square(int size, int row, int column, Map<Character, Character> playerSelectedPieces) {
 			this.row = row;
 			this.column = column;
 			setStyle("-fx-border-color: black");
@@ -358,7 +358,7 @@ public class SOSGameGUI extends Application {
 		}
 
 		// Makes the actual move and updates the board
-		private void handleMouseClick(int size, Dictionary<Character, Character> playerSelectedPieces) {
+		private void handleMouseClick(int size, Map<Character, Character> playerSelectedPieces) {
 			if (game.getGameState() == GameState.PLAYING)
 				game.makeMove(row, column, playerSelectedPieces);
 			else {
@@ -369,19 +369,19 @@ public class SOSGameGUI extends Application {
 				recordedSOS.clear();
 			}
 			drawBoard(size, playerSelectedPieces);
-			highlightCompletedSOS();
+			highlightCompletedSOS(size);
 			displayGameStatus();
 		}
 		
 		// responsible for determining if an SOS was made THIS turn and updating the set and list
-		private void highlightCompletedSOS() {
+		private void highlightCompletedSOS(int s) {
 		    int currentBlueScore = game.getBlueScore();
 		    int currentRedScore = game.getRedScore();
 		    
 		    // If a new SOS was just completed, finds and stores it
 		    if (currentBlueScore > lastBlueScore || currentRedScore > lastRedScore) {
 		        char[][] pieces = game.getPieceTypeArray();
-		        int size = SOSGame.getSize();
+		        int size = s;
 		        
 		        // Determine which player just scored
 		        Color color = (game.getTurn() == 'B') ? Color.RED : Color.BLUE;

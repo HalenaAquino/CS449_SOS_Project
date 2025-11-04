@@ -1,15 +1,14 @@
 package sprint_3;
 
 import static org.junit.Assert.*;
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.Map;import java.util.Hashtable;
 import org.junit.Before;
 import org.junit.Test;
 
 public class TestOMoves {
 
     private SOSGame game;
-    private Dictionary<Character, Character> playerPieces;
+    private Map<Character, Character> playerPieces;
 
     @Before
     public void setUp() {

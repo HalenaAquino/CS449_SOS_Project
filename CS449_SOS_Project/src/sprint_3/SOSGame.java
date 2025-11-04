@@ -1,6 +1,6 @@
 package sprint_3;
 
-import java.util.Dictionary;
+import java.util.Map;
 
 // DEPENDENCY INVERSION WILL BE CONSIDERED FOR EXTRA CREDIT
 
@@ -16,7 +16,6 @@ class SimpleSOSGame extends SOSGame{
 	public boolean hasWon(char player, int row, int column) {
 		char[][] pieces = getPieceTypeArray();
 	    char placed = pieces[row][column];
-	    int SIZE = getSize();
 
 	    // Case 1: when O is placed in the center
 	    if (placed == 'O') {
@@ -69,7 +68,6 @@ class GeneralSOSGame extends SOSGame{
 	    char[][] pieces = getPieceTypeArray();
 	    int points = 0;
 	    char placed = pieces[row][col];
-	    int SIZE = getSize();
 
 	    // finds and counts SOS's when an O was placed
 	    if (placed == 'O') {
@@ -137,29 +135,36 @@ public abstract class SOSGame {
 	
 	// private (only used in this class)
 	private char turn = 'B';
-	private String gameMode = "";
+	private String gameMode = ""; 
+	private int size;
+	private Cell[][] game;
 	
 	// protected (used in children classes)
-	protected char[][] pieceType; 
-	private static int SIZE;
 	protected int blueScore = 0;
 	protected int redScore  = 0;
 	protected GameState currentGameState;
-	protected Cell[][] game;
+	protected char[][] pieceType;
 
 	
 	// --------------------------------   GETTERS  -------------------------------------
 	public int getBlueScore() { return blueScore; }
 	public int getRedScore() { return redScore; }
 	public char getTurn() { return turn; }
-	public static int getSize() { return SIZE; }
+	public int getSize() { return size; }
 	public String getGamemode() { return gameMode; }
-	public char[][] getPieceTypeArray(){ return pieceType; }
 	public GameState getGameState() { return currentGameState; }
+	
+	public char[][] getPieceTypeArray(){
+		char[][] copy = new char[size][size];
+	    for (int r = 0; r < size; r++)
+	        for (int c = 0; c < size; c++)
+	            copy[r][c] = pieceType[r][c];
+	    return copy;
+	}
 		
 	// returns the current piece in the cell (S/O)
 	public char getPieceType(int row, int column) {
-		if(row >= 0 && row < SIZE && column >= 0 && column < SIZE) 
+		if(row >= 0 && row < size && column >= 0 && column < size) 
 			return pieceType[row][column];
 		else
 			return ' ';
@@ -168,7 +173,7 @@ public abstract class SOSGame {
 	// returns the player that's currently occupying a cell (1 for blue, 2 for red, 0 for empty) or returns null if the cell doesn't exist
 	public Cell getCell(int row, int column) {
 		if (game == null) return null;  // exits the function if there isn't a current game
-		if (row >= 0 && row < SIZE && column >= 0 && column < SIZE)
+		if (row >= 0 && row < size && column >= 0 && column < size)
 			return game[row][column];
 		else
 			return null;
@@ -182,8 +187,8 @@ public abstract class SOSGame {
 		int nextCol = col + dCol;
 		
 		// ensures that the cells are within board bounds
-		if (prevRow < 0 || prevRow >= SIZE || prevCol < 0 || prevCol >= SIZE)	return false;
-		if (nextRow < 0 || nextRow >= SIZE || nextCol < 0 || nextCol >= SIZE)	return false;
+		if (prevRow < 0 || prevRow >= size || prevCol < 0 || prevCol >= size)	return false;
+		if (nextRow < 0 || nextRow >= size || nextCol < 0 || nextCol >= size)	return false;
 		
 		return pieceType[prevRow][prevCol] == 'S' && pieceType[nextRow][nextCol] == 'S';
 	}
@@ -195,8 +200,8 @@ public abstract class SOSGame {
 		int sCol = col + dCol * distance * 2;
 		
 		// ensures the cell is within bounds
-		if (oRow < 0 || oRow >= SIZE || oCol < 0 || oCol >= SIZE) return false;
-		if (sRow < 0 || sRow >= SIZE || sCol < 0 || sCol >= SIZE) return false;
+		if (oRow < 0 || oRow >= size || oCol < 0 || oCol >= size) return false;
+		if (sRow < 0 || sRow >= size || sCol < 0 || sCol >= size) return false;
 		
 		return pieceType[oRow][oCol] == 'O' && pieceType[sRow][sCol] == 'S';
 	}
@@ -209,21 +214,21 @@ public abstract class SOSGame {
 	protected abstract void updateGameState(char turn, int row, int column);
 	
 	// creates the board
-	public SOSGame(int size) {
-		if(size < 3 || size > 9)
+	public SOSGame(int s) {
+		if(s < 3 || s > 9)
 			turn = ' ';
 		else {
-			game = new Cell[size][size];
-			pieceType = new char[size][size];
-			SIZE = size;
+			game = new Cell[s][s];
+			pieceType = new char[s][s];
+			size = s;
 			initGame();
 		}
 	}
 	
 	// initializes the game, resets all of the variables and board
 	private void initGame() {
-		for (int row = 0; row < SIZE; ++row) {
-			for (int col = 0; col < SIZE; ++col) {
+		for (int row = 0; row < size; ++row) {
+			for (int col = 0; col < size; ++col) {
 				game[row][col] = Cell.EMPTY;
 				pieceType[row][col] = ' ';
 			}
@@ -245,9 +250,9 @@ public abstract class SOSGame {
 	}
 	
 	// places the current player's current piece on the given cell and updates the turn
-	public void makeMove(int row, int column, Dictionary<Character, Character> playerPieces) {
+	public void makeMove(int row, int column, Map<Character, Character> playerPieces) {
 		if (game == null) return;  // exits the function if there's not an ongoing game
-		if (row >= 0 && row < SIZE && column >= 0 && column < SIZE
+		if (row >= 0 && row < size && column >= 0 && column < size
 				&& game[row][column] == Cell.EMPTY) {
 			game[row][column] = (turn == 'B')? Cell.BLUE : Cell.RED; 
 			pieceType[row][column] = playerPieces.get(getTurn());
@@ -259,8 +264,8 @@ public abstract class SOSGame {
 	// determines if the board has any empty cells
 	protected boolean boardFull() {
 		// returns false is there are any unoccupied cells
-	    for (int r = 0; r < SIZE; r++)
-	        for (int c = 0; c < SIZE; c++)
+	    for (int r = 0; r < size; r++)
+	        for (int c = 0; c < size; c++)
 	            if (game[r][c] == Cell.EMPTY) return false;
 	    
 	    return true;
