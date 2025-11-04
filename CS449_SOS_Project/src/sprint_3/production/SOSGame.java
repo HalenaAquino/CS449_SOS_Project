@@ -18,12 +18,12 @@ public abstract class SOSGame {
 	private String gameMode = ""; 
 	private int size;
 	private Cell[][] game;
+	private char[][] pieceType;
 	
 	// protected (used in children classes)
 	protected int blueScore = 0;
 	protected int redScore  = 0;
 	protected GameState currentGameState;
-	protected char[][] pieceType;
 	
 	// --------------------------------   GETTERS  -------------------------------------
 	public int getBlueScore() { return blueScore; }
