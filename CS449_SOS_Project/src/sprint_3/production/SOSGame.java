@@ -24,7 +24,6 @@ public abstract class SOSGame {
 	protected int redScore  = 0;
 	protected GameState currentGameState;
 	protected char[][] pieceType;
-
 	
 	// --------------------------------   GETTERS  -------------------------------------
 	public int getBlueScore() { return blueScore; }

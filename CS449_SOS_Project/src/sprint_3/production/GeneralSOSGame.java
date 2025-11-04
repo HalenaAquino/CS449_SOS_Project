@@ -43,7 +43,6 @@ public class GeneralSOSGame extends SOSGame{
 	}
 	
 	// general game needs a specialized update function for determining when to continue and who won
-	@Override
 	protected void updateGameState(char turn, int row, int column) {
 	    // Count points first
 	    countSOS(turn, row, column);

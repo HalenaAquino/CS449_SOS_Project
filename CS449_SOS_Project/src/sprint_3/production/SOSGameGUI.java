@@ -251,7 +251,6 @@ public class SOSGameGUI extends Application {
 		// general pane settings
 		bottomPane.setMinWidth(800);
 		bottomPane.setMaxHeight(200);
-				
 	}
 	
 	// creates all of the objects in the center pane
@@ -274,7 +273,6 @@ public class SOSGameGUI extends Application {
 		ToggleGroup bluePieceGroup = new ToggleGroup();
 		blueSButton.setToggleGroup(bluePieceGroup);
 		blueOButton.setToggleGroup(bluePieceGroup);
-
 				
 		playerSelectedPieces = new Hashtable<>();
 		
@@ -516,7 +514,6 @@ public class SOSGameGUI extends Application {
 		    label.setFont(new Font((this.getHeight()/1.5)));
 		    label.setAlignment(Pos.CENTER);
 		    label.setPrefSize(this.getWidth(), this.getHeight());
-
 		    this.getChildren().add(label);
 		}
 		
@@ -531,7 +528,6 @@ public class SOSGameGUI extends Application {
 			ellipse.setStroke(c);
 			ellipse.setStrokeWidth(this.getHeight()/25);
 			ellipse.setFill(Color.TRANSPARENT);
-
 			getChildren().add(ellipse);
 		}
 		
