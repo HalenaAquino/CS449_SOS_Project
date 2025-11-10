@@ -37,6 +37,10 @@ public class SOSGameGUI extends Application {
 	private RadioButton blueOButton;
 	private RadioButton redSButton;
 	private RadioButton redOButton;
+	private RadioButton blueHumanButton;
+	private RadioButton blueComputerButton;
+	private RadioButton redHumanButton;
+	private RadioButton redComputerButton;
 	
 	// labels
 	private Label gameStatus;
@@ -128,6 +132,11 @@ public class SOSGameGUI extends Application {
 					boardSizeField.setDisable(true);
 					applyButton.setDisable(true);
 					
+					if (blueHumanButton.isSelected()) blueComputerButton.setDisable(true);
+					if (blueComputerButton.isSelected()) blueHumanButton.setDisable(true);
+					if (redHumanButton.isSelected()) redComputerButton.setDisable(true);
+					if (redComputerButton.isSelected()) redHumanButton.setDisable(true);
+					
 					errorMessage.setText("");		// Sets the error message to empty if there's no error
 			    }
 				else
@@ -162,6 +171,15 @@ public class SOSGameGUI extends Application {
 		    blueOButton.setSelected(false);
 		    redSButton.setSelected(false);
 		    redOButton.setSelected(false);
+		    blueHumanButton.setDisable(false);
+		    blueHumanButton.setSelected(false);
+		    blueComputerButton.setDisable(false);
+		    blueComputerButton.setSelected(false);
+		    redHumanButton.setDisable(false);
+		    redHumanButton.setSelected(false);
+		    redComputerButton.setDisable(false);
+		    redComputerButton.setSelected(false);
+		    
 			
 		});	
 		
@@ -261,11 +279,35 @@ public class SOSGameGUI extends Application {
 		boardPane.setPrefWidth(470);
 		GridPane redControlPane = new GridPane();
 		
+		
+		
+		
+		
+		
+		
+		
 		// creates and positions the blue label
 		Label bluePlayerLabel = new Label("Blue Player: ");
-		bluePlayerLabel.setTranslateX(-25);
+		bluePlayerLabel.setTranslateX(-35);
 		bluePlayerLabel.setMinWidth(65);
 		bluePlayerLabel.setTranslateY(200);
+		
+		blueHumanButton = new RadioButton("Human");
+		blueComputerButton = new RadioButton("Computer");
+		ToggleGroup blueTypeGroup = new ToggleGroup();
+		blueHumanButton.setToggleGroup(blueTypeGroup);
+		blueComputerButton.setToggleGroup(blueTypeGroup);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 				
 		// creates the blue buttons
 		blueSButton = new RadioButton("S");
@@ -273,6 +315,8 @@ public class SOSGameGUI extends Application {
 		ToggleGroup bluePieceGroup = new ToggleGroup();
 		blueSButton.setToggleGroup(bluePieceGroup);
 		blueOButton.setToggleGroup(bluePieceGroup);
+		blueSButton.setDisable(true);
+		blueOButton.setDisable(true);
 				
 		playerSelectedPieces = new Hashtable<>();
 		
@@ -286,28 +330,90 @@ public class SOSGameGUI extends Application {
 			bluePiece = 'O';
 			playerSelectedPieces.put('B', bluePiece);
 			});
+		
+		
+		
+		
+		
+		
+		
+		
+		blueHumanButton.setOnAction(e -> {
+			//TODO
+			blueSButton.setDisable(false);
+			blueOButton.setDisable(false);
+			});
+				
+		blueComputerButton.setOnAction(e -> {
+			//TODO
+			blueSButton.setDisable(true);
+			blueOButton.setDisable(true);
+			
+			});
+		
+		
+		
+		
 				
 		// moves the blue buttons and labels
-		blueSButton.setTranslateX(bluePlayerLabel.getTranslateX() - 40);
-		blueSButton.setTranslateY(bluePlayerLabel.getTranslateY() + 30);
+		
+		blueHumanButton.setTranslateY(bluePlayerLabel.getTranslateY() + 30);
+		blueComputerButton.setTranslateY(blueHumanButton.getTranslateY() + 80);
+		blueHumanButton.setTranslateX(bluePlayerLabel.getTranslateX() + 15);
+		blueComputerButton.setTranslateX(blueHumanButton.getTranslateX());
+		
+		blueSButton.setTranslateX(bluePlayerLabel.getTranslateX() - 25);
+		blueSButton.setTranslateY(blueHumanButton.getTranslateY() + 30);
 		blueOButton.setTranslateX(blueSButton.getTranslateX() - 28);
 		blueOButton.setTranslateY(blueSButton.getTranslateY() + 25);
 				
+		
+		
+		
+		
+		
+		
 		// positions the board
 		boardPane.setTranslateX(bluePlayerLabel.getMaxWidth() - 60);
 
+		
+		
+		
+		
+		
+		
+		
+		
 		// creates and positions the red label
 		Label redPlayerLabel = new Label("Red Player: ");
-		redPlayerLabel.setTranslateX(boardPane.getMaxWidth() - 40);
+		redPlayerLabel.setTranslateX(boardPane.getMaxWidth() - 50);
 		redPlayerLabel.setMinWidth(65);
 		redPlayerLabel.setTranslateY(200);
 				
+		
+		
+		
+		redHumanButton = new RadioButton("Human");
+		redComputerButton = new RadioButton("Computer");
+		ToggleGroup redTypeGroup = new ToggleGroup();
+		redHumanButton.setToggleGroup(redTypeGroup);
+		redComputerButton.setToggleGroup(redTypeGroup);
+		
+		
+		
+		
+		
+		
+		
+		
 		// creates the red buttons
 		redSButton = new RadioButton("S");
 		redOButton = new RadioButton("O");
 		ToggleGroup redPieceGroup = new ToggleGroup();
 		redSButton.setToggleGroup(redPieceGroup);
 		redOButton.setToggleGroup(redPieceGroup);
+		redSButton.setDisable(true);
+		redOButton.setDisable(true);
 				
 		// Sets the red piece to the the shape they chose (S/O)
 		redSButton.setOnAction(e -> {
@@ -319,22 +425,65 @@ public class SOSGameGUI extends Application {
 			redPiece = 'O';
 			playerSelectedPieces.put('R', redPiece);
 			});
+		
+		
+		
+		
+		
+		
+		redHumanButton.setOnAction(e -> {
+			//TODO
+			redSButton.setDisable(false);
+			redOButton.setDisable(false);
+			});
+				
+		redComputerButton.setOnAction(e -> {
+			//TODO
+			redSButton.setDisable(true);
+			redOButton.setDisable(true);
+			
+			});
 		                
+		
+		
+		
+		
+		redHumanButton.setTranslateY(redPlayerLabel.getTranslateY() + 30);
+		redComputerButton.setTranslateY(redHumanButton.getTranslateY() + 80);
+		redHumanButton.setTranslateX(redPlayerLabel.getTranslateX() + 15);
+		redComputerButton.setTranslateX(redHumanButton.getTranslateX());
+		
+		
 		// moves the red buttons and labels
-		redSButton.setTranslateX(redPlayerLabel.getTranslateX() - 40);
-		redSButton.setTranslateY(redPlayerLabel.getTranslateY() + 30);
+		redSButton.setTranslateX(redPlayerLabel.getTranslateX() - 25);
+		redSButton.setTranslateY(redHumanButton.getTranslateY() + 30);
 		redOButton.setTranslateX(redSButton.getTranslateX() - 28);
 		redOButton.setTranslateY(redSButton.getTranslateY() + 25);
 				
+		
+		
+		
+		
+		
 		// adds blue player buttons
 		blueControlPane.add(bluePlayerLabel, 1, 5);
 		blueControlPane.add(blueSButton, 2, 5);
 		blueControlPane.add(blueOButton, 3, 5);
+		blueControlPane.add(blueHumanButton, 1, 5);
+		blueControlPane.add(blueComputerButton, 1, 5);
 				
+		
+		
+		
+		
+		
+		
 		// adds red player buttons
 		redControlPane.add(redPlayerLabel, 1, 5);
 		redControlPane.add(redSButton, 2, 5);
 		redControlPane.add(redOButton, 3, 5);
+		redControlPane.add(redHumanButton, 1, 5);
+		redControlPane.add(redComputerButton, 1, 5);
 				
 		// combines all of the center panes
 		centerPane.add(blueControlPane, 1, 5);
