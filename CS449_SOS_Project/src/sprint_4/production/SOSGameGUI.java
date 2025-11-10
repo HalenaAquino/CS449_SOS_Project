@@ -1,7 +1,10 @@
 package sprint_4.production;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import sprint_4.production.SOSGame.GameState;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -57,7 +60,6 @@ public class SOSGameGUI extends Application {
 	// characters
 	private char bluePiece = ' ';
 	private char redPiece = ' ';
-	private char computerPiece = 'O';
 	private char bluePlayerType = ' ';
 	private char redPlayerType = ' ';
 	
@@ -116,8 +118,9 @@ public class SOSGameGUI extends Application {
 				else
 					throw new NumberFormatException();
 				
+				
 				// 
-				if (game.getTurn() != ' ' && game.getGamemode() != "" && (blueHumanButton.isSelected() && bluePiece != ' ') || (redHumanButton.isSelected() && redPiece != ' ')) {
+				if (game.getTurn() != ' ' && game.getGamemode() != "" && ((blueHumanButton.isSelected() && bluePiece != ' ') || (redHumanButton.isSelected() && redPiece != ' ') || (blueComputerButton.isSelected() && redComputerButton.isSelected()))) {
 					// resets game settings
 					game.resetGame();
 					gameStatus.setText("Blue Players turn");
@@ -358,6 +361,8 @@ public class SOSGameGUI extends Application {
 			blueSButton.setDisable(true);
 			blueOButton.setDisable(true);
 			bluePlayerType = 'C';
+			bluePiece = 'S';
+			playerSelectedPieces.put('B', bluePiece);
 			});
 		
 		
@@ -452,7 +457,8 @@ public class SOSGameGUI extends Application {
 			redSButton.setDisable(true);
 			redOButton.setDisable(true);
 			redPlayerType = 'C';
-			playerSelectedPieces.put('R', computerPiece);
+			redPiece = 'O';
+			playerSelectedPieces.put('R', redPiece);
 			});
 		                
 		
@@ -532,13 +538,34 @@ public class SOSGameGUI extends Application {
 				completedSOS.clear();
 				recordedSOS.clear();
 			}
-			if ((game.getTurn() == 'R' && redPlayerType == 'C') || (game.getTurn() == 'B' && bluePlayerType == 'C'))
-				game.makeMove(row, column, playerSelectedPieces);
+			/*if ((game.getTurn() == 'R' && redPlayerType == 'C') || (game.getTurn() == 'B' && bluePlayerType == 'C'))
+				game.makeAutoMove(playerSelectedPieces);*/
+			
+			
 			drawBoard(size, playerSelectedPieces);
 			highlightCompletedSOS(size);
 			displayGameStatus();
 			
+			Timeline autoPlay = new Timeline(new KeyFrame(Duration.millis(800), ev -> {
+			    if (game.getGameState() == GameState.PLAYING) {
+			        game.makeAutoMove(playerSelectedPieces);
+			        drawBoard(size, playerSelectedPieces);
+			        highlightCompletedSOS(size);
+			        displayGameStatus();
+			    }
+			}));
+			autoPlay.setCycleCount(Timeline.INDEFINITE);
+			autoPlay.play();
+			
 		}
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		// responsible for determining if an SOS was made THIS turn and updating the set and list
 		private void highlightCompletedSOS(int s) {

@@ -92,6 +92,8 @@ public abstract class SOSGame {
 	protected abstract boolean isDraw();
 	protected abstract void updateGameState(char turn, int row, int column);
 	
+	public void makeAutoMove(Map<Character, Character> playerPieces) {}
+	
 	// creates the board
 	public SOSGame(int s) {
 		if(s < 3 || s > 9)

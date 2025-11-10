@@ -2,6 +2,7 @@ package sprint_4.production;
 
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class SimpleAutoSOSGame extends SimpleSOSGame {
 	private char autoPlayer;
@@ -49,8 +50,10 @@ public class SimpleAutoSOSGame extends SimpleSOSGame {
 			
 		
 	}
-
-	private void makeAutoMove(Map<Character, Character> playerPieces) {
+	
+	
+	@Override
+	public void makeAutoMove(Map<Character, Character> playerPieces) {
 		if (!makeWinningMove()) {
 			if (!blockOpponentWinningMove())
 				makeRandomMove(playerPieces);
