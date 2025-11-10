@@ -47,9 +47,10 @@ public class SimpleSOSGame extends SOSGame{
 			currentGameState = GameState.DRAW;
 	}
 	
-	public void makeMove(int row, int column, Map<Character, Character> playerPieces) {
+	/*public void makeMove(int row, int column, Map<Character, Character> playerPieces) {
 		super.makeMove(row, column, playerPieces);
-	}
+		System.out.println("end of simple make move");
+	}*/
 
 	// can only be a draw (in a simple game) if the board is full
 	public boolean isDraw() {

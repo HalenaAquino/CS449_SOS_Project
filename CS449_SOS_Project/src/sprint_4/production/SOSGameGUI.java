@@ -57,6 +57,7 @@ public class SOSGameGUI extends Application {
 	// characters
 	private char bluePiece = ' ';
 	private char redPiece = ' ';
+	private char computerPiece = 'O';
 	private char bluePlayerType = ' ';
 	private char redPlayerType = ' ';
 	
@@ -101,7 +102,6 @@ public class SOSGameGUI extends Application {
 				
 				// Sets the gamemode depending on which button was chosen, throws error if none chosen
 				if(simpleRButton.isSelected() && (bluePlayerType == 'C' || redPlayerType == 'C')) {
-					System.out.println("Making an auto move");
 					game = new SimpleAutoSOSGame(size, 'R');
 					game.setGamemode("Simple");
 				}
@@ -452,6 +452,7 @@ public class SOSGameGUI extends Application {
 			redSButton.setDisable(true);
 			redOButton.setDisable(true);
 			redPlayerType = 'C';
+			playerSelectedPieces.put('R', computerPiece);
 			});
 		                
 		
@@ -515,7 +516,13 @@ public class SOSGameGUI extends Application {
 			this.column = column;
 			setStyle("-fx-border-color: black");
 			this.setPrefSize(500/size, 500/size);			// the max size of the board pane (500) / the number of squares
-			this.setOnMouseClicked(e -> handleMouseClick(size, playerSelectedPieces));
+
+			if (game.getTurn() == 'B')
+				this.setOnMouseClicked(e -> handleMouseClick(size, playerSelectedPieces));
+			
+			// not working properly, O is randomly placing, but isn't showing until the player puts their next piece down
+			//else
+				//game.makeMove(row, column, playerSelectedPieces);
 		}
 
 		// Makes the actual move and updates the board

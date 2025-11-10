@@ -38,20 +38,22 @@ public class SimpleAutoSOSGame extends SimpleSOSGame {
 		pieces = playerPieces;
 		System.out.println("Making an auto move");
 		System.out.println("autoPlayer = " + autoPlayer);
-		System.out.println("Turn: " + getTurn());
+		
 			
 			if (getTurn() == autoPlayer && currentGameState == GameState.PLAYING) 
-				makeAutoMove();
+				makeAutoMove(playerPieces);
 			else
 				super.makeMove(row, column, playerPieces);
+			
+		System.out.println("current Turn: " + getTurn());
 			
 		
 	}
 
-	private void makeAutoMove() {
+	private void makeAutoMove(Map<Character, Character> playerPieces) {
 		if (!makeWinningMove()) {
 			if (!blockOpponentWinningMove())
-				makeRandomMove();
+				makeRandomMove(playerPieces);
 		}
 
 	}
@@ -73,16 +75,17 @@ public class SimpleAutoSOSGame extends SimpleSOSGame {
 		return false;
 	}
 
-	private void makeRandomMove() {
+	private void makeRandomMove(Map<Character, Character> playerPieces) {
 		int numberOfEmptyCells = getNumberOfEmptyCells();
 		Random random = new Random();
 		int targetMove = random.nextInt(numberOfEmptyCells);
 		int index=0;
+		System.out.println("makeRandomMove ran");
 		for (int row = 0; row < getSize(); ++row) {
 			for (int col = 0; col < getSize(); ++col) {
 				if (game[row][col] == Cell.EMPTY) {
 					if (targetMove == index) {
-						super.makeMove(row, col, pieces);
+						super.makeMove(row, col, playerPieces);
 						return;
 					} else
 						index++;
