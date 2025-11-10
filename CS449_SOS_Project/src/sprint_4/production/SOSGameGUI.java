@@ -57,6 +57,8 @@ public class SOSGameGUI extends Application {
 	// characters
 	private char bluePiece = ' ';
 	private char redPiece = ' ';
+	private char bluePlayerType = ' ';
+	private char redPlayerType = ' ';
 	
 	// data structures
 	private java.util.List<SOSLine> completedSOS = new java.util.ArrayList<>();
@@ -95,9 +97,15 @@ public class SOSGameGUI extends Application {
 			// throws an exception if the user enters an invalid size/type or doesn't select a gamemode/piece
 			try {
 				int size =  Integer.parseInt(boardSizeField.getText());
+				System.out.println("red player type: " + redPlayerType);
 				
 				// Sets the gamemode depending on which button was chosen, throws error if none chosen
-				if(simpleRButton.isSelected()) {
+				if(simpleRButton.isSelected() && (bluePlayerType == 'C' || redPlayerType == 'C')) {
+					System.out.println("Making an auto move");
+					game = new SimpleAutoSOSGame(size, 'R');
+					game.setGamemode("Simple");
+				}
+				else if(simpleRButton.isSelected() && bluePlayerType == 'H') {
 					game = new SimpleSOSGame(size);
 					game.setGamemode("Simple");
 				}
@@ -109,7 +117,7 @@ public class SOSGameGUI extends Application {
 					throw new NumberFormatException();
 				
 				// 
-				if (game.getTurn() != ' ' && game.getGamemode() != "" && bluePiece != ' ' && redPiece != ' ') {
+				if (game.getTurn() != ' ' && game.getGamemode() != "" && (blueHumanButton.isSelected() && bluePiece != ' ') || (redHumanButton.isSelected() && redPiece != ' ')) {
 					// resets game settings
 					game.resetGame();
 					gameStatus.setText("Blue Players turn");
@@ -342,13 +350,14 @@ public class SOSGameGUI extends Application {
 			//TODO
 			blueSButton.setDisable(false);
 			blueOButton.setDisable(false);
+			bluePlayerType = 'H';
 			});
 				
 		blueComputerButton.setOnAction(e -> {
 			//TODO
 			blueSButton.setDisable(true);
 			blueOButton.setDisable(true);
-			
+			bluePlayerType = 'C';
 			});
 		
 		
@@ -435,13 +444,14 @@ public class SOSGameGUI extends Application {
 			//TODO
 			redSButton.setDisable(false);
 			redOButton.setDisable(false);
+			redPlayerType = 'H';
 			});
 				
 		redComputerButton.setOnAction(e -> {
 			//TODO
 			redSButton.setDisable(true);
 			redOButton.setDisable(true);
-			
+			redPlayerType = 'C';
 			});
 		                
 		

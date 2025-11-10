@@ -1,5 +1,7 @@
 package sprint_4.production;
 
+import java.util.Map;
+
 // subclass for simple game rules
 
 public class SimpleSOSGame extends SOSGame{
@@ -43,6 +45,10 @@ public class SimpleSOSGame extends SOSGame{
 			currentGameState = (turn == 'B') ? GameState.BLUE_WON : GameState.RED_WON;
 		else if (isDraw())
 			currentGameState = GameState.DRAW;
+	}
+	
+	public void makeMove(int row, int column, Map<Character, Character> playerPieces) {
+		super.makeMove(row, column, playerPieces);
 	}
 
 	// can only be a draw (in a simple game) if the board is full

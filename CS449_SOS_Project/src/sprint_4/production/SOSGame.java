@@ -17,7 +17,7 @@ public abstract class SOSGame {
 	private char turn = 'B';
 	private String gameMode = ""; 
 	private int size;
-	private Cell[][] game;
+	protected Cell[][] game;
 	private char[][] pieceType;
 	
 	// protected (used in children classes)
