@@ -104,7 +104,7 @@ public class SOSGameGUI extends Application {
 				
 				// Sets the gamemode depending on which button was chosen, throws error if none chosen
 				if(simpleRButton.isSelected() && (bluePlayerType == 'C' || redPlayerType == 'C')) {
-					game = new SimpleAutoSOSGame(size, 'R');
+					game = new SimpleAutoSOSGame(size, 'R', playerSelectedPieces);
 					game.setGamemode("Simple");
 				}
 				else if(simpleRButton.isSelected() && bluePlayerType == 'H') {
@@ -538,24 +538,29 @@ public class SOSGameGUI extends Application {
 				completedSOS.clear();
 				recordedSOS.clear();
 			}
-			/*if ((game.getTurn() == 'R' && redPlayerType == 'C') || (game.getTurn() == 'B' && bluePlayerType == 'C'))
-				game.makeAutoMove(playerSelectedPieces);*/
+			if ((game.getTurn() == 'R' && redPlayerType == 'C') || (game.getTurn() == 'B' && bluePlayerType == 'C')) {
+				System.out.println("player pieces: " + playerSelectedPieces);
+				game.makeAutoMove(playerSelectedPieces);
+			}
 			
 			
 			drawBoard(size, playerSelectedPieces);
 			highlightCompletedSOS(size);
 			displayGameStatus();
 			
-			Timeline autoPlay = new Timeline(new KeyFrame(Duration.millis(800), ev -> {
-			    if (game.getGameState() == GameState.PLAYING) {
-			        game.makeAutoMove(playerSelectedPieces);
-			        drawBoard(size, playerSelectedPieces);
-			        highlightCompletedSOS(size);
-			        displayGameStatus();
-			    }
-			}));
-			autoPlay.setCycleCount(Timeline.INDEFINITE);
-			autoPlay.play();
+			// TODO: make it's own separate function (so it doesn't need a click to start)
+			if(redPlayerType == 'C' && bluePlayerType == 'C') {
+				Timeline autoPlay = new Timeline(new KeyFrame(Duration.millis(800), ev -> {
+				    if (game.getGameState() == GameState.PLAYING) {
+				        game.makeAutoMove(playerSelectedPieces);
+				        drawBoard(size, playerSelectedPieces);
+				        highlightCompletedSOS(size);
+				        displayGameStatus();
+				    }
+				}));
+				autoPlay.setCycleCount(Timeline.INDEFINITE);
+				autoPlay.play();
+			}
 			
 		}
 		
