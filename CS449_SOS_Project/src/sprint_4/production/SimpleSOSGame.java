@@ -1,6 +1,5 @@
 package sprint_4.production;
 
-import java.util.Map;
 
 // subclass for simple game rules
 

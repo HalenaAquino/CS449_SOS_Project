@@ -517,12 +517,8 @@ public class SOSGameGUI extends Application {
 			setStyle("-fx-border-color: black");
 			this.setPrefSize(500/size, 500/size);			// the max size of the board pane (500) / the number of squares
 
-			if (game.getTurn() == 'B')
-				this.setOnMouseClicked(e -> handleMouseClick(size, playerSelectedPieces));
 			
-			// not working properly, O is randomly placing, but isn't showing until the player puts their next piece down
-			//else
-				//game.makeMove(row, column, playerSelectedPieces);
+			this.setOnMouseClicked(e -> handleMouseClick(size, playerSelectedPieces));
 		}
 
 		// Makes the actual move and updates the board
@@ -536,9 +532,12 @@ public class SOSGameGUI extends Application {
 				completedSOS.clear();
 				recordedSOS.clear();
 			}
+			if ((game.getTurn() == 'R' && redPlayerType == 'C') || (game.getTurn() == 'B' && bluePlayerType == 'C'))
+				game.makeMove(row, column, playerSelectedPieces);
 			drawBoard(size, playerSelectedPieces);
 			highlightCompletedSOS(size);
 			displayGameStatus();
+			
 		}
 		
 		// responsible for determining if an SOS was made THIS turn and updating the set and list

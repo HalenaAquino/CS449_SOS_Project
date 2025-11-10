@@ -130,7 +130,9 @@ public abstract class SOSGame {
 	
 	// places the current player's current piece on the given cell and updates the turn
 	public void makeMove(int row, int column, Map<Character, Character> playerPieces) {
+		System.out.println("turn: " + turn);
 		System.out.println("making move in parent class");
+		System.out.println("Player pieces: " + playerPieces);
 		if (game == null) return;  // exits the function if there's not an ongoing game
 		if (row >= 0 && row < size && column >= 0 && column < size
 				&& game[row][column] == Cell.EMPTY) {
@@ -139,6 +141,7 @@ public abstract class SOSGame {
 			updateGameState(turn, row, column);
 			turn = (turn == 'B')? 'R' : 'B';
 		}
+		System.out.println("turn: " + turn);
 	}
 	
 	// determines if the board has any empty cells
