@@ -24,13 +24,12 @@ public class SimpleAutoSOSGame extends SimpleSOSGame {
 		}
 	}
 
-	/*@Override
 	public void resetGame(Map<Character, Character> playerPieces) {
 		super.resetGame();
 		if (autoPlayer=='B') {
 			makeFirstMove(playerPieces);
 		}	
-	}*/
+	}
 
 	private void makeFirstMove(Map<Character, Character> playerPieces) {
 		Random random = new Random();
@@ -40,12 +39,12 @@ public class SimpleAutoSOSGame extends SimpleSOSGame {
 
 	@Override
 	public void makeMove(int row, int column, Map<Character, Character> playerPieces) {
-		
+		if (getGameState() != GameState.PLAYING) return;
 			
-			if (getTurn() == autoPlayer && currentGameState == GameState.PLAYING) 
-				makeAutoMove(playerPieces);
-			else
-				super.makeMove(row, column, playerPieces);
+		if (getTurn() == autoPlayer) 
+			makeAutoMove(playerPieces);
+		else
+			super.makeMove(row, column, playerPieces);
 			
 			
 		
@@ -54,11 +53,11 @@ public class SimpleAutoSOSGame extends SimpleSOSGame {
 	
 	@Override
 	public void makeAutoMove(Map<Character, Character> playerPieces) {
-		System.out.println("player pieces: " + playerPieces);
-		if (!makeWinningMove(playerPieces)) {
-			if (!blockOpponentWinningMove())
-				makeRandomMove(playerPieces);
-		}
+		if (makeWinningMove(playerPieces)) return;
+
+	    if (blockOpponentWinningMove()) return;
+
+	    makeRandomMove(playerPieces);
 
 	}
 
@@ -70,16 +69,15 @@ public class SimpleAutoSOSGame extends SimpleSOSGame {
 				if (game[r][c] != Cell.EMPTY)
 	                continue;
 				if (super.checkSOSWithO(r, c, 0, 1) || super.checkSOSWithO(r, c, 1, 0) || super.checkSOSWithO(r, c, 1, 1) || super.checkSOSWithO(r, c, 1, -1)) {
-					//if (playerPieces.get(getTurn()) == 'S')
 						playerPieces.replace(currentTurn, 'O');
 					super.makeMove(r, c, playerPieces);
-					return false;
+					return true;
 				}
 				if (super.checkSOSWithS(r, c, 0, 1, -1) || super.checkSOSWithS(r, c, 0, 1, 1) || super.checkSOSWithS(r, c, 1, 0, -1) || super.checkSOSWithS(r, c, 1, 0, 1) || super.checkSOSWithS(r, c, 1, 1, -1) || super.checkSOSWithS(r, c, 1, 1, 1) || super.checkSOSWithS(r, c, 1, -1, -1) || super.checkSOSWithS(r, c, 1, -1, 1)) {
 					//if (playerPieces.get(getTurn()) == 'O')
 						playerPieces.replace(currentTurn, 'S');
 					super.makeMove(r, c, playerPieces);
-					return false;
+					return true;
 				}
 			}
 		}
@@ -95,7 +93,6 @@ public class SimpleAutoSOSGame extends SimpleSOSGame {
 		Random random = new Random();
 		int targetMove = random.nextInt(numberOfEmptyCells);
 		int index=0;
-		System.out.println("makeRandomMove ran");
 		for (int row = 0; row < getSize(); ++row) {
 			for (int col = 0; col < getSize(); ++col) {
 				if (game[row][col] == Cell.EMPTY) {

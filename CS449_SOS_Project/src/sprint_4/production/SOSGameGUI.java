@@ -104,7 +104,10 @@ public class SOSGameGUI extends Application {
 				
 				// Sets the gamemode depending on which button was chosen, throws error if none chosen
 				if(simpleRButton.isSelected() && (bluePlayerType == 'C' || redPlayerType == 'C')) {
-					game = new SimpleAutoSOSGame(size, 'R', playerSelectedPieces);
+					char computerPlayer = ' ';
+					if(bluePlayerType == 'C' && redPlayerType == 'H') computerPlayer = 'B';
+					else computerPlayer = 'R';
+					game = new SimpleAutoSOSGame(size, computerPlayer, playerSelectedPieces);
 					game.setGamemode("Simple");
 				}
 				else if(simpleRButton.isSelected() && bluePlayerType == 'H') {
@@ -524,13 +527,25 @@ public class SOSGameGUI extends Application {
 			this.setPrefSize(500/size, 500/size);			// the max size of the board pane (500) / the number of squares
 
 			
+			// TODO: move this somewhere else so it can start w/o player clicking
+			if((bluePlayerType == 'C' && redPlayerType == 'C'))
+				doubleComputerPlayers(size);
+			
+			if(bluePlayerType == 'C') {
+				game.makeMove(row, column, playerSelectedPieces);
+				drawBoard(size, playerSelectedPieces);
+				displayGameStatus();
+			}
+			
 			this.setOnMouseClicked(e -> handleMouseClick(size, playerSelectedPieces));
 		}
 
 		// Makes the actual move and updates the board
 		private void handleMouseClick(int size, Map<Character, Character> playerSelectedPieces) {
-			if (game.getGameState() == GameState.PLAYING)
+			if (game.getGameState() == GameState.PLAYING) {
 				game.makeMove(row, column, playerSelectedPieces);
+				
+			}
 			else {
 				game.resetGame();
 				lastBlueScore = 0;
@@ -538,35 +553,37 @@ public class SOSGameGUI extends Application {
 				completedSOS.clear();
 				recordedSOS.clear();
 			}
+			
 			if ((game.getTurn() == 'R' && redPlayerType == 'C') || (game.getTurn() == 'B' && bluePlayerType == 'C')) {
-				System.out.println("player pieces: " + playerSelectedPieces);
-				game.makeAutoMove(playerSelectedPieces);
+				game.makeMove(row, column, playerSelectedPieces);
 			}
+			
 			
 			
 			drawBoard(size, playerSelectedPieces);
 			highlightCompletedSOS(size);
 			displayGameStatus();
 			
-			// TODO: make it's own separate function (so it doesn't need a click to start)
-			if(redPlayerType == 'C' && bluePlayerType == 'C') {
-				Timeline autoPlay = new Timeline(new KeyFrame(Duration.millis(800), ev -> {
-				    if (game.getGameState() == GameState.PLAYING) {
-				        game.makeAutoMove(playerSelectedPieces);
-				        drawBoard(size, playerSelectedPieces);
-				        highlightCompletedSOS(size);
-				        displayGameStatus();
-				    }
-				}));
-				autoPlay.setCycleCount(Timeline.INDEFINITE);
-				autoPlay.play();
-			}
 			
 		}
 		
 		
 		
-		
+		// TODO: play with the time in between computer moves
+		public void doubleComputerPlayers(int size) {
+			KeyFrame keyFrame = new KeyFrame(Duration.seconds(3), ev -> {
+		        if (game.getGameState() == GameState.PLAYING) {
+		            game.makeAutoMove(playerSelectedPieces);
+		            drawBoard(size, playerSelectedPieces);
+		            highlightCompletedSOS(size);
+		            displayGameStatus();
+		        }
+		    });
+
+		    Timeline autoPlay = new Timeline(keyFrame);
+		    autoPlay.setCycleCount(Timeline.INDEFINITE);
+		    autoPlay.play();
+		}
 		
 		
 		
