@@ -140,6 +140,12 @@ public class SOSGameGUI extends Application {
 							boardPane.add(squares[i][j] = new Square(size, i, j, playerSelectedPieces), j, i);
 					
 					
+					// TODO: move this somewhere else so it can start w/o player clicking
+					if((bluePlayerType == 'C' && redPlayerType == 'C'))
+						doubleComputerPlayers(size);
+					
+					
+					
 					// Disables the setup during an active game
 					simpleRButton.setDisable(true);
 					generalRButton.setDisable(true);
@@ -228,6 +234,138 @@ public class SOSGameGUI extends Application {
 	        }
 	    }
 	}
+	
+	// TODO: play with the time in between computer moves
+	public void doubleComputerPlayers(int size) {
+		KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), ev -> {
+			if (game.getGameState() == GameState.PLAYING) {
+				game.makeAutoMove(playerSelectedPieces);
+				drawBoard(size, playerSelectedPieces);
+				highlightCompletedSOS(size);
+				displayGameStatus();
+				}
+			});
+
+		Timeline autoPlay = new Timeline(keyFrame);
+		autoPlay.setCycleCount(Timeline.INDEFINITE);
+		autoPlay.play();
+		}
+			
+	// responsible for determining if an SOS was made THIS turn and updating the set and list
+	public void highlightCompletedSOS(int s) {
+		int currentBlueScore = game.getBlueScore();
+		int currentRedScore = game.getRedScore();
+			    
+		// If a new SOS was just completed, finds and stores it
+		if (currentBlueScore > lastBlueScore || currentRedScore > lastRedScore) {
+			char[][] pieces = game.getPieceTypeArray();
+			int size = s;
+			        
+			// Determine which player just scored
+			Color color = (game.getTurn() == 'B') ? Color.RED : Color.BLUE;
+
+			for (int r = 0; r < size; r++) {
+				for (int c = 0; c < size; c++) {
+			     
+					// Horizontal
+			        if (c <= size - 3 && pieces[r][c] == 'S' && pieces[r][c+1] == 'O' && pieces[r][c+2] == 'S') {
+			        	String key = r + "," + c + ",H";
+			        	if (!recordedSOS.contains(key)) {
+			        		completedSOS.add(new SOSLine(r, c, "H", color));
+			        		recordedSOS.add(key);
+			        		}
+			        	}
+			                
+			            // Vertical
+			            if (r <= size - 3 && pieces[r][c] == 'S' && pieces[r+1][c] == 'O' && pieces[r+2][c] == 'S') {
+			            	String key = r + "," + c + ",V";
+			            	if (!recordedSOS.contains(key)) {
+			            		completedSOS.add(new SOSLine(r, c, "V", color));
+			            		recordedSOS.add(key);
+			            		}
+			            	}
+			                
+			            // Left diagonal \
+			            if (r <= size - 3 && c <= size - 3 && pieces[r][c] == 'S' && pieces[r+1][c+1] == 'O' && pieces[r+2][c+2] == 'S') {
+			            	String key = r + "," + c + ",LD";
+			            	if (!recordedSOS.contains(key)) {
+			            		completedSOS.add(new SOSLine(r, c, "LD", color));
+			            		recordedSOS.add(key);
+			            		}
+			            	}
+
+			            // Right diagonal /
+			            if (r <= size - 3 && c >= 2 && pieces[r][c] == 'S' && pieces[r+1][c-1] == 'O' && pieces[r+2][c-2] == 'S') {
+			            	String key = r + "," + c + ",RD";
+			            	if (!recordedSOS.contains(key)) {
+			            		completedSOS.add(new SOSLine(r, c, "RD", color));
+			            		recordedSOS.add(key);
+			            		}
+			                }
+			            }
+			        }
+			        
+			// Update the stored scores
+			lastBlueScore = currentBlueScore;
+			lastRedScore = currentRedScore;
+			}
+			   
+		// Always redraw ALL completed SOS lines
+		for (SOSLine sos : completedSOS) {
+			drawSOSLine(sos);
+			}
+		}
+	
+	
+	// Taken from the TicTacToe example; changes the current turn
+			public void displayGameStatus() {
+				if (game.getGameState() == GameState.PLAYING) {
+					if (game.getTurn() == 'B')
+						gameStatus.setText("Blue Players Turn");
+					else
+						gameStatus.setText("Red Players Turn");
+				} else if (game.getGameState() == GameState.DRAW) {
+					gameStatus.setText("It's a Draw! Click to play again.");
+				} else if (game.getGameState() == GameState.BLUE_WON) {
+					gameStatus.setText("Blue Won! Click to play again.");
+				} else if (game.getGameState() == GameState.RED_WON) {
+					gameStatus.setText("Red Won! Click to play again.");
+				}
+			}
+			
+			// draws the full SOS line
+			private void drawSOSLine(SOSLine sos) {
+				// determines which direction the SOS is (which direction the line needs to be drawn) and calls the function to draw each line
+			    switch(sos.direction) {
+			        case "H": // Horizontal
+			            squares[sos.row][sos.col].drawSlash("H", sos.color);
+			            squares[sos.row][sos.col+1].drawSlash("H", sos.color);
+			            squares[sos.row][sos.col+2].drawSlash("H", sos.color);
+			            break;
+			        case "V": // Vertical
+			            squares[sos.row][sos.col].drawSlash("V", sos.color);
+			            squares[sos.row+1][sos.col].drawSlash("V", sos.color);
+			            squares[sos.row+2][sos.col].drawSlash("V", sos.color);
+			            break;
+			        case "LD": // Left diagonal
+			            squares[sos.row][sos.col].drawSlash("LD", sos.color);
+			            squares[sos.row+1][sos.col+1].drawSlash("LD", sos.color);
+			            squares[sos.row+2][sos.col+2].drawSlash("LD", sos.color);
+			            break;
+			        case "RD": // Right diagonal
+			            squares[sos.row][sos.col].drawSlash("RD", sos.color);
+			            squares[sos.row+1][sos.col-1].drawSlash("RD", sos.color);
+			            squares[sos.row+2][sos.col-2].drawSlash("RD", sos.color);
+			            break;
+			    }
+			}
+	
+	
+	
+	
+	
+	
+	
 	
 	// creates all of the objects on the top pane
 	private void createTopPane(GridPane topPane) {
@@ -527,15 +665,6 @@ public class SOSGameGUI extends Application {
 			this.setPrefSize(500/size, 500/size);			// the max size of the board pane (500) / the number of squares
 
 			
-			// TODO: move this somewhere else so it can start w/o player clicking
-			if((bluePlayerType == 'C' && redPlayerType == 'C'))
-				doubleComputerPlayers(size);
-			
-			if(bluePlayerType == 'C') {
-				game.makeMove(row, column, playerSelectedPieces);
-				drawBoard(size, playerSelectedPieces);
-				displayGameStatus();
-			}
 			
 			this.setOnMouseClicked(e -> handleMouseClick(size, playerSelectedPieces));
 		}
@@ -561,125 +690,18 @@ public class SOSGameGUI extends Application {
 			
 			
 			drawBoard(size, playerSelectedPieces);
-			highlightCompletedSOS(size);
-			displayGameStatus();
+			SOSGameGUI.this.highlightCompletedSOS(size);
+			SOSGameGUI.this.displayGameStatus();
 			
 			
 		}
 		
 		
 		
-		// TODO: play with the time in between computer moves
-		public void doubleComputerPlayers(int size) {
-			KeyFrame keyFrame = new KeyFrame(Duration.seconds(3), ev -> {
-		        if (game.getGameState() == GameState.PLAYING) {
-		            game.makeAutoMove(playerSelectedPieces);
-		            drawBoard(size, playerSelectedPieces);
-		            highlightCompletedSOS(size);
-		            displayGameStatus();
-		        }
-		    });
+		
+		
 
-		    Timeline autoPlay = new Timeline(keyFrame);
-		    autoPlay.setCycleCount(Timeline.INDEFINITE);
-		    autoPlay.play();
-		}
 		
-		
-		
-		
-		
-		// responsible for determining if an SOS was made THIS turn and updating the set and list
-		private void highlightCompletedSOS(int s) {
-		    int currentBlueScore = game.getBlueScore();
-		    int currentRedScore = game.getRedScore();
-		    
-		    // If a new SOS was just completed, finds and stores it
-		    if (currentBlueScore > lastBlueScore || currentRedScore > lastRedScore) {
-		        char[][] pieces = game.getPieceTypeArray();
-		        int size = s;
-		        
-		        // Determine which player just scored
-		        Color color = (game.getTurn() == 'B') ? Color.RED : Color.BLUE;
-
-		        for (int r = 0; r < size; r++) {
-		            for (int c = 0; c < size; c++) {
-		     
-		                // Horizontal
-		                if (c <= size - 3 && pieces[r][c] == 'S' && pieces[r][c+1] == 'O' && pieces[r][c+2] == 'S') {
-		                    String key = r + "," + c + ",H";
-		                    if (!recordedSOS.contains(key)) {
-		                        completedSOS.add(new SOSLine(r, c, "H", color));
-		                        recordedSOS.add(key);
-		                    }
-		                }
-		                
-		                // Vertical
-		                if (r <= size - 3 && pieces[r][c] == 'S' && pieces[r+1][c] == 'O' && pieces[r+2][c] == 'S') {
-		                    String key = r + "," + c + ",V";
-		                    if (!recordedSOS.contains(key)) {
-		                        completedSOS.add(new SOSLine(r, c, "V", color));
-		                        recordedSOS.add(key);
-		                    }
-		                }
-		                
-		                // Left diagonal \
-		                if (r <= size - 3 && c <= size - 3 && pieces[r][c] == 'S' && pieces[r+1][c+1] == 'O' && pieces[r+2][c+2] == 'S') {
-		                    String key = r + "," + c + ",LD";
-		                    if (!recordedSOS.contains(key)) {
-		                        completedSOS.add(new SOSLine(r, c, "LD", color));
-		                        recordedSOS.add(key);
-		                    }
-		                }
-
-		                // Right diagonal /
-		                if (r <= size - 3 && c >= 2 && pieces[r][c] == 'S' && pieces[r+1][c-1] == 'O' && pieces[r+2][c-2] == 'S') {
-		                    String key = r + "," + c + ",RD";
-		                    if (!recordedSOS.contains(key)) {
-		                        completedSOS.add(new SOSLine(r, c, "RD", color));
-		                        recordedSOS.add(key);
-		                    }
-		                }
-		            }
-		        }
-		        
-		        // Update the stored scores
-		        lastBlueScore = currentBlueScore;
-		        lastRedScore = currentRedScore;
-		    }
-		    
-		    // Always redraw ALL completed SOS lines
-		    for (SOSLine sos : completedSOS) {
-		        drawSOSLine(sos);
-		    }
-		}
-
-		// draws the full SOS line
-		private void drawSOSLine(SOSLine sos) {
-			// determines which direction the SOS is (which direction the line needs to be drawn) and calls the function to draw each line
-		    switch(sos.direction) {
-		        case "H": // Horizontal
-		            squares[sos.row][sos.col].drawSlash("H", sos.color);
-		            squares[sos.row][sos.col+1].drawSlash("H", sos.color);
-		            squares[sos.row][sos.col+2].drawSlash("H", sos.color);
-		            break;
-		        case "V": // Vertical
-		            squares[sos.row][sos.col].drawSlash("V", sos.color);
-		            squares[sos.row+1][sos.col].drawSlash("V", sos.color);
-		            squares[sos.row+2][sos.col].drawSlash("V", sos.color);
-		            break;
-		        case "LD": // Left diagonal
-		            squares[sos.row][sos.col].drawSlash("LD", sos.color);
-		            squares[sos.row+1][sos.col+1].drawSlash("LD", sos.color);
-		            squares[sos.row+2][sos.col+2].drawSlash("LD", sos.color);
-		            break;
-		        case "RD": // Right diagonal
-		            squares[sos.row][sos.col].drawSlash("RD", sos.color);
-		            squares[sos.row+1][sos.col-1].drawSlash("RD", sos.color);
-		            squares[sos.row+2][sos.col-2].drawSlash("RD", sos.color);
-		            break;
-		    }
-		}
 		
 		// draws the actual slash that goes through each box the SOS is contained by
 		public void drawSlash(String direction, Color color) {
@@ -745,21 +767,7 @@ public class SOSGameGUI extends Application {
 			getChildren().add(ellipse);
 		}
 		
-		// Taken from the TicTacToe example; changes the current turn
-		private void displayGameStatus() {
-			if (game.getGameState() == GameState.PLAYING) {
-				if (game.getTurn() == 'B')
-					gameStatus.setText("Blue Players Turn");
-				else
-					gameStatus.setText("Red Players Turn");
-			} else if (game.getGameState() == GameState.DRAW) {
-				gameStatus.setText("It's a Draw! Click to play again.");
-			} else if (game.getGameState() == GameState.BLUE_WON) {
-				gameStatus.setText("Blue Won! Click to play again.");
-			} else if (game.getGameState() == GameState.RED_WON) {
-				gameStatus.setText("Red Won! Click to play again.");
-			}
-		}
+		
 	}
 
 	public static void main(String[] args) {
