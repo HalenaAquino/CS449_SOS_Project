@@ -318,47 +318,47 @@ public class SOSGameGUI extends Application {
 	
 	
 	// Taken from the TicTacToe example; changes the current turn
-			public void displayGameStatus() {
-				if (game.getGameState() == GameState.PLAYING) {
-					if (game.getTurn() == 'B')
-						gameStatus.setText("Blue Players Turn");
-					else
-						gameStatus.setText("Red Players Turn");
-				} else if (game.getGameState() == GameState.DRAW) {
-					gameStatus.setText("It's a Draw! Click to play again.");
-				} else if (game.getGameState() == GameState.BLUE_WON) {
-					gameStatus.setText("Blue Won! Click to play again.");
-				} else if (game.getGameState() == GameState.RED_WON) {
-					gameStatus.setText("Red Won! Click to play again.");
-				}
-			}
+	public void displayGameStatus() {
+		if (game.getGameState() == GameState.PLAYING) {
+			if (game.getTurn() == 'B')
+				gameStatus.setText("Blue Players Turn");
+			else
+				gameStatus.setText("Red Players Turn");
+		} else if (game.getGameState() == GameState.DRAW) {
+			gameStatus.setText("It's a Draw! Click to play again.");
+		} else if (game.getGameState() == GameState.BLUE_WON) {
+			gameStatus.setText("Blue Won! Click to play again.");
+		} else if (game.getGameState() == GameState.RED_WON) {
+			gameStatus.setText("Red Won! Click to play again.");
+		}
+	}
 			
-			// draws the full SOS line
-			private void drawSOSLine(SOSLine sos) {
-				// determines which direction the SOS is (which direction the line needs to be drawn) and calls the function to draw each line
-			    switch(sos.direction) {
-			        case "H": // Horizontal
-			            squares[sos.row][sos.col].drawSlash("H", sos.color);
-			            squares[sos.row][sos.col+1].drawSlash("H", sos.color);
-			            squares[sos.row][sos.col+2].drawSlash("H", sos.color);
-			            break;
-			        case "V": // Vertical
-			            squares[sos.row][sos.col].drawSlash("V", sos.color);
-			            squares[sos.row+1][sos.col].drawSlash("V", sos.color);
-			            squares[sos.row+2][sos.col].drawSlash("V", sos.color);
-			            break;
-			        case "LD": // Left diagonal
-			            squares[sos.row][sos.col].drawSlash("LD", sos.color);
-			            squares[sos.row+1][sos.col+1].drawSlash("LD", sos.color);
-			            squares[sos.row+2][sos.col+2].drawSlash("LD", sos.color);
-			            break;
-			        case "RD": // Right diagonal
-			            squares[sos.row][sos.col].drawSlash("RD", sos.color);
-			            squares[sos.row+1][sos.col-1].drawSlash("RD", sos.color);
-			            squares[sos.row+2][sos.col-2].drawSlash("RD", sos.color);
-			            break;
-			    }
-			}
+	// draws the full SOS line
+	private void drawSOSLine(SOSLine sos) {
+		// determines which direction the SOS is (which direction the line needs to be drawn) and calls the function to draw each line
+		switch(sos.direction) {
+			case "H": // Horizontal
+				squares[sos.row][sos.col].drawSlash("H", sos.color);
+				squares[sos.row][sos.col+1].drawSlash("H", sos.color);
+				squares[sos.row][sos.col+2].drawSlash("H", sos.color);
+				break;
+			case "V": // Vertical
+				squares[sos.row][sos.col].drawSlash("V", sos.color);
+				squares[sos.row+1][sos.col].drawSlash("V", sos.color);
+				squares[sos.row+2][sos.col].drawSlash("V", sos.color);
+				break;
+			case "LD": // Left diagonal
+				squares[sos.row][sos.col].drawSlash("LD", sos.color);
+				squares[sos.row+1][sos.col+1].drawSlash("LD", sos.color);
+				squares[sos.row+2][sos.col+2].drawSlash("LD", sos.color);
+				break;
+			case "RD": // Right diagonal
+				squares[sos.row][sos.col].drawSlash("RD", sos.color);
+				squares[sos.row+1][sos.col-1].drawSlash("RD", sos.color);
+				squares[sos.row+2][sos.col-2].drawSlash("RD", sos.color);
+				break;
+				}
+		}
 	
 	
 	

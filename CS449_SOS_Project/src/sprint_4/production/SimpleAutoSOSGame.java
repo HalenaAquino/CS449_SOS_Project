@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 
 
 
-// TODO: reconsider inheritence. May be better to have a general AutoSOSGame that inherits from SOSGame rather than 1 per game mode
 
 
 public class SimpleAutoSOSGame extends SimpleSOSGame {
@@ -81,10 +80,6 @@ public class SimpleAutoSOSGame extends SimpleSOSGame {
 				}
 			}
 		}
-		return false;
-	}
-
-	private boolean blockOpponentWinningMove() {
 		return false;
 	}
 
