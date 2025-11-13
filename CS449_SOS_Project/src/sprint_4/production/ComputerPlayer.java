@@ -10,13 +10,14 @@ import sprint_4.production.SOSGame.GameState;
 // Copied from previous SImpleAutoSOSGame class
 
 
-public abstract class ComputerPlayer extends Player {
+public class ComputerPlayer extends Player {
 	private char autoPlayer;
 	int size = game.getSize();
 	char turn = game.getTurn();
 
-	public ComputerPlayer(SOSGame game, char players) {
-		super(game, players);
+	public ComputerPlayer(SOSGame game, char player) {
+		super(game, player);
+		this.autoPlayer = player;
 	}
 	
 
@@ -55,7 +56,6 @@ public abstract class ComputerPlayer extends Player {
 
 	
 	
-	// TODO: figure out how to implement checkSOS functions in this new class
 	// need to fix game win logic
 	private boolean makeWinningMove(Map<Character, Character> playerPieces) {
 		char currentTurn = game.getTurn();

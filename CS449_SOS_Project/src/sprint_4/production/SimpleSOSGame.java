@@ -40,8 +40,9 @@ public class SimpleSOSGame extends SOSGame{
 	
 	// simple game has its own unique update function
 	public void updateGameState(char turn, int row, int column) {
-		if (hasWon(turn, row, column)) // check for win
+		if (hasWon(turn, row, column)) // check for win{
 			currentGameState = (turn == 'B') ? GameState.BLUE_WON : GameState.RED_WON;
+		
 		else if (isDraw())
 			currentGameState = GameState.DRAW;
 	}

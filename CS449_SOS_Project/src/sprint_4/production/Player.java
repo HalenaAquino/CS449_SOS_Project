@@ -5,7 +5,7 @@ import java.util.Map;
 import sprint_4.production.SOSGame.Cell;
 import sprint_4.production.SOSGame.GameState;
 
-public abstract class Player {
+public class Player {
 	protected SOSGame game;
 	protected char players;
 	

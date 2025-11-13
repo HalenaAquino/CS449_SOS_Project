@@ -52,6 +52,9 @@ public class SOSGameGUI extends Application {
 	private GridPane boardPane;
 	private Map<Character, Character> playerSelectedPieces;
 	private SOSGame game;
+	private Player bluePlayer;
+	private Player redPlayer;
+	private Player currentPlayer = bluePlayer;
 	
 	// integers
 	private int lastBlueScore = 0;
@@ -103,20 +106,38 @@ public class SOSGameGUI extends Application {
 				System.out.println("red player type: " + redPlayerType);
 				
 				// Sets the gamemode depending on which button was chosen, throws error if none chosen
-				if(simpleRButton.isSelected() && (bluePlayerType == 'C' || redPlayerType == 'C')) {
-					char computerPlayer = ' ';
+				if(simpleRButton.isSelected()) {
+					game = new SimpleSOSGame(size);
+					
+					/*char computerPlayer = ' ';
 					if(bluePlayerType == 'C' && redPlayerType == 'H') computerPlayer = 'B';
 					else computerPlayer = 'R';
-					game = new SimpleAutoSOSGame(size, computerPlayer, playerSelectedPieces);
-					game.setGamemode("Simple");
-				}
-				else if(simpleRButton.isSelected() && bluePlayerType == 'H') {
-					game = new SimpleSOSGame(size);
+					//game = new SimpleAutoSOSGame(size, computerPlayer, playerSelectedPieces);*/
 					game.setGamemode("Simple");
 				}
 				else if (generalRButton.isSelected()) {
 					game = new GeneralSOSGame(size);
 					game.setGamemode("General");
+				}
+				else
+					throw new NumberFormatException();
+				
+				
+				if(bluePlayerType == 'C' && redPlayerType == 'H') {
+					bluePlayer = new ComputerPlayer(game, 'B');
+					redPlayer = new Player(game, 'R');
+				}
+				else if (bluePlayerType == 'H' && redPlayerType == 'C') {
+					bluePlayer = new Player(game, 'B');
+					redPlayer = new ComputerPlayer(game, 'R');
+				}
+				else if (bluePlayerType == 'H' && redPlayerType == 'H') {
+					bluePlayer = new Player(game, 'B');
+					redPlayer = new Player(game, 'R');
+				}
+				else if (bluePlayerType == 'C' && redPlayerType == 'C') {
+					bluePlayer = new ComputerPlayer(game, 'B');
+					redPlayer = new ComputerPlayer(game, 'R');
 				}
 				else
 					throw new NumberFormatException();
@@ -235,11 +256,11 @@ public class SOSGameGUI extends Application {
 	    }
 	}
 	
-	// TODO: play with the time in between computer moves
+	// TODO: figure out how to get the makeMove function working for a computer player instance
 	public void doubleComputerPlayers(int size) {
 		KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), ev -> {
 			if (game.getGameState() == GameState.PLAYING) {
-				game.makeAutoMove(playerSelectedPieces);
+				currentPlayer.makeMove(playerSelectedPieces);
 				drawBoard(size, playerSelectedPieces);
 				highlightCompletedSOS(size);
 				displayGameStatus();
@@ -320,10 +341,15 @@ public class SOSGameGUI extends Application {
 	// Taken from the TicTacToe example; changes the current turn
 	public void displayGameStatus() {
 		if (game.getGameState() == GameState.PLAYING) {
-			if (game.getTurn() == 'B')
+			if (game.getTurn() == 'B') {
+				currentPlayer = bluePlayer;
 				gameStatus.setText("Blue Players Turn");
-			else
+			}
+			else {
 				gameStatus.setText("Red Players Turn");
+				currentPlayer = redPlayer;
+			}
+			
 		} else if (game.getGameState() == GameState.DRAW) {
 			gameStatus.setText("It's a Draw! Click to play again.");
 		} else if (game.getGameState() == GameState.BLUE_WON) {
@@ -672,7 +698,7 @@ public class SOSGameGUI extends Application {
 		// Makes the actual move and updates the board
 		private void handleMouseClick(int size, Map<Character, Character> playerSelectedPieces) {
 			if (game.getGameState() == GameState.PLAYING) {
-				game.makeMove(row, column, playerSelectedPieces);
+				currentPlayer.makeMove(row, column, playerSelectedPieces);
 				
 			}
 			else {
@@ -684,7 +710,7 @@ public class SOSGameGUI extends Application {
 			}
 			
 			if ((game.getTurn() == 'R' && redPlayerType == 'C') || (game.getTurn() == 'B' && bluePlayerType == 'C')) {
-				game.makeMove(row, column, playerSelectedPieces);
+				currentPlayer.makeMove(row, column, playerSelectedPieces);
 			}
 			
 			
