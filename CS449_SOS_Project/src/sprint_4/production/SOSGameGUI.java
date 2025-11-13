@@ -162,8 +162,14 @@ public class SOSGameGUI extends Application {
 					
 					
 					// TODO: move this somewhere else so it can start w/o player clicking
-					if((bluePlayerType == 'C' && redPlayerType == 'C'))
+					if(bluePlayerType == 'C' && redPlayerType == 'C')
 						doubleComputerPlayers(size);
+					else if (bluePlayerType == 'C') {
+						bluePlayer.makeMove(0, 0, playerSelectedPieces);
+						drawBoard(size, playerSelectedPieces);
+						highlightCompletedSOS(size);
+						displayGameStatus();
+					}
 					
 					
 					
@@ -288,7 +294,7 @@ public class SOSGameGUI extends Application {
 			int size = s;
 			        
 			// Determine which player just scored
-			Color color = (game.getTurn() == 'B') ? Color.RED : Color.BLUE;
+			Color color = (currentBlueScore > lastBlueScore) ? Color.BLUE : Color.RED;
 
 			for (int r = 0; r < size; r++) {
 				for (int c = 0; c < size; c++) {
@@ -367,6 +373,7 @@ public class SOSGameGUI extends Application {
 	// draws the full SOS line
 	private void drawSOSLine(SOSLine sos) {
 		// determines which direction the SOS is (which direction the line needs to be drawn) and calls the function to draw each line
+		System.out.println("Color: " + sos.color);
 		switch(sos.direction) {
 			case "H": // Horizontal
 				squares[sos.row][sos.col].drawSlash("H", sos.color);

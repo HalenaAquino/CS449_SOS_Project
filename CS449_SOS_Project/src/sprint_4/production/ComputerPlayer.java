@@ -42,6 +42,8 @@ public class ComputerPlayer extends Player {
 			makeAutoMove(playerPieces);
 		else
 			super.makeMove(row, column, playerPieces);
+		
+
 			
 			
 		
