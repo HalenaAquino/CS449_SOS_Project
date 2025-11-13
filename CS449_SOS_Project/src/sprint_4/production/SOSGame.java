@@ -58,6 +58,7 @@ public abstract class SOSGame {
 			return null;
 	}
 	
+	
 	public void setCell(int row, int column, Cell value) {
 		game[row][column] = value;
 	}

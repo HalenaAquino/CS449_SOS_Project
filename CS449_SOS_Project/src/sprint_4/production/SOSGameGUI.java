@@ -103,7 +103,7 @@ public class SOSGameGUI extends Application {
 			// throws an exception if the user enters an invalid size/type or doesn't select a gamemode/piece
 			try {
 				int size =  Integer.parseInt(boardSizeField.getText());
-				System.out.println("red player type: " + redPlayerType);
+				//System.out.println("red player type: " + redPlayerType);
 				
 				// Sets the gamemode depending on which button was chosen, throws error if none chosen
 				if(simpleRButton.isSelected()) {
@@ -164,12 +164,8 @@ public class SOSGameGUI extends Application {
 					// TODO: move this somewhere else so it can start w/o player clicking
 					if(bluePlayerType == 'C' && redPlayerType == 'C')
 						doubleComputerPlayers(size);
-					else if (bluePlayerType == 'C') {
-						bluePlayer.makeMove(0, 0, playerSelectedPieces);
-						drawBoard(size, playerSelectedPieces);
-						highlightCompletedSOS(size);
-						displayGameStatus();
-					}
+					
+						
 					
 					
 					
@@ -262,31 +258,35 @@ public class SOSGameGUI extends Application {
 	    }
 	}
 	
-	// TODO: figure out how to get the makeMove function working for a computer player instance
 	public void doubleComputerPlayers(int size) {
-		KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), ev -> {
-			if (game.getGameState() == GameState.PLAYING) {
-				if (game.getTurn() == 'B') {
-					bluePlayer.makeMove(0, 0, playerSelectedPieces);
-				}
-				else {
-					redPlayer.makeMove(0, 0, playerSelectedPieces);
-				}
-				drawBoard(size, playerSelectedPieces);
-				highlightCompletedSOS(size);
-				displayGameStatus();
-				}
-			});
+	    Timeline autoPlay = new Timeline(new KeyFrame(Duration.seconds(1), ev -> {
+	        if (game.getGameState() != GameState.PLAYING) 
+	            return;
+	        
+	        char currentPlayer = game.getTurn();
 
-		Timeline autoPlay = new Timeline(keyFrame);
-		autoPlay.setCycleCount(Timeline.INDEFINITE);
-		autoPlay.play();
-		}
+	        if (currentPlayer == 'B') bluePlayer.makeMove(0, 0, playerSelectedPieces);
+	        else redPlayer.makeMove(0, 0, playerSelectedPieces);
+
+	        drawBoard(size, playerSelectedPieces);
+	        highlightCompletedSOS(size, currentPlayer);
+	        displayGameStatus();
+	    }));
+
+	    autoPlay.setCycleCount(Timeline.INDEFINITE);
+	    autoPlay.play();
+	}
+
 			
 	// responsible for determining if an SOS was made THIS turn and updating the set and list
-	public void highlightCompletedSOS(int s) {
+	public void highlightCompletedSOS(int s, char player) {
 		int currentBlueScore = game.getBlueScore();
 		int currentRedScore = game.getRedScore();
+		
+		/*System.out.println("Last blue score: " + lastBlueScore);
+		System.out.println("Last red score: " + lastRedScore);
+		System.out.println("Current blue score: " + currentBlueScore);
+		System.out.println("Current red score: " + currentRedScore);*/
 			    
 		// If a new SOS was just completed, finds and stores it
 		if (currentBlueScore > lastBlueScore || currentRedScore > lastRedScore) {
@@ -294,7 +294,7 @@ public class SOSGameGUI extends Application {
 			int size = s;
 			        
 			// Determine which player just scored
-			Color color = (currentBlueScore > lastBlueScore) ? Color.BLUE : Color.RED;
+			Color color = (player == 'B') ? Color.BLUE : Color.RED;
 
 			for (int r = 0; r < size; r++) {
 				for (int c = 0; c < size; c++) {
@@ -709,38 +709,47 @@ public class SOSGameGUI extends Application {
 
 		// Makes the actual move and updates the board
 		private void handleMouseClick(int size, Map<Character, Character> playerSelectedPieces) {
-			System.out.println("Turn: " + game.getTurn());		// debugging 
-			if (game.getGameState() == GameState.PLAYING) {
-				if (game.getTurn() == 'B') {
-					bluePlayer.makeMove(row, column, playerSelectedPieces);
-				}
-				else {
-					redPlayer.makeMove(row, column, playerSelectedPieces);
-				}
-				
-			}
-			else {
+			
+			if (game.getGameState() != GameState.PLAYING) {
 				game.resetGame();
 				lastBlueScore = 0;
 		        lastRedScore = 0;
 				completedSOS.clear();
 				recordedSOS.clear();
+				return;
 			}
+
+		    char currentPlayer = game.getTurn();
+		    
+		    // both players human
+		    if ((currentPlayer == 'B' && bluePlayerType == 'H') || (currentPlayer == 'R' && redPlayerType == 'H')) {
+		        if (currentPlayer == 'B') 
+		        	bluePlayer.makeMove(row, column, playerSelectedPieces);
+		        else 
+		        	redPlayer.makeMove(row, column, playerSelectedPieces);
+		    }
+
+		    drawBoard(size, playerSelectedPieces);
+		    highlightCompletedSOS(size, currentPlayer);
+		    displayGameStatus();
+
+		    
+		    
+		    // 1 human 1 computer
+		    while (game.getGameState() == GameState.PLAYING && ((game.getTurn() == 'B' && bluePlayerType == 'C') || (game.getTurn() == 'R' && redPlayerType == 'C'))) {
+		        char computerPlayer = game.getTurn();
+		        
+		        // makes the computer move
+		        if (computerPlayer == 'B') 
+		        	bluePlayer.makeMove(0, 0, playerSelectedPieces);
+		        else 
+		        	redPlayer.makeMove(0, 0, playerSelectedPieces);
+
+		        drawBoard(size, playerSelectedPieces);
+		        highlightCompletedSOS(size, computerPlayer);
+		        displayGameStatus();
+		    }
 			
-			if ((game.getTurn() == 'R' && redPlayerType == 'C') || (game.getTurn() == 'B' && bluePlayerType == 'C')) {
-				if (game.getTurn() == 'B') {
-					bluePlayer.makeMove(row, column, playerSelectedPieces);
-				}
-				else {
-					redPlayer.makeMove(row, column, playerSelectedPieces);
-				}
-			}
-			
-			
-			
-			drawBoard(size, playerSelectedPieces);
-			SOSGameGUI.this.highlightCompletedSOS(size);
-			SOSGameGUI.this.displayGameStatus();
 			
 			
 		}
@@ -757,7 +766,7 @@ public class SOSGameGUI extends Application {
 		    Line line = new Line();
 
 		    // draws the same slash for any SOS line going each direction
-		    switch(direction) {
+		    switch(direction) { 
 		        case "LD": // left diagonal (\)
 		            line.startXProperty().bind(widthProperty().multiply(0.02));
 		            line.startYProperty().bind(heightProperty().multiply(0.02));

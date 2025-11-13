@@ -38,8 +38,9 @@ public class ComputerPlayer extends Player {
 	public void makeMove(int row, int column, Map<Character, Character> playerPieces) {
 		if (game.getGameState() != GameState.PLAYING) return;
 			
-		if (game.getTurn() == autoPlayer) 
+		if (game.getTurn() == autoPlayer) {
 			makeAutoMove(playerPieces);
+		}
 		else
 			super.makeMove(row, column, playerPieces);
 		
