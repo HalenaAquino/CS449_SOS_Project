@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 
 
-public class SimpleAutoSOSGame extends SimpleSOSGame {
+/*public class SimpleAutoSOSGame extends SimpleSOSGame {
 	private char autoPlayer;
 
 	public SimpleAutoSOSGame(int s) {
@@ -53,9 +53,6 @@ public class SimpleAutoSOSGame extends SimpleSOSGame {
 	@Override
 	public void makeAutoMove(Map<Character, Character> playerPieces) {
 		if (makeWinningMove(playerPieces)) return;
-
-	    if (blockOpponentWinningMove()) return;
-
 	    makeRandomMove(playerPieces);
 
 	}
@@ -115,4 +112,4 @@ public class SimpleAutoSOSGame extends SimpleSOSGame {
 	
 
 
-}
+}*/

@@ -1,6 +1,15 @@
 package sprint_4.production;
 
+import java.util.Map;
+
+import sprint_4.production.SOSGame.Cell;
+import sprint_4.production.SOSGame.GameState;
 
 public abstract class HumanPlayer extends Player {
-	// TODO
+	
+	public HumanPlayer(SOSGame game, char players) {
+		super(game, players);
+	}
+	
+	
 }

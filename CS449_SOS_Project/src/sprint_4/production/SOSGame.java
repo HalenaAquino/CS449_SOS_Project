@@ -58,6 +58,14 @@ public abstract class SOSGame {
 			return null;
 	}
 	
+	public void setCell(int row, int column, Cell value) {
+		game[row][column] = value;
+	}
+	
+	public void setPieceType(int row, int column, char value) {
+		pieceType[row][column] = value;
+	}
+	
 	// ------------------------- SOS DETECTION HELPER FUNCTIONS -----------------------------
 	protected boolean checkSOSWithO(int row, int col, int dRow, int dCol) {
 		int prevRow = row - dRow;
@@ -92,7 +100,7 @@ public abstract class SOSGame {
 	protected abstract boolean isDraw();
 	protected abstract void updateGameState(char turn, int row, int column);
 	
-	public void makeAutoMove(Map<Character, Character> playerPieces) {}
+	//public void makeAutoMove(Map<Character, Character> playerPieces) {}
 	
 	// creates the board
 	public SOSGame(int s) {
@@ -130,17 +138,6 @@ public abstract class SOSGame {
 		gameMode = mode;
 	}
 	
-	// places the current player's current piece on the given cell and updates the turn
-	public void makeMove(int row, int column, Map<Character, Character> playerPieces) {
-		if (game == null || currentGameState != GameState.PLAYING) return;  // exits the function if there's not an ongoing game
-		if (row >= 0 && row < size && column >= 0 && column < size
-				&& game[row][column] == Cell.EMPTY) {
-			game[row][column] = (turn == 'B')? Cell.BLUE : Cell.RED; 
-			pieceType[row][column] = playerPieces.get(getTurn());
-			updateGameState(turn, row, column);
-			turn = (turn == 'B')? 'R' : 'B';
-		}
-	}
 	
 	// determines if the board has any empty cells
 	protected boolean boardFull() {
