@@ -66,6 +66,10 @@ public abstract class SOSGame {
 		pieceType[row][column] = value;
 	}
 	
+	public void setTurn(char t) {
+		turn = t;
+	}
+	
 	// ------------------------- SOS DETECTION HELPER FUNCTIONS -----------------------------
 	protected boolean checkSOSWithO(int row, int col, int dRow, int dCol) {
 		int prevRow = row - dRow;

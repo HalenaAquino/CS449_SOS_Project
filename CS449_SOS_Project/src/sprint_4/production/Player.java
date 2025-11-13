@@ -26,7 +26,8 @@ public class Player {
 			game.setCell(row, column, value);
 			game.setPieceType(row, column, playerPieces.get(turn));
 			game.updateGameState(turn, row, column);
-			turn = (turn == 'B')? 'R' : 'B';
+			char newTurn = (turn == 'B')? 'R' : 'B';
+			game.setTurn(newTurn);
 		}
 	}
 	

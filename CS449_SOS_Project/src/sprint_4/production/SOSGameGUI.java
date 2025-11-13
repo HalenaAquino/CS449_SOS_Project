@@ -54,7 +54,7 @@ public class SOSGameGUI extends Application {
 	private SOSGame game;
 	private Player bluePlayer;
 	private Player redPlayer;
-	private Player currentPlayer = bluePlayer;
+	//private Player currentPlayer = bluePlayer;
 	
 	// integers
 	private int lastBlueScore = 0;
@@ -260,7 +260,12 @@ public class SOSGameGUI extends Application {
 	public void doubleComputerPlayers(int size) {
 		KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), ev -> {
 			if (game.getGameState() == GameState.PLAYING) {
-				currentPlayer.makeMove(playerSelectedPieces);
+				if (game.getTurn() == 'B') {
+					bluePlayer.makeMove(0, 0, playerSelectedPieces);
+				}
+				else {
+					redPlayer.makeMove(0, 0, playerSelectedPieces);
+				}
 				drawBoard(size, playerSelectedPieces);
 				highlightCompletedSOS(size);
 				displayGameStatus();
@@ -342,12 +347,12 @@ public class SOSGameGUI extends Application {
 	public void displayGameStatus() {
 		if (game.getGameState() == GameState.PLAYING) {
 			if (game.getTurn() == 'B') {
-				currentPlayer = bluePlayer;
+				//currentPlayer = bluePlayer;
 				gameStatus.setText("Blue Players Turn");
 			}
 			else {
 				gameStatus.setText("Red Players Turn");
-				currentPlayer = redPlayer;
+				//currentPlayer = redPlayer;
 			}
 			
 		} else if (game.getGameState() == GameState.DRAW) {
@@ -697,8 +702,14 @@ public class SOSGameGUI extends Application {
 
 		// Makes the actual move and updates the board
 		private void handleMouseClick(int size, Map<Character, Character> playerSelectedPieces) {
+			System.out.println("Turn: " + game.getTurn());		// debugging 
 			if (game.getGameState() == GameState.PLAYING) {
-				currentPlayer.makeMove(row, column, playerSelectedPieces);
+				if (game.getTurn() == 'B') {
+					bluePlayer.makeMove(row, column, playerSelectedPieces);
+				}
+				else {
+					redPlayer.makeMove(row, column, playerSelectedPieces);
+				}
 				
 			}
 			else {
@@ -710,7 +721,12 @@ public class SOSGameGUI extends Application {
 			}
 			
 			if ((game.getTurn() == 'R' && redPlayerType == 'C') || (game.getTurn() == 'B' && bluePlayerType == 'C')) {
-				currentPlayer.makeMove(row, column, playerSelectedPieces);
+				if (game.getTurn() == 'B') {
+					bluePlayer.makeMove(row, column, playerSelectedPieces);
+				}
+				else {
+					redPlayer.makeMove(row, column, playerSelectedPieces);
+				}
 			}
 			
 			
