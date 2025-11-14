@@ -32,5 +32,4 @@ public class Player {
 		}
 	}
 	
-	//public abstract void makeMove(Map<Character, Character> playerPieces);
 }

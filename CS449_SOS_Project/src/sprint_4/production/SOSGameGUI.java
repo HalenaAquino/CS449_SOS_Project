@@ -29,7 +29,10 @@ public class SOSGameGUI extends Application {
 	
 	//   --------------------------------------------  VARIABLE DECLARATIONS  ---------------------------------------------------
 	
+	// general
 	private Square[][] squares;
+	private TextField boardSizeField;
+	private GridPane boardPane;
 	
 	// buttons
 	private Button applyButton;
@@ -48,13 +51,6 @@ public class SOSGameGUI extends Application {
 	// labels
 	private Label gameStatus;
 	private Label errorMessage;
-	private TextField boardSizeField;
-	private GridPane boardPane;
-	private Map<Character, Character> playerSelectedPieces;
-	private SOSGame game;
-	private Player bluePlayer;
-	private Player redPlayer;
-	//private Player currentPlayer = bluePlayer;
 	
 	// integers
 	private int lastBlueScore = 0;
@@ -69,7 +65,12 @@ public class SOSGameGUI extends Application {
 	// data structures
 	private java.util.List<SOSLine> completedSOS = new java.util.ArrayList<>();
 	private java.util.Set<String> recordedSOS = new java.util.HashSet<>();
-
+	private Map<Character, Character> playerSelectedPieces;
+	
+	// objects
+	private SOSGame game;
+	private Player bluePlayer;
+	private Player redPlayer;
 	
 	// -----------------------------------------------------  GUI LOGIC  ----------------------------------------------------
 	// helper class used to draw the line through SOS's
@@ -103,16 +104,10 @@ public class SOSGameGUI extends Application {
 			// throws an exception if the user enters an invalid size/type or doesn't select a gamemode/piece
 			try {
 				int size =  Integer.parseInt(boardSizeField.getText());
-				//System.out.println("red player type: " + redPlayerType);
 				
 				// Sets the gamemode depending on which button was chosen, throws error if none chosen
 				if(simpleRButton.isSelected()) {
 					game = new SimpleSOSGame(size);
-					
-					/*char computerPlayer = ' ';
-					if(bluePlayerType == 'C' && redPlayerType == 'H') computerPlayer = 'B';
-					else computerPlayer = 'R';
-					//game = new SimpleAutoSOSGame(size, computerPlayer, playerSelectedPieces);*/
 					game.setGamemode("Simple");
 				}
 				else if (generalRButton.isSelected()) {
@@ -122,7 +117,7 @@ public class SOSGameGUI extends Application {
 				else
 					throw new NumberFormatException();
 				
-				
+				// Sets the player type of both players depending on the buttons chosen; throws exception otherwise
 				if(bluePlayerType == 'C' && redPlayerType == 'H') {
 					bluePlayer = new ComputerPlayer(game, 'B');
 					redPlayer = new Player(game, 'R');
@@ -142,8 +137,7 @@ public class SOSGameGUI extends Application {
 				else
 					throw new NumberFormatException();
 				
-				
-				// 
+				// only creates the board if all settings are chosen
 				if (game.getTurn() != ' ' && game.getGamemode() != "" && ((blueHumanButton.isSelected() && bluePiece != ' ') || (redHumanButton.isSelected() && redPiece != ' ') || (blueComputerButton.isSelected() && redComputerButton.isSelected()))) {
 					// resets game settings
 					game.resetGame();
@@ -160,14 +154,9 @@ public class SOSGameGUI extends Application {
 						for (int j = 0; j < size; j++)
 							boardPane.add(squares[i][j] = new Square(size, i, j, playerSelectedPieces), j, i);
 					
-					
-					// TODO: move this somewhere else so it can start w/o player clicking
+					// calls a function that plays the entire game with computer players
 					if(bluePlayerType == 'C' && redPlayerType == 'C')
 						doubleComputerPlayers(size);
-					
-						
-					
-					
 					
 					// Disables the setup during an active game
 					simpleRButton.setDisable(true);
@@ -282,11 +271,6 @@ public class SOSGameGUI extends Application {
 	public void highlightCompletedSOS(int s, char player) {
 		int currentBlueScore = game.getBlueScore();
 		int currentRedScore = game.getRedScore();
-		
-		/*System.out.println("Last blue score: " + lastBlueScore);
-		System.out.println("Last red score: " + lastRedScore);
-		System.out.println("Current blue score: " + currentBlueScore);
-		System.out.println("Current red score: " + currentRedScore);*/
 			    
 		// If a new SOS was just completed, finds and stores it
 		if (currentBlueScore > lastBlueScore || currentRedScore > lastRedScore) {
@@ -353,12 +337,10 @@ public class SOSGameGUI extends Application {
 	public void displayGameStatus() {
 		if (game.getGameState() == GameState.PLAYING) {
 			if (game.getTurn() == 'B') {
-				//currentPlayer = bluePlayer;
 				gameStatus.setText("Blue Players Turn");
 			}
 			else {
 				gameStatus.setText("Red Players Turn");
-				//currentPlayer = redPlayer;
 			}
 			
 		} else if (game.getGameState() == GameState.DRAW) {
@@ -373,7 +355,6 @@ public class SOSGameGUI extends Application {
 	// draws the full SOS line
 	private void drawSOSLine(SOSLine sos) {
 		// determines which direction the SOS is (which direction the line needs to be drawn) and calls the function to draw each line
-		System.out.println("Color: " + sos.color);
 		switch(sos.direction) {
 			case "H": // Horizontal
 				squares[sos.row][sos.col].drawSlash("H", sos.color);
@@ -397,14 +378,7 @@ public class SOSGameGUI extends Application {
 				break;
 				}
 		}
-	
-	
-	
-	
-	
-	
-	
-	
+
 	// creates all of the objects on the top pane
 	private void createTopPane(GridPane topPane) {
 		// Creates the game choice radio buttons and adds them to the top plane
@@ -469,35 +443,18 @@ public class SOSGameGUI extends Application {
 		boardPane.setPrefWidth(470);
 		GridPane redControlPane = new GridPane();
 		
-		
-		
-		
-		
-		
-		
-		
 		// creates and positions the blue label
 		Label bluePlayerLabel = new Label("Blue Player: ");
 		bluePlayerLabel.setTranslateX(-35);
 		bluePlayerLabel.setMinWidth(65);
 		bluePlayerLabel.setTranslateY(200);
 		
+		// creates the blue player type buttons
 		blueHumanButton = new RadioButton("Human");
 		blueComputerButton = new RadioButton("Computer");
 		ToggleGroup blueTypeGroup = new ToggleGroup();
 		blueHumanButton.setToggleGroup(blueTypeGroup);
 		blueComputerButton.setToggleGroup(blueTypeGroup);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 				
 		// creates the blue buttons
 		blueSButton = new RadioButton("S");
@@ -521,35 +478,22 @@ public class SOSGameGUI extends Application {
 			playerSelectedPieces.put('B', bluePiece);
 			});
 		
-		
-		
-		
-		
-		
-		
-		
+		// sets the blue player type to the type they chose
 		blueHumanButton.setOnAction(e -> {
-			//TODO
 			blueSButton.setDisable(false);
 			blueOButton.setDisable(false);
 			bluePlayerType = 'H';
 			});
 				
 		blueComputerButton.setOnAction(e -> {
-			//TODO
 			blueSButton.setDisable(true);
 			blueOButton.setDisable(true);
 			bluePlayerType = 'C';
 			bluePiece = 'S';
 			playerSelectedPieces.put('B', bluePiece);
 			});
-		
-		
-		
-		
 				
 		// moves the blue buttons and labels
-		
 		blueHumanButton.setTranslateY(bluePlayerLabel.getTranslateY() + 30);
 		blueComputerButton.setTranslateY(blueHumanButton.getTranslateY() + 80);
 		blueHumanButton.setTranslateX(bluePlayerLabel.getTranslateX() + 15);
@@ -559,23 +503,9 @@ public class SOSGameGUI extends Application {
 		blueSButton.setTranslateY(blueHumanButton.getTranslateY() + 30);
 		blueOButton.setTranslateX(blueSButton.getTranslateX() - 28);
 		blueOButton.setTranslateY(blueSButton.getTranslateY() + 25);
-				
-		
-		
-		
-		
-		
 		
 		// positions the board
 		boardPane.setTranslateX(bluePlayerLabel.getMaxWidth() - 60);
-
-		
-		
-		
-		
-		
-		
-		
 		
 		// creates and positions the red label
 		Label redPlayerLabel = new Label("Red Player: ");
@@ -583,21 +513,12 @@ public class SOSGameGUI extends Application {
 		redPlayerLabel.setMinWidth(65);
 		redPlayerLabel.setTranslateY(200);
 				
-		
-		
-		
+		// creates the red player type buttons
 		redHumanButton = new RadioButton("Human");
 		redComputerButton = new RadioButton("Computer");
 		ToggleGroup redTypeGroup = new ToggleGroup();
 		redHumanButton.setToggleGroup(redTypeGroup);
 		redComputerButton.setToggleGroup(redTypeGroup);
-		
-		
-		
-		
-		
-		
-		
 		
 		// creates the red buttons
 		redSButton = new RadioButton("S");
@@ -619,47 +540,31 @@ public class SOSGameGUI extends Application {
 			playerSelectedPieces.put('R', redPiece);
 			});
 		
-		
-		
-		
-		
-		
+		// sets the red player type to the type they chose
 		redHumanButton.setOnAction(e -> {
-			//TODO
 			redSButton.setDisable(false);
 			redOButton.setDisable(false);
 			redPlayerType = 'H';
 			});
 				
 		redComputerButton.setOnAction(e -> {
-			//TODO
 			redSButton.setDisable(true);
 			redOButton.setDisable(true);
 			redPlayerType = 'C';
 			redPiece = 'O';
 			playerSelectedPieces.put('R', redPiece);
 			});
-		                
-		
-		
-		
-		
-		redHumanButton.setTranslateY(redPlayerLabel.getTranslateY() + 30);
-		redComputerButton.setTranslateY(redHumanButton.getTranslateY() + 80);
-		redHumanButton.setTranslateX(redPlayerLabel.getTranslateX() + 15);
-		redComputerButton.setTranslateX(redHumanButton.getTranslateX());
-		
 		
 		// moves the red buttons and labels
 		redSButton.setTranslateX(redPlayerLabel.getTranslateX() - 25);
 		redSButton.setTranslateY(redHumanButton.getTranslateY() + 30);
 		redOButton.setTranslateX(redSButton.getTranslateX() - 28);
 		redOButton.setTranslateY(redSButton.getTranslateY() + 25);
-				
 		
-		
-		
-		
+		redHumanButton.setTranslateY(redPlayerLabel.getTranslateY() + 30);
+		redComputerButton.setTranslateY(redHumanButton.getTranslateY() + 80);
+		redHumanButton.setTranslateX(redPlayerLabel.getTranslateX() + 15);
+		redComputerButton.setTranslateX(redHumanButton.getTranslateX());
 		
 		// adds blue player buttons
 		blueControlPane.add(bluePlayerLabel, 1, 5);
@@ -667,13 +572,7 @@ public class SOSGameGUI extends Application {
 		blueControlPane.add(blueOButton, 3, 5);
 		blueControlPane.add(blueHumanButton, 1, 5);
 		blueControlPane.add(blueComputerButton, 1, 5);
-				
-		
-		
-		
-		
-		
-		
+
 		// adds red player buttons
 		redControlPane.add(redPlayerLabel, 1, 5);
 		redControlPane.add(redSButton, 2, 5);
@@ -701,9 +600,6 @@ public class SOSGameGUI extends Application {
 			this.column = column;
 			setStyle("-fx-border-color: black");
 			this.setPrefSize(500/size, 500/size);			// the max size of the board pane (500) / the number of squares
-
-			
-			
 			this.setOnMouseClicked(e -> handleMouseClick(size, playerSelectedPieces));
 		}
 
@@ -721,7 +617,7 @@ public class SOSGameGUI extends Application {
 
 		    char currentPlayer = game.getTurn();
 		    
-		    // both players human
+		    // if the current player is a human, makes a move
 		    if ((currentPlayer == 'B' && bluePlayerType == 'H') || (currentPlayer == 'R' && redPlayerType == 'H')) {
 		        if (currentPlayer == 'B') 
 		        	bluePlayer.makeMove(row, column, playerSelectedPieces);
@@ -735,7 +631,7 @@ public class SOSGameGUI extends Application {
 
 		    
 		    
-		    // 1 human 1 computer
+		    // if the current player is a computer, makes a computer move
 		    while (game.getGameState() == GameState.PLAYING && ((game.getTurn() == 'B' && bluePlayerType == 'C') || (game.getTurn() == 'R' && redPlayerType == 'C'))) {
 		        char computerPlayer = game.getTurn();
 		        
@@ -749,17 +645,7 @@ public class SOSGameGUI extends Application {
 		        highlightCompletedSOS(size, computerPlayer);
 		        displayGameStatus();
 		    }
-			
-			
-			
 		}
-		
-		
-		
-		
-		
-
-		
 		
 		// draws the actual slash that goes through each box the SOS is contained by
 		public void drawSlash(String direction, Color color) {
@@ -824,8 +710,6 @@ public class SOSGameGUI extends Application {
 			ellipse.setFill(Color.TRANSPARENT);
 			getChildren().add(ellipse);
 		}
-		
-		
 	}
 
 	public static void main(String[] args) {

@@ -17,8 +17,8 @@ public abstract class SOSGame {
 	private char turn = 'B';
 	private String gameMode = ""; 
 	private int size;
-	protected Cell[][] game;
 	private char[][] pieceType;
+	private Cell[][] game;
 	
 	// protected (used in children classes)
 	protected int blueScore = 0;
@@ -57,7 +57,6 @@ public abstract class SOSGame {
 		else
 			return null;
 	}
-	
 	
 	public void setCell(int row, int column, Cell value) {
 		game[row][column] = value;
@@ -142,7 +141,6 @@ public abstract class SOSGame {
 	public void setGamemode(String mode) {
 		gameMode = mode;
 	}
-	
 	
 	// determines if the board has any empty cells
 	protected boolean boardFull() {

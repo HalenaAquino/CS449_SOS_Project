@@ -9,31 +9,32 @@ import sprint_4.production.SOSGame.GameState;
 
 // Copied from previous SImpleAutoSOSGame class
 
-
 public class ComputerPlayer extends Player {
 	private char autoPlayer;
 	int size = game.getSize();
 	char turn = game.getTurn();
 
+	// constructor
 	public ComputerPlayer(SOSGame game, char player) {
 		super(game, player);
 		this.autoPlayer = player;
 	}
 	
-
+	// resets the game
 	public void resetGame(Map<Character, Character> playerPieces) {
-		//super.resetGame();
 		if (autoPlayer=='B') {
 			makeFirstMove(playerPieces);
 		}	
 	}
 
+	// makes the first move if the computer player is starting the game
 	private void makeFirstMove(Map<Character, Character> playerPieces) {
 		Random random = new Random();
 		int position = random.nextInt(size * size);
 		super.makeMove(position/size, position%size, playerPieces);
 	}
 
+	// makes the appropriate move if the player is a human/computer
 	@Override
 	public void makeMove(int row, int column, Map<Character, Character> playerPieces) {
 		if (game.getGameState() != GameState.PLAYING) return;
@@ -43,23 +44,15 @@ public class ComputerPlayer extends Player {
 		}
 		else
 			super.makeMove(row, column, playerPieces);
-		
-
-			
-			
-		
 	}
 	
-	
+	// makes the random or winning computer move
 	public void makeAutoMove(Map<Character, Character> playerPieces) {
 		if (makeWinningMove(playerPieces)) return;
 	    makeRandomMove(playerPieces);
-
 	}
-
 	
-	
-	// need to fix game win logic
+	// determines if an SOS can be created and places the final piece if one can
 	private boolean makeWinningMove(Map<Character, Character> playerPieces) {
 		char currentTurn = game.getTurn();
 		for (int r = 0; r < size; r++) {
@@ -82,6 +75,7 @@ public class ComputerPlayer extends Player {
 		return false;
 	}
 
+	// puts the computer piece on a random spot on the board
 	private void makeRandomMove(Map<Character, Character> playerPieces) {
 		int numberOfEmptyCells = getNumberOfEmptyCells();
 		Random random = new Random();
@@ -100,6 +94,7 @@ public class ComputerPlayer extends Player {
 		}
 	}
 
+	// returns the current number of empty cells
 	private int getNumberOfEmptyCells() {
 		int numberOfEmptyCells = 0;
 		for (int row = 0; row < size; ++row) {
@@ -111,5 +106,4 @@ public class ComputerPlayer extends Player {
 		}
 		return numberOfEmptyCells;
 	}
-	
 }
