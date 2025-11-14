@@ -2,6 +2,8 @@ package sprint_4.production;
 
 import java.util.Map;
 
+import sprint_3.production.SOSGame.Cell;
+
 // DEPENDENCY INVERSION WILL BE CONSIDERED FOR EXTRA CREDIT
 
 // parent class, contains all of the general rules between simple and general game
@@ -102,7 +104,7 @@ public abstract class SOSGame {
 	
 	// abstract classes (defined in subclasses)
 	protected abstract boolean isDraw();
-	protected abstract void updateGameState(char turn, int row, int column);
+	public abstract void updateGameState(char turn, int row, int column);
 	
 	//public void makeAutoMove(Map<Character, Character> playerPieces) {}
 	
@@ -150,5 +152,18 @@ public abstract class SOSGame {
 	            if (game[r][c] == Cell.EMPTY) return false;
 	    
 	    return true;
+	}
+	
+	// returns the current number of empty cells
+	public int getNumberOfEmptyCells() {
+		int numberOfEmptyCells = 0;
+		for (int row = 0; row < size; ++row) {
+			for (int col = 0; col < size; ++col) {
+				if (game[row][col] == Cell.EMPTY) {
+					numberOfEmptyCells++;
+				}
+			}
+		}
+		return numberOfEmptyCells;
 	}
 }

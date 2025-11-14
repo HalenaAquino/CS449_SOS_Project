@@ -43,7 +43,7 @@ public class GeneralSOSGame extends SOSGame{
 	}
 	
 	// general game needs a specialized update function for determining when to continue and who won
-	protected void updateGameState(char turn, int row, int column) {
+	public void updateGameState(char turn, int row, int column) {
 		// stores the old scores
 		int oldBlue = blueScore;
 	    int oldRed = redScore;

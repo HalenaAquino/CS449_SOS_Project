@@ -77,7 +77,7 @@ public class ComputerPlayer extends Player {
 
 	// puts the computer piece on a random spot on the board
 	private void makeRandomMove(Map<Character, Character> playerPieces) {
-		int numberOfEmptyCells = getNumberOfEmptyCells();
+		int numberOfEmptyCells = game.getNumberOfEmptyCells();
 		Random random = new Random();
 		int targetMove = random.nextInt(numberOfEmptyCells);
 		int index=0;
@@ -94,16 +94,4 @@ public class ComputerPlayer extends Player {
 		}
 	}
 
-	// returns the current number of empty cells
-	private int getNumberOfEmptyCells() {
-		int numberOfEmptyCells = 0;
-		for (int row = 0; row < size; ++row) {
-			for (int col = 0; col < size; ++col) {
-				if (game.getCell(row, col) == Cell.EMPTY) {
-					numberOfEmptyCells++;
-				}
-			}
-		}
-		return numberOfEmptyCells;
-	}
 }

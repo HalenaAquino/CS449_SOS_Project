@@ -59,8 +59,8 @@ public class SOSGameGUI extends Application {
 	// characters
 	private char bluePiece = ' ';
 	private char redPiece = ' ';
-	private char bluePlayerType = ' ';
-	private char redPlayerType = ' ';
+	public char bluePlayerType = ' ';
+	public char redPlayerType = ' ';
 	
 	// data structures
 	private java.util.List<SOSLine> completedSOS = new java.util.ArrayList<>();
