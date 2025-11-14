@@ -5,12 +5,14 @@ import java.util.Map;import java.util.Hashtable;
 import org.junit.Before;
 import org.junit.Test;
 
-import sprint_3.production.GeneralSOSGame;
-import sprint_3.production.SOSGame;
+import sprint_4.production.GeneralSOSGame;
+import sprint_4.production.Player;
+import sprint_4.production.SOSGame;
 
 public class TestOMoves {
 
     private SOSGame game;
+    private Player red, blue;
     private Map<Character, Character> playerPieces;
 
     @Before
@@ -19,11 +21,13 @@ public class TestOMoves {
         playerPieces = new Hashtable<>();
         playerPieces.put('B', 'O');
         playerPieces.put('R', 'O');
+        blue = new Player(game, 'B');
+        red = new Player(game, 'R');
     }
 
     @Test
     public void testValidBlueMoveO() {
-        game.makeMove(1, 1, playerPieces);
+        blue.makeMove(1, 1, playerPieces);
         assertEquals(SOSGame.Cell.BLUE, game.getCell(1, 1));
         assertEquals('O', game.getPieceType(1, 1));
         assertEquals('R', game.getTurn());
@@ -32,13 +36,13 @@ public class TestOMoves {
     @Test
     public void testInvalidBlueMoveOccupied() {
     	// Turn 1: Blue moves (valid)
-        game.makeMove(1, 1, playerPieces);
+        blue.makeMove(1, 1, playerPieces);
 
         // Turn 2: Red moves (valid)
-        game.makeMove(0, 0, playerPieces);
+        red.makeMove(0, 0, playerPieces);
 
         // Turn 3: Blue tries to move on occupied cell (1,1)
-        game.makeMove(0, 0, playerPieces);
+        blue.makeMove(0, 0, playerPieces);
 
         assertEquals(SOSGame.Cell.RED, game.getCell(0, 0));          // cell unchanged
         assertEquals('O', game.getPieceType(1, 1));   // piece unchanged
@@ -47,7 +51,7 @@ public class TestOMoves {
 
     @Test
     public void testInvalidBlueMoveOutsideBoard() {
-        game.makeMove(-1, 0, playerPieces);
+        blue.makeMove(-1, 0, playerPieces);
 
         assertEquals(null, game.getCell(-1, 0));        // invalid cell
         assertEquals('B', game.getTurn());               // turn stays Blue
@@ -55,8 +59,8 @@ public class TestOMoves {
 
     @Test
     public void testValidRedMoveO() {
-        game.makeMove(0, 0, playerPieces); // Blue
-        game.makeMove(2, 2, playerPieces); // Red
+        blue.makeMove(0, 0, playerPieces); // Blue
+        red.makeMove(2, 2, playerPieces); // Red
         assertEquals(SOSGame.Cell.RED, game.getCell(2, 2));
         assertEquals('O', game.getPieceType(2, 2));
         assertEquals('B', game.getTurn());
@@ -65,10 +69,10 @@ public class TestOMoves {
     @Test
     public void testInvalidRedMoveOccupied() {
     	// Turn 1: Blue moves (valid)
-        game.makeMove(1, 1, playerPieces);
+        blue.makeMove(1, 1, playerPieces);
 
         // Turn 2: Red moves (invalid)
-        game.makeMove(1, 1, playerPieces);
+        red.makeMove(1, 1, playerPieces);
 
 
         assertEquals(SOSGame.Cell.BLUE, game.getCell(1, 1));          // cell unchanged
@@ -79,11 +83,11 @@ public class TestOMoves {
     @Test
     public void testInvalidRedMoveOutsideBoard() {
     	// Turn 1: Blue moves (valid)
-        game.makeMove(1, 1, playerPieces);
+        blue.makeMove(1, 1, playerPieces);
 
 
         // Turn 2: Red attempts move outside board
-        game.makeMove(3, 3, playerPieces);
+        red.makeMove(3, 3, playerPieces);
 
         assertEquals(null, game.getCell(3, 3));         // invalid cell
         assertEquals('R', game.getTurn());               // turn stays Red

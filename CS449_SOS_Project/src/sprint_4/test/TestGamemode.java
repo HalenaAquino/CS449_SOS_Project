@@ -3,9 +3,9 @@ package sprint_4.test;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import sprint_3.production.GeneralSOSGame;
-import sprint_3.production.SOSGame;
-import sprint_3.production.SimpleSOSGame;
+import sprint_4.production.GeneralSOSGame;
+import sprint_4.production.SOSGame;
+import sprint_4.production.SimpleSOSGame;
 
 public class TestGamemode {
 

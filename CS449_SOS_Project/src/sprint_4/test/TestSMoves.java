@@ -5,12 +5,14 @@ import java.util.Map;import java.util.Hashtable;
 import org.junit.Before;
 import org.junit.Test;
 
-import sprint_3.production.GeneralSOSGame;
-import sprint_3.production.SOSGame;
+import sprint_4.production.GeneralSOSGame;
+import sprint_4.production.SOSGame;
+import sprint_4.production.Player;
 
 public class TestSMoves {
 
     private SOSGame game;
+    private Player red, blue;
     private Map<Character, Character> playerPieces;
 
     @Before
@@ -19,12 +21,14 @@ public class TestSMoves {
         playerPieces = new Hashtable<>();
         playerPieces.put('B', 'S');
         playerPieces.put('R', 'S');
+        blue = new Player(game, 'B');
+        red = new Player(game, 'R');
     }
 
     // AC 4.1 / 6.1 Valid blue move
     @Test
     public void testValidBlueMoveS() {
-        game.makeMove(1, 1, playerPieces);
+        blue.makeMove(1, 1, playerPieces);
         assertEquals(SOSGame.Cell.BLUE, game.getCell(1, 1)); // Blue occupies cell
         assertEquals('S', game.getPieceType(1, 1));
         assertEquals('R', game.getTurn()); // Turn switched
@@ -34,17 +38,17 @@ public class TestSMoves {
     @Test
     public void testIllegalBlueMoveOnOccupiedCell() {
     	// Turn 1: Blue moves to (1,1)
-        game.makeMove(1, 1, playerPieces);
+        blue.makeMove(1, 1, playerPieces);
         assertEquals(SOSGame.Cell.BLUE, game.getCell(1, 1));
         assertEquals('S', game.getPieceType(1, 1));
 
         // Turn 2: Red moves to (0,0)
-        game.makeMove(0, 0, playerPieces);
+        red.makeMove(0, 0, playerPieces);
         assertEquals(SOSGame.Cell.RED, game.getCell(0, 0));
         assertEquals('S', game.getPieceType(0, 0));
 
         // Turn 3: Blue tries to move again to (1,1) — illegal move
-        game.makeMove(0, 0, playerPieces);
+        blue.makeMove(0, 0, playerPieces);
 
         // Assertions: cell unchanged, turn remains Red
         assertEquals(SOSGame.Cell.RED, game.getCell(0, 0));      // still Red
@@ -55,7 +59,7 @@ public class TestSMoves {
     // AC 4.3 / 6.3 Illegal blue move (outside board)
     @Test
     public void testIllegalBlueMoveOutsideBoard() {
-        game.makeMove(-1, 0, playerPieces);
+        blue.makeMove(-1, 0, playerPieces);
 
         assertEquals(null, game.getCell(-1, 0));        // invalid cell
         assertEquals('B', game.getTurn());               // turn stays Blue
@@ -65,9 +69,9 @@ public class TestSMoves {
     @Test
     public void testValidRedMoveS() {
         // Blue goes first
-        game.makeMove(1, 1, playerPieces);
+        blue.makeMove(1, 1, playerPieces);
         // Red now moves
-        game.makeMove(0, 0, playerPieces);
+        red.makeMove(0, 0, playerPieces);
         assertEquals(SOSGame.Cell.RED, game.getCell(0, 0));
         assertEquals('S', game.getPieceType(0, 0));
         assertEquals('B', game.getTurn());
@@ -77,10 +81,10 @@ public class TestSMoves {
     @Test
     public void testIllegalRedMoveOnOccupiedCell() {
     	// Turn 1: Blue moves (valid)
-        game.makeMove(1, 1, playerPieces);
+        blue.makeMove(1, 1, playerPieces);
 
         // Turn 2: Red tries to move on occupied cell (1,1)
-        game.makeMove(1, 1, playerPieces);
+        red.makeMove(1, 1, playerPieces);
 
         assertEquals(SOSGame.Cell.BLUE, game.getCell(1, 1));          // cell unchanged
         assertEquals('S', game.getPieceType(1, 1));   // piece unchanged
@@ -91,11 +95,11 @@ public class TestSMoves {
     @Test
     public void testIllegalRedMoveOutsideBoard() {
     	// Turn 1: Blue moves (valid)
-        game.makeMove(1, 1, playerPieces);
+        blue.makeMove(1, 1, playerPieces);
 
 
         // Turn 2: Red attempts move outside board
-        game.makeMove(3, 3, playerPieces);
+        red.makeMove(3, 3, playerPieces);
 
         assertEquals(null, game.getCell(3, 3));         // invalid cell
         assertEquals('R', game.getTurn());               // turn stays Red

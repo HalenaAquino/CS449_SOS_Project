@@ -7,12 +7,14 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import sprint_3.production.SOSGame;
-import sprint_3.production.SimpleSOSGame;
+import sprint_4.production.Player;
+import sprint_4.production.SOSGame;
+import sprint_4.production.SimpleSOSGame;
 
 public class TestEmptyBoard {
 
     private SOSGame game;
+    private Player player;
     private Map<Character, Character> playerPieces;
 
     @Before
@@ -60,10 +62,11 @@ public class TestEmptyBoard {
     @Test
     public void testCannotStartGameWithoutSettings() {
         game = new SimpleSOSGame(0); // invalid size
+        player = new Player(game, 'B');
         assertEquals("", game.getGamemode());
 
         // Attempting a move should not succeed
-        game.makeMove(0, 0, playerPieces); // updated method signature
+        player.makeMove(0, 0, playerPieces); // updated method signature
         assertEquals(null, game.getCell(0, 0)); // invalid cell
         assertEquals(' ', game.getTurn());    // turn should be empty
     }
@@ -72,7 +75,8 @@ public class TestEmptyBoard {
     @Test
     public void testGameReset() {
         game = new SimpleSOSGame(3);
-        game.makeMove(0, 0, playerPieces);
+        player = new Player(game, 'B');
+        player.makeMove(0, 0, playerPieces);
         assertEquals(SOSGame.Cell.BLUE, game.getCell(0, 0));
         game = new SimpleSOSGame(3); // new board created
         assertEquals(SOSGame.Cell.EMPTY, game.getCell(0, 0));
