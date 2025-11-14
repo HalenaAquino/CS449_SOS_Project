@@ -273,7 +273,8 @@ public class SOSGameGUI extends Application {
 		int currentRedScore = game.getRedScore();
 			    
 		// If a new SOS was just completed, finds and stores it
-		if (currentBlueScore > lastBlueScore || currentRedScore > lastRedScore) {
+		if ((game.getGamemode() == "General" && (currentBlueScore > lastBlueScore || currentRedScore > lastRedScore))
+				|| (game.getGamemode() == "Simple" && (game.getGameState() == GameState.BLUE_WON || game.getGameState() == GameState.RED_WON))){
 			char[][] pieces = game.getPieceTypeArray();
 			int size = s;
 			        
@@ -556,15 +557,15 @@ public class SOSGameGUI extends Application {
 			});
 		
 		// moves the red buttons and labels
-		redSButton.setTranslateX(redPlayerLabel.getTranslateX() - 25);
-		redSButton.setTranslateY(redHumanButton.getTranslateY() + 30);
-		redOButton.setTranslateX(redSButton.getTranslateX() - 28);
-		redOButton.setTranslateY(redSButton.getTranslateY() + 25);
-		
 		redHumanButton.setTranslateY(redPlayerLabel.getTranslateY() + 30);
 		redComputerButton.setTranslateY(redHumanButton.getTranslateY() + 80);
 		redHumanButton.setTranslateX(redPlayerLabel.getTranslateX() + 15);
 		redComputerButton.setTranslateX(redHumanButton.getTranslateX());
+		
+		redSButton.setTranslateX(redPlayerLabel.getTranslateX() - 25);
+		redSButton.setTranslateY(redHumanButton.getTranslateY() + 30);
+		redOButton.setTranslateX(redSButton.getTranslateX() - 28);
+		redOButton.setTranslateY(redSButton.getTranslateY() + 25);
 		
 		// adds blue player buttons
 		blueControlPane.add(bluePlayerLabel, 1, 5);
@@ -612,6 +613,9 @@ public class SOSGameGUI extends Application {
 		        lastRedScore = 0;
 				completedSOS.clear();
 				recordedSOS.clear();
+				
+				drawBoard(size, playerSelectedPieces);
+			    displayGameStatus();
 				return;
 			}
 
@@ -628,8 +632,6 @@ public class SOSGameGUI extends Application {
 		    drawBoard(size, playerSelectedPieces);
 		    highlightCompletedSOS(size, currentPlayer);
 		    displayGameStatus();
-
-		    
 		    
 		    // if the current player is a computer, makes a computer move
 		    while (game.getGameState() == GameState.PLAYING && ((game.getTurn() == 'B' && bluePlayerType == 'C') || (game.getTurn() == 'R' && redPlayerType == 'C'))) {

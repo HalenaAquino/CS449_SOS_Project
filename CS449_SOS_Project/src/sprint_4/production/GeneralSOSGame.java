@@ -44,12 +44,24 @@ public class GeneralSOSGame extends SOSGame{
 	
 	// general game needs a specialized update function for determining when to continue and who won
 	protected void updateGameState(char turn, int row, int column) {
+		// stores the old scores
+		int oldBlue = blueScore;
+	    int oldRed = redScore;
+	    
 	    // Count points first
 	    countSOS(turn, row, column);
+	    
+	    boolean madeSOS = (blueScore > oldBlue || redScore > oldRed);
 
 	    // If board isn't full, continues playing
 	    if (!boardFull()) {
 	        currentGameState = GameState.PLAYING;
+	        
+	        // Only switch turn if no SOS was made
+	        if (!madeSOS) {
+	        	char newTurn = (turn == 'B') ? 'R' : 'B';
+	        	setTurn(newTurn);
+	        }
 	        return;
 	    }
 

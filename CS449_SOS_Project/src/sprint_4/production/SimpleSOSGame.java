@@ -45,6 +45,11 @@ public class SimpleSOSGame extends SOSGame{
 		
 		else if (isDraw())
 			currentGameState = GameState.DRAW;
+		
+		else {
+			char newTurn = (turn == 'B') ? 'R' : 'B';
+        	setTurn(newTurn);
+		}
 	}
 
 	// can only be a draw (in a simple game) if the board is full
