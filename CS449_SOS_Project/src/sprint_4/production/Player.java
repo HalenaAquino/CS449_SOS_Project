@@ -28,5 +28,4 @@ public class Player {
 			game.updateGameState(turn, row, column);
 		}
 	}
-	
 }

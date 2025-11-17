@@ -1,9 +1,5 @@
 package sprint_4.production;
 
-import java.util.Map;
-
-import sprint_3.production.SOSGame.Cell;
-
 // DEPENDENCY INVERSION WILL BE CONSIDERED FOR EXTRA CREDIT
 
 // parent class, contains all of the general rules between simple and general game
@@ -105,9 +101,7 @@ public abstract class SOSGame {
 	// abstract classes (defined in subclasses)
 	protected abstract boolean isDraw();
 	public abstract void updateGameState(char turn, int row, int column);
-	
-	//public void makeAutoMove(Map<Character, Character> playerPieces) {}
-	
+		
 	// creates the board
 	public SOSGame(int s) {
 		if(s < 3 || s > 9)

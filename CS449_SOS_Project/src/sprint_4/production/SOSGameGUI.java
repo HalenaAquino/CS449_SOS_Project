@@ -22,8 +22,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.geometry.Pos;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SOSGameGUI extends Application {
 	
@@ -63,8 +68,8 @@ public class SOSGameGUI extends Application {
 	public char redPlayerType = ' ';
 	
 	// data structures
-	private java.util.List<SOSLine> completedSOS = new java.util.ArrayList<>();
-	private java.util.Set<String> recordedSOS = new java.util.HashSet<>();
+	private List<SOSLine> completedSOS = new ArrayList<>();
+	private Set<String> recordedSOS = new HashSet<>();
 	private Map<Character, Character> playerSelectedPieces;
 	
 	// objects

@@ -6,13 +6,11 @@ import java.util.Random;
 import sprint_4.production.SOSGame.Cell;
 import sprint_4.production.SOSGame.GameState;
 
-
 // Copied from previous SImpleAutoSOSGame class
 
 public class ComputerPlayer extends Player {
 	private char autoPlayer;
-	int size = game.getSize();
-	char turn = game.getTurn();
+	private int size = game.getSize();
 
 	// constructor
 	public ComputerPlayer(SOSGame game, char player) {
@@ -93,5 +91,4 @@ public class ComputerPlayer extends Player {
 			}
 		}
 	}
-
 }

@@ -56,5 +56,4 @@ public class SimpleSOSGame extends SOSGame{
 	public boolean isDraw() {
 		return boardFull();
 	}
-	
 }
