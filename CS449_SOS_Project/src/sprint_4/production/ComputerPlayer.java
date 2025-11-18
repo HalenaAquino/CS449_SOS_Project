@@ -13,45 +13,45 @@ public class ComputerPlayer extends Player {
 	private int size = game.getSize();
 
 	// constructor
-	public ComputerPlayer(SOSGame game, char player) {
-		super(game, player);
+	public ComputerPlayer(SOSGame game, char player, Map<Character, Character> pieces) {
+		super(game, player, pieces);
 		this.autoPlayer = player;
 	}
 	
 	// resets the game
-	public void resetGame(Map<Character, Character> playerPieces) {
+	public void resetGame() {
 		if (autoPlayer=='B') {
-			makeFirstMove(playerPieces);
+			makeFirstMove();
 		}	
 	}
 
 	// makes the first move if the computer player is starting the game
-	private void makeFirstMove(Map<Character, Character> playerPieces) {
+	private void makeFirstMove() {
 		Random random = new Random();
 		int position = random.nextInt(size * size);
-		super.makeMove(position/size, position%size, playerPieces);
+		super.makeMove(position/size, position%size);
 	}
 
 	// makes the appropriate move if the player is a human/computer
 	@Override
-	public void makeMove(int row, int column, Map<Character, Character> playerPieces) {
+	public void makeMove(int row, int column) {
 		if (game.getGameState() != GameState.PLAYING) return;
 			
 		if (game.getTurn() == autoPlayer) {
-			makeAutoMove(playerPieces);
+			makeAutoMove();
 		}
 		else
-			super.makeMove(row, column, playerPieces);
+			super.makeMove(row, column);
 	}
 	
 	// makes the random or winning computer move
-	public void makeAutoMove(Map<Character, Character> playerPieces) {
-		if (makeWinningMove(playerPieces)) return;
-	    makeRandomMove(playerPieces);
+	public void makeAutoMove() {
+		if (makeWinningMove()) return;
+	    makeRandomMove();
 	}
 	
 	// determines if an SOS can be created and places the final piece if one can
-	private boolean makeWinningMove(Map<Character, Character> playerPieces) {
+	private boolean makeWinningMove() {
 		char currentTurn = game.getTurn();
 		for (int r = 0; r < size; r++) {
 			for (int c = 0; c < size; c++) {
@@ -59,13 +59,12 @@ public class ComputerPlayer extends Player {
 	                continue;
 				if (game.checkSOSWithO(r, c, 0, 1) || game.checkSOSWithO(r, c, 1, 0) || game.checkSOSWithO(r, c, 1, 1) || game.checkSOSWithO(r, c, 1, -1)) {
 						playerPieces.replace(currentTurn, 'O');
-					super.makeMove(r, c, playerPieces);
+					super.makeMove(r, c);
 					return true;
 				}
 				if (game.checkSOSWithS(r, c, 0, 1, -1) || game.checkSOSWithS(r, c, 0, 1, 1) || game.checkSOSWithS(r, c, 1, 0, -1) || game.checkSOSWithS(r, c, 1, 0, 1) || game.checkSOSWithS(r, c, 1, 1, -1) || game.checkSOSWithS(r, c, 1, 1, 1) || game.checkSOSWithS(r, c, 1, -1, -1) || game.checkSOSWithS(r, c, 1, -1, 1)) {
-					//if (playerPieces.get(getTurn()) == 'O')
 						playerPieces.replace(currentTurn, 'S');
-					super.makeMove(r, c, playerPieces);
+					super.makeMove(r, c);
 					return true;
 				}
 			}
@@ -74,7 +73,7 @@ public class ComputerPlayer extends Player {
 	}
 
 	// puts the computer piece on a random spot on the board
-	private void makeRandomMove(Map<Character, Character> playerPieces) {
+	private void makeRandomMove() {
 		int numberOfEmptyCells = game.getNumberOfEmptyCells();
 		Random random = new Random();
 		int targetMove = random.nextInt(numberOfEmptyCells);
@@ -83,7 +82,7 @@ public class ComputerPlayer extends Player {
 			for (int col = 0; col < size; ++col) {
 				if (game.getCell(row, col) == Cell.EMPTY) {
 					if (targetMove == index) {
-						super.makeMove(row, col, playerPieces);
+						super.makeMove(row, col);
 						return;
 					} else
 						index++;

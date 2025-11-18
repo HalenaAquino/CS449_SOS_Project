@@ -62,11 +62,11 @@ public class TestEmptyBoard {
     @Test
     public void testCannotStartGameWithoutSettings() {
         game = new SimpleSOSGame(0); // invalid size
-        player = new Player(game, 'B');
+        player = new Player(game, 'B', playerPieces);
         assertEquals("", game.getGamemode());
 
         // Attempting a move should not succeed
-        player.makeMove(0, 0, playerPieces); // updated method signature
+        player.makeMove(0, 0); // updated method signature
         assertEquals(null, game.getCell(0, 0)); // invalid cell
         assertEquals(' ', game.getTurn());    // turn should be empty
     }
@@ -75,8 +75,8 @@ public class TestEmptyBoard {
     @Test
     public void testGameReset() {
         game = new SimpleSOSGame(3);
-        player = new Player(game, 'B');
-        player.makeMove(0, 0, playerPieces);
+        player = new Player(game, 'B', playerPieces);
+        player.makeMove(0, 0);
         assertEquals(SOSGame.Cell.BLUE, game.getCell(0, 0));
         game = new SimpleSOSGame(3); // new board created
         assertEquals(SOSGame.Cell.EMPTY, game.getCell(0, 0));

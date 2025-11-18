@@ -28,8 +28,8 @@ public class TestComputerOpponent {
     public void testOneComputerPlayerBlueSelected() {
         simpleGame = new SimpleSOSGame(3);
         
-        Player bluePlayer = new ComputerPlayer(simpleGame, 'B');
-        Player redPlayer = new Player(simpleGame, 'R');
+        Player bluePlayer = new ComputerPlayer(simpleGame, 'B', playerPieces);
+        Player redPlayer = new Player(simpleGame, 'R', playerPieces);
         
         assertNotNull(bluePlayer);
         assertTrue(bluePlayer instanceof ComputerPlayer);
@@ -41,8 +41,8 @@ public class TestComputerOpponent {
     public void testOneComputerPlayerRedSelected() {
         generalGame = new GeneralSOSGame(3);
         
-        Player bluePlayer = new Player(generalGame, 'B');
-        Player redPlayer = new ComputerPlayer(generalGame, 'R');
+        Player bluePlayer = new Player(generalGame, 'B', playerPieces);
+        Player redPlayer = new ComputerPlayer(generalGame, 'R', playerPieces);
         
         assertTrue(redPlayer instanceof ComputerPlayer);
         assertFalse(bluePlayer instanceof ComputerPlayer);
@@ -53,8 +53,8 @@ public class TestComputerOpponent {
     public void testTwoComputerPlayersSelected() {
         generalGame = new GeneralSOSGame(4);
         
-        Player bluePlayer = new ComputerPlayer(generalGame, 'B');
-        Player redPlayer = new ComputerPlayer(generalGame, 'R');
+        Player bluePlayer = new ComputerPlayer(generalGame, 'B', playerPieces);
+        Player redPlayer = new ComputerPlayer(generalGame, 'R', playerPieces);
         
         assertNotNull(bluePlayer);
         assertNotNull(redPlayer);
@@ -68,8 +68,8 @@ public class TestComputerOpponent {
     public void testHumanvHumanSelected() {
         simpleGame = new SimpleSOSGame(3);
         
-        Player bluePlayer = new Player(simpleGame, 'B');
-        Player redPlayer = new Player(simpleGame, 'R');
+        Player bluePlayer = new Player(simpleGame, 'B', playerPieces);
+        Player redPlayer = new Player(simpleGame, 'R', playerPieces);
         
         assertNotNull(bluePlayer);
         assertNotNull(redPlayer);
@@ -82,11 +82,11 @@ public class TestComputerOpponent {
     @Test
     public void testComputerMoveTriggered() {
         simpleGame = new SimpleSOSGame(3);
-        ComputerPlayer computerPlayer = new ComputerPlayer(simpleGame, 'B');
+        ComputerPlayer computerPlayer = new ComputerPlayer(simpleGame, 'B', playerPieces);
         assertEquals('B', simpleGame.getTurn());
         
         int emptyBefore = simpleGame.getNumberOfEmptyCells();
-        computerPlayer.makeMove(0, 0, playerPieces);
+        computerPlayer.makeMove(0, 0);
         
         int emptyAfter =  simpleGame.getNumberOfEmptyCells();
         assertTrue(emptyAfter < emptyBefore);
@@ -96,13 +96,13 @@ public class TestComputerOpponent {
     @Test
     public void testComputerMoveAfterHumanMove() {
         simpleGame = new SimpleSOSGame(3);
-        Player humanPlayer = new Player(simpleGame, 'B');
-        ComputerPlayer computerPlayer = new ComputerPlayer(simpleGame, 'R');
+        Player humanPlayer = new Player(simpleGame, 'B', playerPieces);
+        ComputerPlayer computerPlayer = new ComputerPlayer(simpleGame, 'R', playerPieces);
         
-        humanPlayer.makeMove(0, 0, playerPieces);
+        humanPlayer.makeMove(0, 0);
         int emptyAfterHuman = simpleGame.getNumberOfEmptyCells();
         
-        computerPlayer.makeMove(0, 0, playerPieces);
+        computerPlayer.makeMove(0, 0);
         assertTrue(simpleGame.getNumberOfEmptyCells() < emptyAfterHuman);
     }
     
@@ -111,9 +111,9 @@ public class TestComputerOpponent {
     @Test
     public void testComputerChoosesEmptyCell() {
         simpleGame = new SimpleSOSGame(3);
-        ComputerPlayer computerPlayer = new ComputerPlayer(simpleGame, 'B');
+        ComputerPlayer computerPlayer = new ComputerPlayer(simpleGame, 'B', playerPieces);
         
-        computerPlayer.makeMove(0, 0, playerPieces);
+        computerPlayer.makeMove(0, 0);
         
         boolean foundMove = false;
         for (int r = 0; r < 3; r++) {
@@ -131,17 +131,17 @@ public class TestComputerOpponent {
     @Test
     public void testComputerNeverChoosesOccupiedCell() {
         generalGame = new GeneralSOSGame(4);
-        ComputerPlayer blueComputer = new ComputerPlayer(generalGame, 'B');
-        ComputerPlayer redComputer = new ComputerPlayer(generalGame, 'R');
+        ComputerPlayer blueComputer = new ComputerPlayer(generalGame, 'B', playerPieces);
+        ComputerPlayer redComputer = new ComputerPlayer(generalGame, 'R', playerPieces);
         
         for (int i = 0; i < 10; i++) {
             if (generalGame.getGameState() != GameState.PLAYING) break;
             
             char currentTurn = generalGame.getTurn();
             if (currentTurn == 'B') {
-                blueComputer.makeMove(0, 0, playerPieces);
+                blueComputer.makeMove(0, 0);
             } else {
-                redComputer.makeMove(0, 0, playerPieces);
+                redComputer.makeMove(0, 0);
             }
         }
         
@@ -160,10 +160,10 @@ public class TestComputerOpponent {
     @Test
     public void testTurnChangesAfterComputerMoveSimple() {
         simpleGame = new SimpleSOSGame(3);
-        ComputerPlayer computerPlayer = new ComputerPlayer(simpleGame, 'B');
+        ComputerPlayer computerPlayer = new ComputerPlayer(simpleGame, 'B', playerPieces);
         assertEquals('B', simpleGame.getTurn());
         
-        computerPlayer.makeMove(0, 0, playerPieces);
+        computerPlayer.makeMove(0, 0);
         
         if (simpleGame.getGameState() == GameState.PLAYING)
             assertEquals('R', simpleGame.getTurn());
@@ -173,9 +173,9 @@ public class TestComputerOpponent {
     @Test
     public void testTurnChangesAfterComputerMoveGeneral() {
         generalGame = new GeneralSOSGame(5);
-        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B');
+        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B', playerPieces);
         
-        computerPlayer.makeMove(0, 0, playerPieces);
+        computerPlayer.makeMove(0, 0);
         int blueScore = generalGame.getBlueScore();
         
         if (blueScore == 0 && generalGame.getGameState() == GameState.PLAYING)
@@ -187,10 +187,10 @@ public class TestComputerOpponent {
     @Test
     public void testComputerMakesRandomMove() {
         simpleGame = new SimpleSOSGame(3);
-        ComputerPlayer computerPlayer = new ComputerPlayer(simpleGame, 'B');
+        ComputerPlayer computerPlayer = new ComputerPlayer(simpleGame, 'B', playerPieces);
         
         int emptyBefore = simpleGame.getNumberOfEmptyCells();
-        computerPlayer.makeAutoMove(playerPieces);
+        computerPlayer.makeAutoMove();
         int emptyAfter = simpleGame.getNumberOfEmptyCells();
         
         assertEquals(emptyBefore - 1, emptyAfter);
@@ -205,9 +205,9 @@ public class TestComputerOpponent {
         
         for (int trial = 0; trial < 20; trial++) {
             SOSGame game = new SimpleSOSGame(5);
-            ComputerPlayer computer = new ComputerPlayer(game, 'B');
+            ComputerPlayer computer = new ComputerPlayer(game, 'B', playerPieces);
             
-            computer.makeMove(0, 0, playerPieces);
+            computer.makeMove(0, 0);
             
             for (int r = 0; r < 5; r++) {
                 for (int c = 0; c < 5; c++) {
@@ -234,7 +234,7 @@ public class TestComputerOpponent {
     @Test
     public void testComputerCompletesHorizontalSOS() {
         generalGame = new GeneralSOSGame(3);
-        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B');
+        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B', playerPieces);
         
         generalGame.setCell(0, 0, Cell.RED);
         generalGame.setPieceType(0, 0, 'S');
@@ -243,7 +243,7 @@ public class TestComputerOpponent {
         generalGame.setTurn('B');
         
         playerPieces.put('B', 'O');
-        computerPlayer.makeAutoMove(playerPieces);
+        computerPlayer.makeAutoMove();
         
         assertEquals('O', generalGame.getPieceType(0, 1));
         assertEquals(Cell.BLUE, generalGame.getCell(0, 1));
@@ -253,7 +253,7 @@ public class TestComputerOpponent {
     @Test
     public void testComputerCompletesVerticalSOS() {
         generalGame = new GeneralSOSGame(3);
-        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B');
+        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B', playerPieces);
         
         generalGame.setCell(0, 1, Cell.RED);
         generalGame.setPieceType(0, 1, 'S');
@@ -262,7 +262,7 @@ public class TestComputerOpponent {
         generalGame.setTurn('B');
         
         playerPieces.put('B', 'O');
-        computerPlayer.makeAutoMove(playerPieces);
+        computerPlayer.makeAutoMove();
         
         assertEquals('O', generalGame.getPieceType(1, 1));
         assertEquals(Cell.BLUE, generalGame.getCell(1, 1));
@@ -272,7 +272,7 @@ public class TestComputerOpponent {
     @Test
     public void testComputerCompletesDiagonalSOS() {
         generalGame = new GeneralSOSGame(3);
-        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B');
+        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B', playerPieces);
         
         generalGame.setCell(0, 0, Cell.RED);
         generalGame.setPieceType(0, 0, 'S');
@@ -281,7 +281,7 @@ public class TestComputerOpponent {
         generalGame.setTurn('B');
         
         playerPieces.put('B', 'O');
-        computerPlayer.makeAutoMove(playerPieces);
+        computerPlayer.makeAutoMove();
         
         assertEquals('O', generalGame.getPieceType(1, 1));
     }
@@ -290,7 +290,7 @@ public class TestComputerOpponent {
     @Test
     public void testComputerCompletesSOSWithS() {
         generalGame = new GeneralSOSGame(3);
-        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B');
+        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B', playerPieces);
         
         generalGame.setCell(0, 1, Cell.RED);
         generalGame.setPieceType(0, 1, 'O');
@@ -299,7 +299,7 @@ public class TestComputerOpponent {
         generalGame.setTurn('B');
         
         playerPieces.put('B', 'S');
-        computerPlayer.makeAutoMove(playerPieces);
+        computerPlayer.makeAutoMove();
         
         assertEquals('S', generalGame.getPieceType(0, 0));
         assertEquals(Cell.BLUE, generalGame.getCell(0, 0));
@@ -309,7 +309,7 @@ public class TestComputerOpponent {
     @Test
     public void testStillComputerTurnAfterSOS() {
         generalGame = new GeneralSOSGame(3);
-        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B');
+        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B', playerPieces);
         
         generalGame.setCell(0, 0, Cell.RED);
         generalGame.setPieceType(0, 0, 'S');
@@ -318,7 +318,7 @@ public class TestComputerOpponent {
         generalGame.setTurn('B');
         
         playerPieces.put('B', 'O');
-        computerPlayer.makeAutoMove(playerPieces);
+        computerPlayer.makeAutoMove();
         
         if (generalGame.getGameState() == GameState.PLAYING)
             assertEquals('B', generalGame.getTurn());
@@ -329,22 +329,22 @@ public class TestComputerOpponent {
     @Test
     public void testComputerSOSIncreasesScore() {
         generalGame = new GeneralSOSGame(3);
-        Player redPlayer = new Player(generalGame, 'R');
-        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B');
+        Player redPlayer = new Player(generalGame, 'R', playerPieces);
+        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B', playerPieces);
         
         generalGame.setTurn('R');
         playerPieces.put('R', 'S');
-        redPlayer.makeMove(0, 0, playerPieces);
+        redPlayer.makeMove(0, 0);
         
         generalGame.setTurn('R');
         playerPieces.put('R', 'S');
-        redPlayer.makeMove(0, 2, playerPieces);
+        redPlayer.makeMove(0, 2);
         
         generalGame.setTurn('B');
         int scoreBefore = generalGame.getBlueScore();
         
         playerPieces.put('B', 'O');
-        computerPlayer.makeAutoMove(playerPieces);
+        computerPlayer.makeAutoMove();
         
         assertTrue(generalGame.getBlueScore() > scoreBefore);
     }
@@ -353,7 +353,7 @@ public class TestComputerOpponent {
     @Test
     public void testComputerSOSMultiplePatterns() {
         generalGame = new GeneralSOSGame(3);
-        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B');
+        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B', playerPieces);
         
         generalGame.setCell(1, 0, Cell.RED);
         generalGame.setPieceType(1, 0, 'S');
@@ -366,7 +366,7 @@ public class TestComputerOpponent {
         generalGame.setTurn('B');
         
         playerPieces.put('B', 'O');
-        computerPlayer.makeAutoMove(playerPieces);
+        computerPlayer.makeAutoMove();
         
         assertTrue(generalGame.getBlueScore() >= 2);
     }
@@ -376,7 +376,7 @@ public class TestComputerOpponent {
     @Test
     public void testComputerTurnAfterSOS() {
         generalGame = new GeneralSOSGame(4);
-        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B');
+        ComputerPlayer computerPlayer = new ComputerPlayer(generalGame, 'B', playerPieces);
         
         generalGame.setCell(1, 0, Cell.RED);
         generalGame.setPieceType(1, 0, 'S');
@@ -385,7 +385,7 @@ public class TestComputerOpponent {
         generalGame.setTurn('B');
         
         playerPieces.put('B', 'O');
-        computerPlayer.makeAutoMove(playerPieces);
+        computerPlayer.makeAutoMove();
         
         if (generalGame.getGameState() == GameState.PLAYING)
             assertEquals('B', generalGame.getTurn());
@@ -396,7 +396,7 @@ public class TestComputerOpponent {
     @Test
     public void testComputerWinsSimpleGame() {
         simpleGame = new SimpleSOSGame(3);
-        ComputerPlayer computerPlayer = new ComputerPlayer(simpleGame, 'B');
+        ComputerPlayer computerPlayer = new ComputerPlayer(simpleGame, 'B', playerPieces);
         
         simpleGame.setCell(0, 0, Cell.RED);
         simpleGame.setPieceType(0, 0, 'S');
@@ -405,7 +405,7 @@ public class TestComputerOpponent {
         simpleGame.setTurn('B');
         
         playerPieces.put('B', 'O');
-        computerPlayer.makeAutoMove(playerPieces);
+        computerPlayer.makeAutoMove();
         
         assertEquals(GameState.BLUE_WON, simpleGame.getGameState());
     }
@@ -414,8 +414,7 @@ public class TestComputerOpponent {
     @Test
     public void testComputerRecognizesSimpleWin() {
         simpleGame = new SimpleSOSGame(3);
-        ComputerPlayer blueComputer = new ComputerPlayer(simpleGame, 'B');
-        Player redHuman = new Player(simpleGame, 'R');
+        ComputerPlayer blueComputer = new ComputerPlayer(simpleGame, 'B', playerPieces);
         
         simpleGame.setCell(1, 0, Cell.RED);
         simpleGame.setPieceType(1, 0, 'S');
@@ -424,7 +423,7 @@ public class TestComputerOpponent {
         
         simpleGame.setTurn('B');
         playerPieces.put('B', 'O');
-        blueComputer.makeAutoMove(playerPieces);
+        blueComputer.makeAutoMove();
         
         assertEquals(GameState.BLUE_WON, simpleGame.getGameState());
     }
@@ -434,44 +433,44 @@ public class TestComputerOpponent {
     @Test
     public void testComputerWinsGeneralGame() {
         generalGame = new GeneralSOSGame(3);
-        Player bluePlayer = new Player(generalGame, 'B');
-        Player redPlayer = new Player(generalGame, 'R');
+        Player bluePlayer = new Player(generalGame, 'B', playerPieces);
+        Player redPlayer = new Player(generalGame, 'R', playerPieces);
         
         generalGame.setTurn('B');
         playerPieces.put('B', 'S');
-        bluePlayer.makeMove(0, 0, playerPieces);
+        bluePlayer.makeMove(0, 0);
         
         generalGame.setTurn('B');
         playerPieces.put('B', 'O');
-        bluePlayer.makeMove(0, 1, playerPieces);
+        bluePlayer.makeMove(0, 1);
         
         generalGame.setTurn('B');
         playerPieces.put('B', 'S');
-        bluePlayer.makeMove(0, 2, playerPieces);
+        bluePlayer.makeMove(0, 2);
         
         generalGame.setTurn('R');
         playerPieces.put('R', 'S');
-        redPlayer.makeMove(1, 0, playerPieces);
+        redPlayer.makeMove(1, 0);
         
         generalGame.setTurn('R');
         playerPieces.put('R', 'S');
-        redPlayer.makeMove(1, 1, playerPieces);
+        redPlayer.makeMove(1, 1);
         
         generalGame.setTurn('R');
         playerPieces.put('R', 'O');
-        redPlayer.makeMove(1, 2, playerPieces);
+        redPlayer.makeMove(1, 2);
         
         generalGame.setTurn('B');
         playerPieces.put('B', 'O');
-        bluePlayer.makeMove(2, 0, playerPieces);
+        bluePlayer.makeMove(2, 0);
         
         generalGame.setTurn('B');
         playerPieces.put('B', 'S');
-        bluePlayer.makeMove(2, 1, playerPieces);
+        bluePlayer.makeMove(2, 1);
         
         generalGame.setTurn('R');
         playerPieces.put('R', 'O');
-        redPlayer.makeMove(2, 2, playerPieces);
+        redPlayer.makeMove(2, 2);
         
         assertTrue(generalGame.getBlueScore() > generalGame.getRedScore());
         assertEquals(GameState.BLUE_WON, generalGame.getGameState());
@@ -481,7 +480,7 @@ public class TestComputerOpponent {
     @Test
     public void testDrawInSimpleGame() {
         simpleGame = new SimpleSOSGame(3);
-        ComputerPlayer blueComputer = new ComputerPlayer(simpleGame, 'B');
+        ComputerPlayer blueComputer = new ComputerPlayer(simpleGame, 'B', playerPieces);
         
         simpleGame.setCell(0, 0, Cell.BLUE);
         simpleGame.setPieceType(0, 0, 'S');
@@ -502,7 +501,7 @@ public class TestComputerOpponent {
         
         simpleGame.setTurn('B');
         playerPieces.put('B', 'S');
-        blueComputer.makeMove(0, 0, playerPieces);
+        blueComputer.makeMove(0, 0);
         
         assertEquals(GameState.DRAW, simpleGame.getGameState());
     }
@@ -511,44 +510,44 @@ public class TestComputerOpponent {
     @Test
     public void testDrawInGeneralGame() {
         generalGame = new GeneralSOSGame(3);
-        Player bluePlayer = new Player(generalGame, 'B');
-        Player redPlayer = new Player(generalGame, 'R');
+        Player bluePlayer = new Player(generalGame, 'B', playerPieces);
+        Player redPlayer = new Player(generalGame, 'R', playerPieces);
         
         generalGame.setTurn('B');
         playerPieces.put('B', 'S');
-        bluePlayer.makeMove(0, 0, playerPieces);
+        bluePlayer.makeMove(0, 0);
         
         generalGame.setTurn('B');
         playerPieces.put('B', 'O');
-        bluePlayer.makeMove(0, 1, playerPieces);
+        bluePlayer.makeMove(0, 1);
         
         generalGame.setTurn('B');
         playerPieces.put('B', 'S');
-        bluePlayer.makeMove(0, 2, playerPieces);
+        bluePlayer.makeMove(0, 2);
         
         generalGame.setTurn('R');
         playerPieces.put('R', 'S');
-        redPlayer.makeMove(1, 0, playerPieces);
+        redPlayer.makeMove(1, 0);
         
         generalGame.setTurn('R');
         playerPieces.put('R', 'O');
-        redPlayer.makeMove(1, 1, playerPieces);
+        redPlayer.makeMove(1, 1);
         
         generalGame.setTurn('R');
         playerPieces.put('R', 'S');
-        redPlayer.makeMove(1, 2, playerPieces);
+        redPlayer.makeMove(1, 2);
         
         generalGame.setTurn('B');
         playerPieces.put('B', 'O');
-        bluePlayer.makeMove(2, 0, playerPieces);
+        bluePlayer.makeMove(2, 0);
         
         generalGame.setTurn('B');
         playerPieces.put('B', 'S');
-        bluePlayer.makeMove(2, 1, playerPieces);
+        bluePlayer.makeMove(2, 1);
         
         generalGame.setTurn('R');
         playerPieces.put('R', 'O');
-        redPlayer.makeMove(2, 2, playerPieces);
+        redPlayer.makeMove(2, 2);
         
         assertEquals(generalGame.getBlueScore(), generalGame.getRedScore());
         assertEquals(GameState.DRAW, generalGame.getGameState());

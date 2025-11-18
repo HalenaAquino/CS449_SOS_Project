@@ -8,15 +8,17 @@ import sprint_4.production.SOSGame.GameState;
 public class Player {
 	protected SOSGame game;
 	protected char players;
+	protected Map<Character, Character> playerPieces;
 	
-	public Player(SOSGame game, char players) {
+	public Player(SOSGame game, char players, Map<Character, Character> pieces) {
 		this.game = game;
 		this.players = players;
+		this.playerPieces = pieces;
 	}
 	
 	// Taken from SOSGame
 	// places the current player's current piece on the given cell and updates the turn
-	public void makeMove(int row, int column, Map<Character, Character> playerPieces) {
+	public void makeMove(int row, int column) {
 		int size = game.getSize();
 		char turn = game.getTurn();
 		if (game == null || game.getGameState() != GameState.PLAYING) return;  // exits the function if there's not an ongoing game
