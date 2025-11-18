@@ -225,6 +225,7 @@ public class SOSGameGUI extends Application {
 		    redComputerButton.setSelected(false);
 			blueScoreLabel.setText("");
 			redScoreLabel.setText("");
+			gameStatus.setText("Blue Players Turn");
 			
 		});	
 		
