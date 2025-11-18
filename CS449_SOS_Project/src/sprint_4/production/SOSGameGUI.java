@@ -56,6 +56,8 @@ public class SOSGameGUI extends Application {
 	// labels
 	private Label gameStatus;
 	private Label errorMessage;
+	public Label blueScoreLabel;
+	public Label redScoreLabel;
 	
 	// integers
 	private int lastBlueScore = 0;
@@ -114,10 +116,14 @@ public class SOSGameGUI extends Application {
 				if(simpleRButton.isSelected()) {
 					game = new SimpleSOSGame(size);
 					game.setGamemode("Simple");
+					blueScoreLabel.setText("");
+					redScoreLabel.setText("");
 				}
 				else if (generalRButton.isSelected()) {
 					game = new GeneralSOSGame(size);
 					game.setGamemode("General");
+					blueScoreLabel.setText("Blue score: 0");
+					redScoreLabel.setText("Red score: 0");
 				}
 				else
 					throw new NumberFormatException();
@@ -197,6 +203,7 @@ public class SOSGameGUI extends Application {
 		        gameStatus.setText("Blue Players turn");
 		    }
 			
+			
 			// deselects the buttons
 			simpleRButton.setDisable(false);
 			generalRButton.setDisable(false);
@@ -216,7 +223,8 @@ public class SOSGameGUI extends Application {
 		    redHumanButton.setSelected(false);
 		    redComputerButton.setDisable(false);
 		    redComputerButton.setSelected(false);
-		    
+			blueScoreLabel.setText("");
+			redScoreLabel.setText("");
 			
 		});	
 		
@@ -342,6 +350,10 @@ public class SOSGameGUI extends Application {
 	// Taken from the TicTacToe example; changes the current turn
 	public void displayGameStatus() {
 		if (game.getGameState() == GameState.PLAYING) {
+			if(game.getGamemode() == "General") {
+				blueScoreLabel.setText("Blue score: " + game.getBlueScore());
+				redScoreLabel.setText("Red score: " + game.getRedScore());
+			}
 			if (game.getTurn() == 'B') {
 				gameStatus.setText("Blue Players Turn");
 			}
@@ -454,6 +466,7 @@ public class SOSGameGUI extends Application {
 		bluePlayerLabel.setTranslateX(-35);
 		bluePlayerLabel.setMinWidth(65);
 		bluePlayerLabel.setTranslateY(200);
+		blueScoreLabel = new Label("");
 		
 		// creates the blue player type buttons
 		blueHumanButton = new RadioButton("Human");
@@ -509,6 +522,8 @@ public class SOSGameGUI extends Application {
 		blueSButton.setTranslateY(blueHumanButton.getTranslateY() + 30);
 		blueOButton.setTranslateX(blueSButton.getTranslateX() - 28);
 		blueOButton.setTranslateY(blueSButton.getTranslateY() + 25);
+		blueScoreLabel.setTranslateY(blueComputerButton.getTranslateY() + 50);
+		blueScoreLabel.setTranslateX(blueComputerButton.getTranslateX() - 15);
 		
 		// positions the board
 		boardPane.setTranslateX(bluePlayerLabel.getMaxWidth() - 60);
@@ -518,6 +533,7 @@ public class SOSGameGUI extends Application {
 		redPlayerLabel.setTranslateX(boardPane.getMaxWidth() - 50);
 		redPlayerLabel.setMinWidth(65);
 		redPlayerLabel.setTranslateY(200);
+		redScoreLabel = new Label("");
 				
 		// creates the red player type buttons
 		redHumanButton = new RadioButton("Human");
@@ -571,6 +587,8 @@ public class SOSGameGUI extends Application {
 		redSButton.setTranslateY(redHumanButton.getTranslateY() + 30);
 		redOButton.setTranslateX(redSButton.getTranslateX() - 28);
 		redOButton.setTranslateY(redSButton.getTranslateY() + 25);
+		redScoreLabel.setTranslateY(redComputerButton.getTranslateY() + 50);
+		redScoreLabel.setTranslateX(redComputerButton.getTranslateX() - 15);
 		
 		// adds blue player buttons
 		blueControlPane.add(bluePlayerLabel, 1, 5);
@@ -578,6 +596,7 @@ public class SOSGameGUI extends Application {
 		blueControlPane.add(blueOButton, 3, 5);
 		blueControlPane.add(blueHumanButton, 1, 5);
 		blueControlPane.add(blueComputerButton, 1, 5);
+		blueControlPane.add(blueScoreLabel, 1, 5);
 
 		// adds red player buttons
 		redControlPane.add(redPlayerLabel, 1, 5);
@@ -585,6 +604,7 @@ public class SOSGameGUI extends Application {
 		redControlPane.add(redOButton, 3, 5);
 		redControlPane.add(redHumanButton, 1, 5);
 		redControlPane.add(redComputerButton, 1, 5);
+		redControlPane.add(redScoreLabel, 1, 5);
 				
 		// combines all of the center panes
 		centerPane.add(blueControlPane, 1, 5);
@@ -618,6 +638,11 @@ public class SOSGameGUI extends Application {
 		        lastRedScore = 0;
 				completedSOS.clear();
 				recordedSOS.clear();
+				
+				if(game.getGamemode() == "General") {
+					blueScoreLabel.setText("Blue score: 0");
+					redScoreLabel.setText("Red score: 0");
+				}
 				
 				drawBoard(size, playerSelectedPieces);
 			    displayGameStatus();
