@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SOSGameGUI extends Application {
+public class SOSGameGUI extends Application { 
 	
 	//   --------------------------------------------  VARIABLE DECLARATIONS  ---------------------------------------------------
 	

@@ -10,7 +10,7 @@ import sprint_4.production.Player;
 import sprint_4.production.SOSGame;
 
 public class TestOMoves {
-
+ 
     private SOSGame game;
     private Player red, blue;
     private Map<Character, Character> playerPieces;

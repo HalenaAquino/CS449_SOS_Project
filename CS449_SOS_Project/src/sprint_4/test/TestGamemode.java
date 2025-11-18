@@ -7,7 +7,7 @@ import sprint_4.production.GeneralSOSGame;
 import sprint_4.production.SOSGame;
 import sprint_4.production.SimpleSOSGame;
 
-public class TestGamemode {
+public class TestGamemode { 
 
     private SOSGame game;
 

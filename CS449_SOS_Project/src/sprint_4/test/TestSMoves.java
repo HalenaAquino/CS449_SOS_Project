@@ -75,7 +75,7 @@ public class TestSMoves {
         assertEquals(SOSGame.Cell.RED, game.getCell(0, 0));
         assertEquals('S', game.getPieceType(0, 0));
         assertEquals('B', game.getTurn());
-    }
+    } 
 
     // AC 4.5 / 6.5 Illegal red move (occupied)
     @Test

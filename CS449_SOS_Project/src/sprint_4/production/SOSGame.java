@@ -3,7 +3,7 @@ package sprint_4.production;
 // DEPENDENCY INVERSION WILL BE CONSIDERED FOR EXTRA CREDIT
 
 // parent class, contains all of the general rules between simple and general game
-public abstract class SOSGame {
+public abstract class SOSGame { 
 
 	// --------------------------------   VARIABLE DECLARATIONS  -------------------------------------
 	

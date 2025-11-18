@@ -18,7 +18,7 @@ public class Player {
 	
 	// Taken from SOSGame
 	// places the current player's current piece on the given cell and updates the turn
-	public void makeMove(int row, int column) {
+	public void makeMove(int row, int column) { 
 		int size = game.getSize();
 		char turn = game.getTurn();
 		if (game == null || game.getGameState() != GameState.PLAYING) return;  // exits the function if there's not an ongoing game

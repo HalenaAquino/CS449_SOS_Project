@@ -394,7 +394,7 @@ public class TestComputerOpponent {
     
     // AC 12.1 - computer win in simple game
     @Test
-    public void testComputerWinsSimpleGame() {
+    public void testComputerWinsSimpleGame() { 
         simpleGame = new SimpleSOSGame(3);
         ComputerPlayer computerPlayer = new ComputerPlayer(simpleGame, 'B', playerPieces);
         

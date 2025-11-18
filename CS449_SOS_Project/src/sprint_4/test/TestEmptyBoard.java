@@ -10,7 +10,7 @@ import org.junit.Test;
 import sprint_4.production.Player;
 import sprint_4.production.SOSGame;
 import sprint_4.production.SimpleSOSGame;
-
+ 
 public class TestEmptyBoard {
 
     private SOSGame game;
