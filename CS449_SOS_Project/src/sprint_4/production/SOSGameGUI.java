@@ -127,7 +127,7 @@ public class SOSGameGUI extends Application {
 					redScoreLabel.setText("Red score: 0");
 				}
 				else
-					throw new NumberFormatException();
+					throw new NumberFormatException(); 
 				
 				// Sets the player type of both players depending on the buttons chosen; throws exception otherwise
 				if(bluePlayerType == 'C' && redPlayerType == 'H') {
