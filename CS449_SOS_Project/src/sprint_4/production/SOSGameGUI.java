@@ -573,9 +573,7 @@ public class SOSGameGUI extends Application {
 		boardPane = new GridPane();
 		boardPane.setPrefWidth(470);
 		GridPane redControlPane = new GridPane();
-		
-		//createBluePane(blueControlPane);
-		//createRedPane(redControlPane);
+
 		createPlayerPane(blueControlPane, "Blue", 'B', Color.BLUE, -35);
 		createPlayerPane(redControlPane, "Red", 'R', Color.RED, boardPane.getMaxWidth() - 50);
 		boardPane.setTranslateX(blueControlPane.getMaxWidth() - 60);
