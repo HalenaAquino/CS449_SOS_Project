@@ -14,6 +14,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Font;
@@ -39,10 +40,12 @@ public class SOSGameGUI extends Application {
 	private TextField boardSizeField;
 	private GridPane boardPane;
 	private Timeline autoPlayTimeline;
+	private CheckBox recordGameCheckbox;
 	
 	// buttons
 	private Button applyButton;
 	private Button newGameButton;
+	private Button replayButton;
 	private RadioButton simpleRButton;
 	private RadioButton generalRButton;
 	private RadioButton blueSButton;
@@ -180,6 +183,8 @@ public class SOSGameGUI extends Application {
 					if (blueComputerButton.isSelected()) blueHumanButton.setDisable(true);
 					if (redHumanButton.isSelected()) redComputerButton.setDisable(true);
 					if (redComputerButton.isSelected()) redHumanButton.setDisable(true);
+					if (!recordGameCheckbox.isSelected()) recordGameCheckbox.setDisable(true);
+					
 					
 					errorMessage.setText("");		// Sets the error message to empty if there's no error
 			    }
@@ -219,12 +224,18 @@ public class SOSGameGUI extends Application {
 			
 			boardSizeField.setDisable(false);
 			applyButton.setDisable(false);
+			recordGameCheckbox.setSelected(false);
+			recordGameCheckbox.setDisable(false);
 			
 			blueScoreLabel.setText("");
 			redScoreLabel.setText("");
 			gameStatus.setText("Blue Players Turn");
 			
 		});	
+		
+		replayButton.setOnAction(event ->{
+			// TODO
+		});
 		
 		// adds all of the panes to the border pane
 		BorderPane borderPane = new BorderPane();
@@ -442,6 +453,13 @@ public class SOSGameGUI extends Application {
 		newGameButton.setTranslateX(600);
 		newGameButton.setTranslateY(-75);
 		
+		// replay button
+		replayButton = new Button("Replay");
+		bottomPane.add(replayButton,  1,  5);
+		replayButton.setTranslateX(600);
+		replayButton.setTranslateY(-110);
+		replayButton.setMinWidth(74);
+		
 		// game status label
 		gameStatus= new Label("Blue Players Turn");
 		bottomPane.add(gameStatus, 2, 5);
@@ -455,6 +473,15 @@ public class SOSGameGUI extends Application {
 		errorMessage.setTranslateY(-30);
 		errorMessage.setTextFill(Color.RED);			// makes the errorMessage red and larger
 		errorMessage.setFont(Font.font("Arial", FontWeight.BOLD, 14));		// makes game status bold and bigger
+		
+		// record game checkbox
+		recordGameCheckbox = new CheckBox("Record game");
+		recordGameCheckbox.setTranslateX(10);
+		recordGameCheckbox.setTranslateY(-70);
+		bottomPane.add(recordGameCheckbox, 1, 5);
+
+		
+		
 
 		// general pane settings
 		bottomPane.setMinWidth(800);
@@ -604,7 +631,6 @@ public class SOSGameGUI extends Application {
 
 		// Makes the actual move and updates the board
 		private void handleMouseClick(int size, Map<Character, Character> playerSelectedPieces) {
-			
 			if (game.getGameState() != GameState.PLAYING) {
 				game.resetGame();
 				lastBlueScore = 0;
@@ -649,6 +675,10 @@ public class SOSGameGUI extends Application {
 		        drawBoard(size, playerSelectedPieces);
 		        highlightCompletedSOS(size, computerPlayer);
 		        displayGameStatus();
+		    }
+		    
+		    if (recordGameCheckbox.isSelected()) {
+		    	// TODO
 		    }
 		}
 		
