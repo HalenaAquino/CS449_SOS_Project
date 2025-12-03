@@ -67,5 +67,26 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/influxdb-client-core-7.4.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/rxjava-3.1.8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/kotlin-stdlib-1.9.22.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/reactive-streams-1.0.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/gson-2.10.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/okio-jvm-3.6.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/okio-3.6.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/influxdb-client-java-7.4.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/influxdb-client-utils-7.4.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/okhttp-4.12.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/converter-gson-2.9.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/retrofit-2.9.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/converter-scalars-2.9.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/adapter-rxjava3-2.9.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/logging-interceptor-4.12.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/jackson-annotations-2.19.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/jackson-databind-2.20.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/jackson-core-2.20.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/commons-io-2.13.0 (1).jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/commons-codec-1.15.jar"/>
+	<classpathentry kind="lib" path="C:/Users/halen/Downloads/commons-csv-1.9.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
