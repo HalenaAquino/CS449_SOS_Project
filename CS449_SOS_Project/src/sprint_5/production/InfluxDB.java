@@ -18,6 +18,7 @@ public class InfluxDB {
     private static final String org = "SOSGame";
     private static final String bucket = "SOSGameBucket";
     private static InfluxDBClient client = null;
+    private static int moveID = 0;
     
     public static InfluxDBClient connect() {
     	if (client == null) {
@@ -27,8 +28,11 @@ public class InfluxDB {
     }
 	
 	public static void write(String player, String piece, int xCoord, int yCoord) {
+		moveID++;
+		System.out.println(moveID);
 		// create the row
 		Point point = Point.measurement("SOSGameRecord")
+				.addField("Move #", moveID)
 				.addField("Player", player)
 				.addField("Piece", piece)
 				.addField("x_coordinate", xCoord)
@@ -49,7 +53,7 @@ public class InfluxDB {
 	}
 	
 	
-	
+	/*
 	
 	// used to test write
 	public static void main(String[] args) {
@@ -62,6 +66,6 @@ public class InfluxDB {
 		client = null;
 		
 		System.out.println("rows added");
-	}
+	}*/
 		
 }

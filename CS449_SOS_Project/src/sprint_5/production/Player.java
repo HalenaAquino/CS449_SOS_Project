@@ -7,6 +7,7 @@ import sprint_5.production.SOSGame.GameState;
 
 public class Player {
 	protected SOSGame game;
+	protected InfluxDB influx;
 	protected char players;
 	protected Map<Character, Character> playerPieces;
 	
@@ -28,6 +29,9 @@ public class Player {
 			game.setCell(row, column, value);
 			game.setPieceType(row, column, playerPieces.get(turn));
 			game.updateGameState(turn, row, column);
+			
+			if (game.recorded)
+				InfluxDB.write(String.valueOf(turn), String.valueOf(playerPieces.get(turn)), row, column);
 		}
 	}
 }

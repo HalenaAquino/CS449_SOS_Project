@@ -152,6 +152,9 @@ public class SOSGameGUI extends Application {
 				else
 					throw new NumberFormatException();
 				
+				if (recordGameCheckbox.isSelected())
+					game.setRecorded(true);
+				
 				// only creates the board if all settings are chosen
 				if (game.getTurn() != ' ' && game.getGamemode() != "" && ((blueHumanButton.isSelected() && bluePiece != ' ') || (redHumanButton.isSelected() && redPiece != ' ') || (blueComputerButton.isSelected() && redComputerButton.isSelected()))) {
 					// resets game settings

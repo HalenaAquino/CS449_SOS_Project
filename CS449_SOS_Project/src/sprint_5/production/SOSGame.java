@@ -22,6 +22,7 @@ public abstract class SOSGame {
 	protected int blueScore = 0;
 	protected int redScore  = 0;
 	protected GameState currentGameState;
+	protected boolean recorded = false;
 	
 	// --------------------------------   GETTERS  -------------------------------------
 	public int getBlueScore() { return blueScore; }
@@ -66,6 +67,10 @@ public abstract class SOSGame {
 	
 	public void setTurn(char t) {
 		turn = t;
+	}
+	
+	public void setRecorded(boolean r) {
+		recorded = r;
 	}
 	
 	// ------------------------- SOS DETECTION HELPER FUNCTIONS -----------------------------
