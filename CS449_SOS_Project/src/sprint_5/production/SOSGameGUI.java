@@ -82,6 +82,7 @@ public class SOSGameGUI extends Application {
 	private SOSGame game;
 	private Player bluePlayer;
 	private Player redPlayer;
+	//private InfluxDB influx = new InfluxDB();
 	
 	// -----------------------------------------------------  GUI LOGIC  ----------------------------------------------------
 	// helper class used to draw the line through SOS's
@@ -233,11 +234,18 @@ public class SOSGameGUI extends Application {
 			blueScoreLabel.setText("");
 			redScoreLabel.setText("");
 			gameStatus.setText("Blue Players Turn");
+			errorMessage.setText("");
+			
+			InfluxDB.clearTable();
 			
 		});	
 		
 		replayButton.setOnAction(event ->{
-			// TODO
+			if (recordGameCheckbox.isSelected())
+				//replayGame();
+				return;
+			else
+				errorMessage.setText("No recorded game to replay!");
 		});
 		
 		// adds all of the panes to the border pane
@@ -252,6 +260,14 @@ public class SOSGameGUI extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
+	
+	/*public void replayGame() {
+		//TODO
+		
+		Object[] movesList = influx.query();
+		
+		
+	}*/
 
 	// draws the actual board
 	public void drawBoard(int size, Map<Character, Character> playerSelectedPieces) {
@@ -640,6 +656,7 @@ public class SOSGameGUI extends Application {
 		        lastRedScore = 0;
 				completedSOS.clear();
 				recordedSOS.clear();
+				InfluxDB.clearTable();
 				
 				if(game.getGamemode() == "General") {
 					blueScoreLabel.setText("Blue score: 0");
