@@ -261,13 +261,31 @@ public class SOSGameGUI extends Application {
 		primaryStage.show();
 	}
 	
-	/*public void replayGame() {
+	public void replayGame() {
 		//TODO
 		
-		Object[] movesList = influx.query();
+		List<List<Object>> movesList = InfluxDB.query();
+		
+		// clears the board again
+		game.resetGame();
+		lastBlueScore = 0;
+        lastRedScore = 0;
+		completedSOS.clear();
+		recordedSOS.clear();
+		
+		for (int i = 0; i < movesList.size(); i++) {
+			
+			if (movesList[i] == "Blue")
+		}
 		
 		
-	}*/
+		
+		
+		
+		InfluxDB.clearTable();
+		
+		
+	}
 
 	// draws the actual board
 	public void drawBoard(int size, Map<Character, Character> playerSelectedPieces) {
@@ -697,9 +715,6 @@ public class SOSGameGUI extends Application {
 		        displayGameStatus();
 		    }
 		    
-		    if (recordGameCheckbox.isSelected()) {
-		    	// TODO
-		    }
 		}
 		
 		// draws the actual slash that goes through each box the SOS is contained by
