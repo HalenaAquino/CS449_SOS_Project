@@ -57,6 +57,10 @@ public abstract class SOSGame {
 			return null;
 	}
 	
+	public boolean getRecorded() {
+		return recorded;
+	}
+	
 	public void setCell(int row, int column, Cell value) {
 		game[row][column] = value;
 	}

@@ -82,6 +82,7 @@ public class SOSGameGUI extends Application {
 	private SOSGame game;
 	private Player bluePlayer;
 	private Player redPlayer;
+	private Player player;
 	//private InfluxDB influx = new InfluxDB();
 	
 	// -----------------------------------------------------  GUI LOGIC  ----------------------------------------------------
@@ -110,6 +111,7 @@ public class SOSGameGUI extends Application {
 		createTopPane(topPane);
 		createBottomPane(bottomPane);
 		createCenterPane(centerPane);
+		
 		
 		// Changes the size of the board based on the user entered number
 		applyButton.setOnAction(event -> {	
@@ -167,11 +169,7 @@ public class SOSGameGUI extends Application {
 					lastBlueScore = 0;
 					lastRedScore = 0;
 					
-					// creates the squares in the board
-					squares = new Square[size][size];
-					for (int i = 0; i < size; i++)
-						for (int j = 0; j < size; j++)
-							boardPane.add(squares[i][j] = new Square(size, i, j, playerSelectedPieces), j, i);
+					generateBoard(size);
 					
 					// calls a function that plays the entire game with computer players
 					if(bluePlayerType == 'C' && redPlayerType == 'C')
@@ -236,14 +234,14 @@ public class SOSGameGUI extends Application {
 			gameStatus.setText("Blue Players Turn");
 			errorMessage.setText("");
 			
-			InfluxDB.clearTable();
+			if (game.getRecorded())
+				InfluxDB.clearTable();
 			
 		});	
 		
 		replayButton.setOnAction(event ->{
 			if (recordGameCheckbox.isSelected())
-				//replayGame();
-				return;
+				replayGame();
 			else
 				errorMessage.setText("No recorded game to replay!");
 		});
@@ -261,22 +259,68 @@ public class SOSGameGUI extends Application {
 		primaryStage.show();
 	}
 	
+	public void generateBoard(int size) {
+		// creates the squares in the board
+		squares = new Square[size][size];
+		for (int i = 0; i < size; i++)
+			for (int j = 0; j < size; j++)
+				boardPane.add(squares[i][j] = new Square(size, i, j, playerSelectedPieces), j, i);
+	}
+	
 	public void replayGame() {
 		//TODO
+
+		    List<List<Object>> movesList = InfluxDB.query();
+		    
+		    // Reset the board
+		    game.resetGame();
+		    lastBlueScore = 0;
+		    lastRedScore = 0;
+		    completedSOS.clear();
+		    recordedSOS.clear();
+		    boardPane.getChildren().clear();
+		    generateBoard(Square.size);
+
+		    drawBoard(Square.size, playerSelectedPieces);
+		    displayGameStatus();
+
+		    Timeline timeline = new Timeline();
+		    int delay = 1;
+		    
+		    for (int i = 0; i < movesList.size(); i++) {
+		        List<Object> move = movesList.get(i);
+
+		        KeyFrame keyFrame = new KeyFrame(Duration.seconds(i * delay), e -> {
+		            char currentPlayer = move.get(0).toString().charAt(0);
+		            char currentPiece = move.get(1).toString().charAt(0);
+		            int x = ((Number) move.get(2)).intValue();
+		            int y = ((Number) move.get(3)).intValue();
+
+		            System.out.println("Player: " + currentPlayer + " Piece: " + currentPiece + " X: " + x + " Y: " + y);
+
+		            playerSelectedPieces.put(currentPlayer, currentPiece);
+		            
+		            if (bluePlayer.getClass() == ComputerPlayer.class) bluePlayer = new Player(game, 'B', playerSelectedPieces);
+		            if (redPlayer.getClass() == ComputerPlayer.class) redPlayer = new Player(game, 'R', playerSelectedPieces);
+
+		            if (currentPlayer == 'B')
+		                player = bluePlayer;
+		            else
+		                player = redPlayer;
+
+		            player.makeMove(x, y);
+		            drawBoard(Square.size, playerSelectedPieces);
+		            highlightCompletedSOS(Square.size, currentPlayer);
+		            displayGameStatus();
+		        });
+
+		        timeline.getKeyFrames().add(keyFrame);
+		    }
+
+		    timeline.setOnFinished(e -> InfluxDB.clearTable());
+		    timeline.play();
 		
-		List<List<Object>> movesList = InfluxDB.query();
-		
-		// clears the board again
-		game.resetGame();
-		lastBlueScore = 0;
-        lastRedScore = 0;
-		completedSOS.clear();
-		recordedSOS.clear();
-		
-		for (int i = 0; i < movesList.size(); i++) {
-			
-			if (movesList[i] == "Blue")
-		}
+
 		
 		
 		
@@ -333,6 +377,7 @@ public class SOSGameGUI extends Application {
 
 	    autoPlayTimeline.setCycleCount(Timeline.INDEFINITE);
 	    autoPlayTimeline.play();
+	    
 	}
 
 			
@@ -417,12 +462,16 @@ public class SOSGameGUI extends Application {
 				gameStatus.setText("Red Players Turn");
 			}
 			
-		} else if (game.getGameState() == GameState.DRAW) {
+		} 
+		else { 
+			if (game.getGameState() == GameState.DRAW) {
 			gameStatus.setText("It's a Draw! Click to play again.");
-		} else if (game.getGameState() == GameState.BLUE_WON) {
+			} else if (game.getGameState() == GameState.BLUE_WON) {
 			gameStatus.setText("Blue Won! Click to play again.");
-		} else if (game.getGameState() == GameState.RED_WON) {
+			} else if (game.getGameState() == GameState.RED_WON) {
 			gameStatus.setText("Red Won! Click to play again.");
+			}
+			stopAutoPlay();
 		}
 	}
 			
@@ -656,25 +705,29 @@ public class SOSGameGUI extends Application {
 	public class Square extends Pane {
 		
 		private int row, column;
+		private static int size;
 		
 		// Creates each square and handles piece placement (moves being made)
 		public Square(int size, int row, int column, Map<Character, Character> playerSelectedPieces) {
 			this.row = row;
 			this.column = column;
+			this.size = size;
 			setStyle("-fx-border-color: black");
 			this.setPrefSize(500/size, 500/size);			// the max size of the board pane (500) / the number of squares
-			this.setOnMouseClicked(e -> handleMouseClick(size, playerSelectedPieces));
+			this.setOnMouseClicked(e -> handleMouseClick(playerSelectedPieces));
 		}
 
 		// Makes the actual move and updates the board
-		private void handleMouseClick(int size, Map<Character, Character> playerSelectedPieces) {
+		private void handleMouseClick(Map<Character, Character> playerSelectedPieces) {
 			if (game.getGameState() != GameState.PLAYING) {
 				game.resetGame();
 				lastBlueScore = 0;
 		        lastRedScore = 0;
 				completedSOS.clear();
 				recordedSOS.clear();
-				InfluxDB.clearTable();
+				
+				if (game.getRecorded())
+					InfluxDB.clearTable();
 				
 				if(game.getGamemode() == "General") {
 					blueScoreLabel.setText("Blue score: 0");

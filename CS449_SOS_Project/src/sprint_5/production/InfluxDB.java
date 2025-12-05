@@ -56,6 +56,7 @@ public class InfluxDB {
 		String flux = "from(bucket: \"SOSGameBucket\")" +
 	              " |> range(start: -24h)" +
 	              " |> filter(fn: (r) => r._measurement == \"SOSGameRecord\")" +
+	              " |> sort(columns: [\"ID\"], desc: false)" +
 	              " |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
 
 		
