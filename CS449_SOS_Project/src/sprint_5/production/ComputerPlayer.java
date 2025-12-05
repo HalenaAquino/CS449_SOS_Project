@@ -2,11 +2,8 @@ package sprint_5.production;
 
 import java.util.Map;
 import java.util.Random;
-
 import sprint_5.production.SOSGame.Cell;
 import sprint_5.production.SOSGame.GameState;
-
-// Copied from previous SImpleAutoSOSGame class
 
 public class ComputerPlayer extends Player {
 	private char autoPlayer;

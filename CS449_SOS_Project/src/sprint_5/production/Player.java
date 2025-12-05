@@ -1,7 +1,6 @@
 package sprint_5.production;
 
 import java.util.Map;
-
 import sprint_5.production.SOSGame.Cell;
 import sprint_5.production.SOSGame.GameState;
 
@@ -30,6 +29,7 @@ public class Player {
 			game.setPieceType(row, column, playerPieces.get(turn));
 			game.updateGameState(turn, row, column);
 			
+			// Saves the game to the database if the game is being recorded 
 			if (game.recorded)
 				InfluxDB.write(String.valueOf(turn), String.valueOf(playerPieces.get(turn)), row, column);
 		}

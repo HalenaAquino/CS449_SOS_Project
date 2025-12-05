@@ -14,15 +14,18 @@ import java.util.List;
 import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
 
-
 public class InfluxDB {
+	// Basic database information
 	private static final String url = "http://localhost:8086";
     private static final String token = "X3nk1vTvEhNh3B13fNWXVa0H9LKKU3W6ROX9xTfurTcBCZpE6iq4Jwvi7MxVJdHA0X7yn_xpDhCXhcsIWJqEAA==";
     private static final String org = "SOSGame";
     private static final String bucket = "SOSGameBucket";
+    
+    // Variables
     private static InfluxDBClient client = null;
     private static int moveID = 0;
     
+    // Establishes a connection to the influxDB2 database
     public static InfluxDBClient connect() {
     	if (client == null) {
             client = InfluxDBClientFactory.create(url, token.toCharArray(), org, bucket);
@@ -30,10 +33,11 @@ public class InfluxDB {
         return client;
     }
 	
+    // Writes the move information to the database
 	public static void write(String player, String piece, int xCoord, int yCoord) {
 		moveID++;
-		//System.out.println(moveID);
-		// create the row
+		
+		// Creates the row
 		Point point = Point.measurement("SOSGameRecord")
 				.addField("ID", moveID)
 				.addField("Player", player)
@@ -42,16 +46,13 @@ public class InfluxDB {
 				.addField("y_coordinate", yCoord)
 				.time(Instant.now(), WritePrecision.NS);
 		
-		// Write the point
+		// Writes the point
 		WriteApiBlocking writeApi = connect().getWriteApiBlocking();
 		writeApi.writePoint(point);            
 	}
 	
+	// Pulls all of the moves from the database
 	public static List<List<Object>> query() {
-		//TODO
-		
-		//List[] rows;
-
 		// pulls out the specific data needed
 		String flux = "from(bucket: \"SOSGameBucket\")" +
 	              " |> range(start: -24h)" +
@@ -66,25 +67,27 @@ public class InfluxDB {
         for (FluxTable table : tables) {
         	for (FluxRecord record : table.getRecords()) {
         		List<Object> row = new ArrayList<>();
+        		
         		// extracts each value
-        		//Object id = record.getValueByKey("id")
         		String player = (String) record.getValueByKey("Player");
         		String piece = (String) record.getValueByKey("Piece");
         		Object xCoord = record.getValueByKey("x_coordinate");
         		Object yCoord = record.getValueByKey("y_coordinate");
             		
+        		// Puts each value in an array
         		row.add(player);
         		row.add(piece);
         		row.add(xCoord);
         		row.add(yCoord);
-            		            		
-        		rows.add(row);
+            	     		
+        		rows.add(row);		// Adds the array of values to the larger array
         	}
         }
         
         return rows;
 	}
 	
+	// Clears the previous game from the database
 	public static void clearTable() {
         DeleteApi deleteApi = client.getDeleteApi();
 
@@ -94,26 +97,5 @@ public class InfluxDB {
         String predicate = "_measurement=\"SOSGameRecord\"";		// deletes the recorded table
 
         deleteApi.delete(start, stop, predicate, bucket, org);
-	}
-	
-	
-	
-	
-	// used to test this class' functions
-	public static void main(String[] args) {
-		write("Blue", "S", 0, 0);
-		write("Red", "O", 2, 4);
-		write("Blue", "O", 1, 1);
-		write("Red", "S", 2, 1);
-		
-		System.out.println(query());
-		clearTable();
-		
-		
-		client.close();
-		client = null;
-		
-		System.out.println("completed");
-	}
-		
+	}	
 }

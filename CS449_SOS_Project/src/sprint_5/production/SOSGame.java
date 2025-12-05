@@ -1,7 +1,5 @@
 package sprint_5.production;
 
-// DEPENDENCY INVERSION WILL BE CONSIDERED FOR EXTRA CREDIT
-
 // parent class, contains all of the general rules between simple and general game
 public abstract class SOSGame { 
 
@@ -25,10 +23,11 @@ public abstract class SOSGame {
 	protected boolean recorded = false;
 	
 	// --------------------------------   GETTERS  -------------------------------------
+	protected boolean getRecorded() { return recorded; }
+	protected int getSize() { return size; }
 	public int getBlueScore() { return blueScore; }
 	public int getRedScore() { return redScore; }
 	public char getTurn() { return turn; }
-	public int getSize() { return size; }
 	public String getGamemode() { return gameMode; }
 	public GameState getGameState() { return currentGameState; }
 	
@@ -57,25 +56,25 @@ public abstract class SOSGame {
 			return null;
 	}
 	
-	public boolean getRecorded() {
-		return recorded;
+	// returns the current number of empty cells
+	public int getNumberOfEmptyCells() {
+		int numberOfEmptyCells = 0;
+		for (int row = 0; row < size; ++row) {
+			for (int col = 0; col < size; ++col) {
+				if (game[row][col] == Cell.EMPTY) {
+					numberOfEmptyCells++;
+				}
+			}
+		}
+		return numberOfEmptyCells;
 	}
 	
-	public void setCell(int row, int column, Cell value) {
-		game[row][column] = value;
-	}
+	// --------------------------------   SETTERS  -------------------------------------
 	
-	public void setPieceType(int row, int column, char value) {
-		pieceType[row][column] = value;
-	}
-	
-	public void setTurn(char t) {
-		turn = t;
-	}
-	
-	public void setRecorded(boolean r) {
-		recorded = r;
-	}
+	public void setCell(int row, int column, Cell value) { game[row][column] = value; }
+	public void setRecorded(boolean r) { recorded = r; }
+	public void setPieceType(int row, int column, char value) { pieceType[row][column] = value; }
+	public void setTurn(char t) { turn = t; }
 	
 	// ------------------------- SOS DETECTION HELPER FUNCTIONS -----------------------------
 	protected boolean checkSOSWithO(int row, int col, int dRow, int dCol) {
@@ -104,7 +103,6 @@ public abstract class SOSGame {
 		return pieceType[oRow][oCol] == 'O' && pieceType[sRow][sCol] == 'S';
 	}
 	
-	
 	// -------------------------------   GAME LOGIC ------------------------------------------	
 	
 	// abstract classes (defined in subclasses)
@@ -123,20 +121,6 @@ public abstract class SOSGame {
 		}
 	}
 	
-	// initializes the game, resets all of the variables and board
-	private void initGame() {
-		for (int row = 0; row < size; ++row) {
-			for (int col = 0; col < size; ++col) {
-				game[row][col] = Cell.EMPTY;
-				pieceType[row][col] = ' ';
-			}
-		}
-		currentGameState = GameState.PLAYING;
-		turn = 'B';
-		blueScore = 0;
-		redScore = 0;
-	}
-	
 	// re-initializes game, will reset a leaderboard done in later sprints
 	public void resetGame() {
 		initGame();
@@ -150,23 +134,23 @@ public abstract class SOSGame {
 	// determines if the board has any empty cells
 	protected boolean boardFull() {
 		// returns false is there are any unoccupied cells
-	    for (int r = 0; r < size; r++)
-	        for (int c = 0; c < size; c++)
-	            if (game[r][c] == Cell.EMPTY) return false;
-	    
-	    return true;
+		for (int r = 0; r < size; r++)
+			for (int c = 0; c < size; c++)
+				if (game[r][c] == Cell.EMPTY) return false;
+		return true;
 	}
 	
-	// returns the current number of empty cells
-	public int getNumberOfEmptyCells() {
-		int numberOfEmptyCells = 0;
+	// initializes the game, resets all of the variables and board
+	private void initGame() {
 		for (int row = 0; row < size; ++row) {
 			for (int col = 0; col < size; ++col) {
-				if (game[row][col] == Cell.EMPTY) {
-					numberOfEmptyCells++;
-				}
+				game[row][col] = Cell.EMPTY;
+				pieceType[row][col] = ' ';
 			}
 		}
-		return numberOfEmptyCells;
+		currentGameState = GameState.PLAYING;
+		turn = 'B';
+		blueScore = 0;
+		redScore = 0;
 	}
 }

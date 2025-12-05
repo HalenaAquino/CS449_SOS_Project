@@ -1,11 +1,11 @@
 package sprint_5.production;
 
+import sprint_5.production.SOSGame.GameState;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import sprint_5.production.SOSGame.GameState;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -23,7 +23,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.geometry.Pos;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -83,7 +82,6 @@ public class SOSGameGUI extends Application {
 	private Player bluePlayer;
 	private Player redPlayer;
 	private Player player;
-	//private InfluxDB influx = new InfluxDB();
 	
 	// -----------------------------------------------------  GUI LOGIC  ----------------------------------------------------
 	// helper class used to draw the line through SOS's
@@ -111,7 +109,6 @@ public class SOSGameGUI extends Application {
 		createTopPane(topPane);
 		createBottomPane(bottomPane);
 		createCenterPane(centerPane);
-		
 		
 		// Changes the size of the board based on the user entered number
 		applyButton.setOnAction(event -> {	
@@ -187,7 +184,6 @@ public class SOSGameGUI extends Application {
 					if (redComputerButton.isSelected()) redHumanButton.setDisable(true);
 					if (!recordGameCheckbox.isSelected()) recordGameCheckbox.setDisable(true);
 					
-					
 					errorMessage.setText("");		// Sets the error message to empty if there's no error
 			    }
 				else
@@ -213,7 +209,6 @@ public class SOSGameGUI extends Application {
 		        boardSizeField.setText("");
 		        gameStatus.setText("Blue Players turn");
 		    }
-			
 			
 			// resets all of the button settings
 			List<RadioButton> settingsRadioButtons = List.of(simpleRButton, generalRButton, blueSButton, blueOButton, 
@@ -259,6 +254,7 @@ public class SOSGameGUI extends Application {
 		primaryStage.show();
 	}
 	
+	// Draws the squares that make up the board
 	public void generateBoard(int size) {
 		// creates the squares in the board
 		squares = new Square[size][size];
@@ -267,9 +263,8 @@ public class SOSGameGUI extends Application {
 				boardPane.add(squares[i][j] = new Square(size, i, j, playerSelectedPieces), j, i);
 	}
 	
+	// Replays the previous saved game
 	public void replayGame() {
-		//TODO
-
 		    List<List<Object>> movesList = InfluxDB.query();
 		    
 		    // Reset the board
@@ -284,6 +279,7 @@ public class SOSGameGUI extends Application {
 		    drawBoard(Square.size, playerSelectedPieces);
 		    displayGameStatus();
 
+		    // Adds a delay in between the replay moves
 		    Timeline timeline = new Timeline();
 		    int delay = 1;
 		    
@@ -296,17 +292,13 @@ public class SOSGameGUI extends Application {
 		            int x = ((Number) move.get(2)).intValue();
 		            int y = ((Number) move.get(3)).intValue();
 
-		            System.out.println("Player: " + currentPlayer + " Piece: " + currentPiece + " X: " + x + " Y: " + y);
-
 		            playerSelectedPieces.put(currentPlayer, currentPiece);
 		            
 		            if (bluePlayer.getClass() == ComputerPlayer.class) bluePlayer = new Player(game, 'B', playerSelectedPieces);
 		            if (redPlayer.getClass() == ComputerPlayer.class) redPlayer = new Player(game, 'R', playerSelectedPieces);
 
-		            if (currentPlayer == 'B')
-		                player = bluePlayer;
-		            else
-		                player = redPlayer;
+		            if (currentPlayer == 'B') player = bluePlayer;
+		            else player = redPlayer;
 
 		            player.makeMove(x, y);
 		            drawBoard(Square.size, playerSelectedPieces);
@@ -320,15 +312,7 @@ public class SOSGameGUI extends Application {
 		    timeline.setOnFinished(e -> InfluxDB.clearTable());
 		    timeline.play();
 		
-
-		
-		
-		
-		
-		
 		InfluxDB.clearTable();
-		
-		
 	}
 
 	// draws the actual board
@@ -358,12 +342,12 @@ public class SOSGameGUI extends Application {
 		}
 	}
 	
+	// Plays the Computer vs Computer game
 	public void doubleComputerPlayers(int size) {
 		stopAutoPlay();
 		
 	    autoPlayTimeline = new Timeline(new KeyFrame(Duration.seconds(1), ev -> {
-	        if (game.getGameState() != GameState.PLAYING) 
-	            return;
+	        if (game.getGameState() != GameState.PLAYING) return;
 	        
 	        char currentPlayer = game.getTurn();
 
@@ -377,9 +361,7 @@ public class SOSGameGUI extends Application {
 
 	    autoPlayTimeline.setCycleCount(Timeline.INDEFINITE);
 	    autoPlayTimeline.play();
-	    
 	}
-
 			
 	// responsible for determining if an SOS was made THIS turn and updating the set and list
 	public void highlightCompletedSOS(int s, char player) {
@@ -442,9 +424,7 @@ public class SOSGameGUI extends Application {
 			}
 			   
 		// Always redraw ALL completed SOS lines
-		for (SOSLine sos : completedSOS) {
-			drawSOSLine(sos);
-			}
+		for (SOSLine sos : completedSOS) drawSOSLine(sos);
 		}
 	
 	
@@ -455,22 +435,14 @@ public class SOSGameGUI extends Application {
 				blueScoreLabel.setText("Blue score: " + game.getBlueScore());
 				redScoreLabel.setText("Red score: " + game.getRedScore());
 			}
-			if (game.getTurn() == 'B') {
-				gameStatus.setText("Blue Players Turn");
-			}
-			else {
-				gameStatus.setText("Red Players Turn");
-			}
+			if (game.getTurn() == 'B') gameStatus.setText("Blue Players Turn");
+			else gameStatus.setText("Red Players Turn");
 			
 		} 
 		else { 
-			if (game.getGameState() == GameState.DRAW) {
-			gameStatus.setText("It's a Draw! Click to play again.");
-			} else if (game.getGameState() == GameState.BLUE_WON) {
-			gameStatus.setText("Blue Won! Click to play again.");
-			} else if (game.getGameState() == GameState.RED_WON) {
-			gameStatus.setText("Red Won! Click to play again.");
-			}
+			if (game.getGameState() == GameState.DRAW) gameStatus.setText("It's a Draw! Click to play again.");
+			else if (game.getGameState() == GameState.BLUE_WON) gameStatus.setText("Blue Won! Click to play again.");
+			else if (game.getGameState() == GameState.RED_WON) gameStatus.setText("Red Won! Click to play again.");
 			stopAutoPlay();
 		}
 	}
@@ -499,8 +471,8 @@ public class SOSGameGUI extends Application {
 				squares[sos.row+1][sos.col-1].drawSlash("RD", sos.color);
 				squares[sos.row+2][sos.col-2].drawSlash("RD", sos.color);
 				break;
-				}
 		}
+	}
 
 	// creates all of the objects on the top pane
 	private void createTopPane(GridPane topPane) {
@@ -513,7 +485,6 @@ public class SOSGameGUI extends Application {
 		generalRButton.setTranslateX(30);
 		topPane.add(simpleRButton, 1, 5);
 		topPane.add(generalRButton, 2, 5);
-				
 				
 		// Creates a textbox for the board size and adds it to the top plane
 		Label boardSize = new Label("Board Size:");
@@ -565,9 +536,6 @@ public class SOSGameGUI extends Application {
 		recordGameCheckbox.setTranslateX(10);
 		recordGameCheckbox.setTranslateY(-70);
 		bottomPane.add(recordGameCheckbox, 1, 5);
-
-		
-		
 
 		// general pane settings
 		bottomPane.setMinWidth(800);
@@ -690,7 +658,6 @@ public class SOSGameGUI extends Application {
 		createPlayerPane(blueControlPane, "Blue", 'B', Color.BLUE, -35);
 		createPlayerPane(redControlPane, "Red", 'R', Color.RED, boardPane.getMaxWidth() - 50);
 		boardPane.setTranslateX(blueControlPane.getMaxWidth() - 60);
-		
 				
 		// combines all of the center panes
 		centerPane.add(blueControlPane, 1, 5);
@@ -708,10 +675,10 @@ public class SOSGameGUI extends Application {
 		private static int size;
 		
 		// Creates each square and handles piece placement (moves being made)
-		public Square(int size, int row, int column, Map<Character, Character> playerSelectedPieces) {
+		public Square(int s, int row, int column, Map<Character, Character> playerSelectedPieces) {
 			this.row = row;
 			this.column = column;
-			this.size = size;
+			this.size = s;
 			setStyle("-fx-border-color: black");
 			this.setPrefSize(500/size, 500/size);			// the max size of the board pane (500) / the number of squares
 			this.setOnMouseClicked(e -> handleMouseClick(playerSelectedPieces));
@@ -726,8 +693,7 @@ public class SOSGameGUI extends Application {
 				completedSOS.clear();
 				recordedSOS.clear();
 				
-				if (game.getRecorded())
-					InfluxDB.clearTable();
+				if (game.getRecorded()) InfluxDB.clearTable();
 				
 				if(game.getGamemode() == "General") {
 					blueScoreLabel.setText("Blue score: 0");
@@ -743,10 +709,8 @@ public class SOSGameGUI extends Application {
 		    
 		    // if the current player is a human, makes a move
 		    if ((currentPlayer == 'B' && bluePlayerType == 'H') || (currentPlayer == 'R' && redPlayerType == 'H')) {
-		        if (currentPlayer == 'B') 
-		        	bluePlayer.makeMove(row, column);
-		        else 
-		        	redPlayer.makeMove(row, column);
+		        if (currentPlayer == 'B') bluePlayer.makeMove(row, column);
+		        else redPlayer.makeMove(row, column);
 		    }
 
 		    drawBoard(size, playerSelectedPieces);
@@ -758,16 +722,13 @@ public class SOSGameGUI extends Application {
 		        char computerPlayer = game.getTurn();
 		        
 		        // makes the computer move
-		        if (computerPlayer == 'B') 
-		        	bluePlayer.makeMove(0, 0);
-		        else 
-		        	redPlayer.makeMove(0, 0);
+		        if (computerPlayer == 'B') bluePlayer.makeMove(0, 0);
+		        else redPlayer.makeMove(0, 0);
 
 		        drawBoard(size, playerSelectedPieces);
 		        highlightCompletedSOS(size, computerPlayer);
 		        displayGameStatus();
-		    }
-		    
+		    } 
 		}
 		
 		// draws the actual slash that goes through each box the SOS is contained by
