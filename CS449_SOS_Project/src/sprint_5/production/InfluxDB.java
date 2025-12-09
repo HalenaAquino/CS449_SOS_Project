@@ -33,7 +33,18 @@ public class InfluxDB {
         return client;
     }
 	
-    // Writes the move information to the database
+    /* Writes the move information to the database
+	 * 
+	 * Precondition: 
+	 * 		- there is an established connection to the database
+	 * 		- 2 strings and 2 integers are passed as parameters
+	 * 		- the first string is either "Blue" or "Red"
+	 * 		- the second string is either "S" or "O"
+	 * 		- the 2 integers are both < board size
+	 * 
+	 * Postcondition:
+	 * 		- all passed parameters will be written to a table in the influx database
+	 */
 	public static void write(String player, String piece, int xCoord, int yCoord) {
 		moveID++;
 		
@@ -51,7 +62,15 @@ public class InfluxDB {
 		writeApi.writePoint(point);            
 	}
 	
-	// Pulls all of the moves from the database
+	/* Pulls all of the moves from the database
+	 * 
+	 * Precondition: 
+	 * 		- there is an established connection to the database
+	 * 		- ID, Player, Piece, x_coordinate, and y_coordinate are all existing fields in the database
+	 * 
+	 * Postcondition:
+	 * 		- a list of lists is returned, each inner list containing 1 row of the table
+	 */
 	public static List<List<Object>> query() {
 		// pulls out the specific data needed
 		String flux = "from(bucket: \"SOSGameBucket\")" +
@@ -87,7 +106,15 @@ public class InfluxDB {
         return rows;
 	}
 	
-	// Clears the previous game from the database
+	/* Clears the previous game from the database
+	 * 
+	 * Precondition: 
+	 * 		- there is an established connection to the database
+	 * 		- SOSGameRecord exists within the database
+	 * 
+	 * Postcondition:
+	 * 		- the SOSGameRecord table will be deleted from the database
+	 */
 	public static void clearTable() {
         DeleteApi deleteApi = client.getDeleteApi();
 
@@ -99,3 +126,19 @@ public class InfluxDB {
         deleteApi.delete(start, stop, predicate, bucket, org);
 	}	
 }
+
+/*
+from(bucket: "SOSGameBucket")
+|> range(start: -24h)
+|> filter(fn: (r) => r._measurement == "SOSGameRecord")
+|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+|> group(columns: [])
+|> sort(columns: ["ID"], desc: false)
+|> map(fn: (r) => ({
+    ID: r.ID,
+    Player: r.Player,
+    Piece: r.Piece,
+    X: r.x_coordinate,
+    Y: r.y_coordinate
+}))
+*/

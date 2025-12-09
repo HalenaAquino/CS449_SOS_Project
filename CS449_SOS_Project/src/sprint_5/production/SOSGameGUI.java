@@ -129,8 +129,7 @@ public class SOSGameGUI extends Application {
 					blueScoreLabel.setText("Blue score: 0");
 					redScoreLabel.setText("Red score: 0");
 				}
-				else
-					throw new NumberFormatException(); 
+				else throw new NumberFormatException(); 
 				
 				// Sets the player type of both players depending on the buttons chosen; throws exception otherwise
 				if(bluePlayerType == 'C' && redPlayerType == 'H') {
@@ -149,14 +148,13 @@ public class SOSGameGUI extends Application {
 					bluePlayer = new ComputerPlayer(game, 'B', playerSelectedPieces);
 					redPlayer = new ComputerPlayer(game, 'R', playerSelectedPieces);
 				}
-				else
-					throw new NumberFormatException();
+				else throw new NumberFormatException();
 				
-				if (recordGameCheckbox.isSelected())
-					game.setRecorded(true);
+				if (recordGameCheckbox.isSelected()) game.setRecorded(true);
 				
 				// only creates the board if all settings are chosen
-				if (game.getTurn() != ' ' && game.getGamemode() != "" && ((blueHumanButton.isSelected() && bluePiece != ' ') || (redHumanButton.isSelected() && redPiece != ' ') || (blueComputerButton.isSelected() && redComputerButton.isSelected()))) {
+				if (game.getTurn() != ' ' && game.getGamemode() != "" && ((blueHumanButton.isSelected() && bluePiece != ' ') 
+						|| (redHumanButton.isSelected() && redPiece != ' ') || (blueComputerButton.isSelected() && redComputerButton.isSelected()))) {
 					// resets game settings
 					game.resetGame();
 					gameStatus.setText("Blue Players turn");
@@ -169,8 +167,7 @@ public class SOSGameGUI extends Application {
 					generateBoard(size);
 					
 					// calls a function that plays the entire game with computer players
-					if(bluePlayerType == 'C' && redPlayerType == 'C')
-						doubleComputerPlayers(size);
+					if(bluePlayerType == 'C' && redPlayerType == 'C') doubleComputerPlayers(size);
 					
 					// Disables the setup during an active game
 					simpleRButton.setDisable(true);
@@ -186,8 +183,7 @@ public class SOSGameGUI extends Application {
 					
 					errorMessage.setText("");		// Sets the error message to empty if there's no error
 			    }
-				else
-					throw new NumberFormatException();		// Throws an error if any of the setup condiitons aren't met
+				else throw new NumberFormatException();		// Throws an error if any of the setup condiitons aren't met
 			}
 			catch (NumberFormatException e){
 				errorMessage.setText("Please enter a valid board size, select a game mode, and choose the piece for both players");
@@ -229,16 +225,13 @@ public class SOSGameGUI extends Application {
 			gameStatus.setText("Blue Players Turn");
 			errorMessage.setText("");
 			
-			if (game.getRecorded())
-				InfluxDB.clearTable();
+			if (game.getRecorded()) InfluxDB.clearTable();
 			
 		});	
 		
 		replayButton.setOnAction(event ->{
-			if (recordGameCheckbox.isSelected())
-				replayGame();
-			else
-				errorMessage.setText("No recorded game to replay!");
+			if (recordGameCheckbox.isSelected()) replayGame();
+			else errorMessage.setText("No recorded game to replay!");
 		});
 		
 		// adds all of the panes to the border pane
@@ -254,7 +247,15 @@ public class SOSGameGUI extends Application {
 		primaryStage.show();
 	}
 	
-	// Draws the squares that make up the board
+	/* Draws the squares that make up the board
+	 * 
+	 * Precondition: 
+	 * 		- an integer parameter is passed
+	 * 		- size < board size
+	 * 
+	 * Postcondition: 
+	 * 		- a board of size * size is generated
+	 */
 	public void generateBoard(int size) {
 		// creates the squares in the board
 		squares = new Square[size][size];
@@ -263,7 +264,16 @@ public class SOSGameGUI extends Application {
 				boardPane.add(squares[i][j] = new Square(size, i, j, playerSelectedPieces), j, i);
 	}
 	
-	// Replays the previous saved game
+	/* Replays the previous saved game
+	 * 
+	 * Precondition: 
+	 * 		- there is an established connection to the database
+	 * 		- the current game state is not PLAYING
+	 * 		- the database isn't empty
+	 * 
+	 * Postcondition: 
+	 * 		- the board replays the recorded turns and clears the database
+	 */
 	public void replayGame() {
 		    List<List<Object>> movesList = InfluxDB.query();
 		    
@@ -315,7 +325,17 @@ public class SOSGameGUI extends Application {
 		InfluxDB.clearTable();
 	}
 
-	// draws the actual board
+	/* Draws the actual board
+	 * 
+	 * Precondition: 
+	 * 		- an integer and map are passed as parameters
+	 * 		- size < board size
+	 * 		- no key-value pair in map is empty
+	 * 		- there is an ongoing game
+	 * 
+	 * Postcondition: 
+	 * 		- the S/O player pieces will be displayed on the board
+	 */
 	public void drawBoard(int size, Map<Character, Character> playerSelectedPieces) {
 	    for (int row = 0; row < size; row++) {
 	        for (int column = 0; column < size; column++) {
@@ -334,7 +354,14 @@ public class SOSGameGUI extends Application {
 	    }
 	}
 	
-	// Stops the double computer game if it's running
+	/* Stops the double computer game if it's running
+	 * 
+	 * Precondition: 
+	 * 		- none
+	 * 
+	 * Postcondition: 
+	 * 		- the auto play timeline will be stopped if it exists
+	 */
 	private void stopAutoPlay() {
 		if (autoPlayTimeline != null) {
 			autoPlayTimeline.stop();
@@ -342,7 +369,14 @@ public class SOSGameGUI extends Application {
 		}
 	}
 	
-	// Plays the Computer vs Computer game
+	/* Plays the Computer vs Computer game
+	 * Precondition: 
+	 * 		- an integer is passed as a parameter
+	 * 		- size < board size
+	 * 
+	 * Postcondition: 
+	 * 		- a computer vs computer game will be played
+	 */
 	public void doubleComputerPlayers(int size) {
 		stopAutoPlay();
 		
@@ -363,7 +397,16 @@ public class SOSGameGUI extends Application {
 	    autoPlayTimeline.play();
 	}
 			
-	// responsible for determining if an SOS was made THIS turn and updating the set and list
+	/* Responsible for determining if an SOS was made THIS turn and updating the set and list
+	 * 
+	 * Precondition: 
+	 * 		- an integer and character are passed as parameters
+	 * 		- size < board size
+	 * 		- player character is either B or R
+	 * 
+	 * Postcondition: 
+	 * 		- tracks all completed and recorded SOS's
+	 */
 	public void highlightCompletedSOS(int s, char player) {
 		int currentBlueScore = game.getBlueScore();
 		int currentRedScore = game.getRedScore();
@@ -428,7 +471,14 @@ public class SOSGameGUI extends Application {
 		}
 	
 	
-	// Taken from the TicTacToe example; changes the current turn
+	/* Changes the current turn
+	 * 
+	 * Precondition: 
+	 * 		- none
+	 * 
+	 * Postcondition: 
+	 * 		- the game state will be updated to the appropriate text (win/draw/ ____'s turn)
+	 */
 	public void displayGameStatus() {
 		if (game.getGameState() == GameState.PLAYING) {
 			if(game.getGamemode() == "General") {
@@ -447,7 +497,14 @@ public class SOSGameGUI extends Application {
 		}
 	}
 			
-	// draws the full SOS line
+	/* Draws the full SOS line
+	 * 
+	 * Precondition: 
+	 * 		- an valid SOSLine is passed as a parameter
+	 * 
+	 * Postcondition: 
+	 * 		- draws the appropriate SOS line for each completed SOS
+	 */
 	private void drawSOSLine(SOSLine sos) {
 		// determines which direction the SOS is (which direction the line needs to be drawn) and calls the function to draw each line
 		switch(sos.direction) {
@@ -474,7 +531,15 @@ public class SOSGameGUI extends Application {
 		}
 	}
 
-	// creates all of the objects on the top pane
+	/* Creates all of the objects on the top pane
+	 * 
+	 * Precondition: 
+	 * 		- is passed a GridPane as a parameter
+	 * 		- topPane exists
+	 * 
+	 * Postcondition: 
+	 * 		- the game mode and board size settings will be displayed
+	 */
 	private void createTopPane(GridPane topPane) {
 		// Creates the game choice radio buttons and adds them to the top plane
 		simpleRButton = new RadioButton("Simple Game");
@@ -502,7 +567,17 @@ public class SOSGameGUI extends Application {
 		applyButton.setTranslateX(120);
 	}
 	
-	// creates all of the objects on the bottom pane
+	/* Creates all of the objects on the bottom pane
+	 * 
+	 * Precondition: 
+	 * 		- is passed a GridPane as a parameter
+	 * 		- bottomPane exists
+	 * 
+	 * Postcondition: 
+	 * 		- the new game and replay buttons will be displayed
+	 * 		- the recorded checkbox will be displayed
+	 * 		- the game status and error message labels will be displayed
+	 */
 	private void createBottomPane(GridPane bottomPane) {
 		// new game button
 		newGameButton = new Button("New Game");
@@ -541,8 +616,20 @@ public class SOSGameGUI extends Application {
 		bottomPane.setMinWidth(800);
 		bottomPane.setMaxHeight(200);
 	}
-	
-	// creates the items needed for each player
+
+	/* Creates the items needed for each player
+	 * 
+	 * Precondition: 
+	 * 		- is passed a GridPane, a character, a color, and a double as a parameter
+	 * 		- centerPane exists
+	 * 		- playerName is either "Blue" or "Red" 
+	 * 		- playerChar is either B or R
+	 * 		- playerColor is either Color.RED or Color.BLUE
+	 * 		- offset > 0.00
+	 * 
+	 * Postcondition: 
+	 * 		- the player settings (human/computer, piece selection) for the given player are displayed
+	 */
 	private void createPlayerPane(GridPane playerPane, String playerName, char playerChar, Color playerColor, double offset) {
 		playerSelectedPieces = new Hashtable<>();
 		
@@ -647,7 +734,15 @@ public class SOSGameGUI extends Application {
 		}
 	}
 	
-	// creates all of the objects in the center pane
+	/* Creates all of the objects in the center pane
+	 * 
+	 * Precondition: 
+	 * 		- is passed a GridPane as a parameter
+	 * 		- centerPane exists
+	 * 
+	 * Postcondition: 
+	 * 		- all settings for both players are displayed
+	 */
 	private void createCenterPane(GridPane centerPane) {
 		// Creates panes for the red and blue player buttons
 		GridPane blueControlPane = new GridPane();
@@ -674,7 +769,16 @@ public class SOSGameGUI extends Application {
 		private int row, column;
 		private static int size;
 		
-		// Creates each square and handles piece placement (moves being made)
+		/* Creates each square and handles piece placement (moves being made)
+		 * 
+		 * Precondition: 
+		 * 		- 3 integers and a map are passed as parameters
+		 * 		- s, row, and column are < board size
+		 * 		- playerSelectedPieces isn't empty
+		 * 
+		 * Postcondition: 
+		 * 		- a square and its click settings are established
+		 */
 		public Square(int s, int row, int column, Map<Character, Character> playerSelectedPieces) {
 			this.row = row;
 			this.column = column;
@@ -684,7 +788,15 @@ public class SOSGameGUI extends Application {
 			this.setOnMouseClicked(e -> handleMouseClick(playerSelectedPieces));
 		}
 
-		// Makes the actual move and updates the board
+		/* Makes the actual move and updates the board
+		 * 
+		 * Precondition: 
+		 * 		- a map is passed as a parameter
+		 * 		- playerSelectedPieces isn't empty
+		 * 
+		 * Postcondition: 
+		 * 		- the appropriate move is made on the clicked square
+		 */
 		private void handleMouseClick(Map<Character, Character> playerSelectedPieces) {
 			if (game.getGameState() != GameState.PLAYING) {
 				game.resetGame();
@@ -731,7 +843,16 @@ public class SOSGameGUI extends Application {
 		    } 
 		}
 		
-		// draws the actual slash that goes through each box the SOS is contained by
+		/* Draws the actual slash that goes through each box the SOS is contained by
+		 * 
+		 * Precondition: 
+		 * 		- a string and color are passed as parameters
+		 * 		- direction is either "LD", "RD", "H", or "V"
+		 * 		- color is either Color.BLUE or Color.RED
+		 * 
+		 * Postcondition: 
+		 * 		- a slash is drawn through the SOS box
+		 */
 		public void drawSlash(String direction, Color color) {
 		    Line line = new Line();
 
@@ -771,7 +892,15 @@ public class SOSGameGUI extends Application {
 		    getChildren().add(line);
 		}
 		
-		// Draws the S piece
+		/* Draws the S piece
+		 * 
+		 * Precondition: 
+		 * 		- a color is passed as a parameter
+		 * 		- c is either Color.BLUE or Color.RED
+		 * 
+		 * Postcondition: 
+		 * 		- an S is drawn to the board
+		 */
 		public void drawS(Color c) {
 			Label label = new Label(String.valueOf('S'));
 		    label.setTextFill(c);
@@ -781,7 +910,15 @@ public class SOSGameGUI extends Application {
 		    this.getChildren().add(label);
 		}
 		
-		// Taken and altered from the drawNaught method in the TicTacToe example; draws the O piece
+		/* Draws the O piece
+		 * 
+		 * Precondition: 
+		 * 		- a color is passed as a parameter
+		 * 		- c is either Color.BLUE or Color.RED
+		 * 
+		 * Postcondition: 
+		 * 		- an O is drawn to the board
+		 */
 		public void drawO(Color c) {
 			Ellipse ellipse = new Ellipse(this.getWidth() / 1.5, this.getHeight() / 1.5, this.getWidth() / 1.5,
 					this.getHeight() / 1.5);

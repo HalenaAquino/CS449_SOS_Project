@@ -5,12 +5,29 @@ package sprint_5.production;
 
 public class SimpleSOSGame extends SOSGame{
 	
-	// constructor
+	/* constructor
+	 * 
+	 * Precondition: 
+	 * 		- an integer is passed
+	 * 
+	 * Postcondition:
+	 * 		- a simple SOS game is created
+	 */
 	public SimpleSOSGame(int s) {
 		super(s);
 	}	
 	
-	// determines if an SOS was made for the given player
+	/* determines if an SOS was made for the given player
+	 * 
+	 * Precondition: 
+	 * 		- a character and 2 integer parameters are passed
+	 * 		- player is either B or R
+	 * 		- row and column are both < board size
+	 * 		- there is an ongoing game
+	 * 
+	 * Postcondition:
+	 * 		- returns true if a the specified piece at the specified location would complete an SOS, false otherwise
+	 */
 	public boolean hasWon(char player, int row, int column) {
 		char[][] pieces = getPieceTypeArray();
 	    char placed = pieces[row][column];
@@ -38,7 +55,19 @@ public class SimpleSOSGame extends SOSGame{
 		return false;		// otherwise false
 	}
 	
-	// simple game has its own unique update function
+	/* simple game has its own unique update function
+	 * 
+	 * Precondition: 
+	 * 		- a character and 2 integer parameters are passed
+	 * 		- player is either B or R
+	 * 		- row and column are both < board size
+	 * 		- there is an ongoing game
+	 * 
+	 * Postcondition:
+	 * 		- sets the game state to the appropriate WON value if either player has completed an SOS
+	 * 		- sets the game state to DRAW if the game is a draw
+	 * 		- changes the turn otherwise
+	 */
 	public void updateGameState(char turn, int row, int column) {
 		if (hasWon(turn, row, column)) // check for win{
 			currentGameState = (turn == 'B') ? GameState.BLUE_WON : GameState.RED_WON;
@@ -52,7 +81,14 @@ public class SimpleSOSGame extends SOSGame{
 		}
 	}
 
-	// can only be a draw (in a simple game) if the board is full
+	/* can only be a draw (in a simple game) if the board is full
+	 * 
+	 * Precondition: 
+	 * 		- there is an ongoing game
+	 * 
+	 * Postcondition:
+	 * 		- returns true if the board is full, false otherwise
+	 */
 	public boolean isDraw() {
 		return boardFull();
 	}
